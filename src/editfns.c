@@ -512,7 +512,7 @@ DEFUN ("current-time-string", Fcurrent_time_string, Scurrent_time_string, 0, 0, 
   "Return the current time, as a human-readable string.")
   ()
 {
-  long current_time = time (0);
+  time_t current_time = time (0);
   register char *tem = (char *) ctime (&current_time);
   tem [24] = 0;
   return build_string (tem);
