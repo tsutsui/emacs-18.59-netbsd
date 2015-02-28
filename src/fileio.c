@@ -43,7 +43,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 #include <errno.h>
 
-#ifndef vax11c
+#if !defined(vax11c) && !defined(__NetBSD__)
 extern int errno;
 #if defined(LINUX) && !(defined (__GLIBC__) && (__GLIBC__ >= 2))
 extern char *sys_errlist[];
