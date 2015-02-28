@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "../src/paths.h"
 
 /* zippy.c
@@ -38,7 +39,7 @@ main (argc, argv)
   }
 
   /* initialize random seed */
-  srand((int) (getpid() + time((long *) 0)));
+  srand((int) (getpid() + time((time_t *) 0)));
 
   yow(fp);
   fclose(fp);
