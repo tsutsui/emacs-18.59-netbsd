@@ -1,3 +1,8 @@
+1998-05-30  Noah Friedman  <friedman@splode.com>
+
+	* env.c (main): Declare sys_errlist if linux + glibc2.
+	Patch from Steve Baur <steve@xemacs.org>.
+
 Wed Oct 21 18:21:39 1992  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
 	* Makefile: Emacstool and other Sun-only targets replaced.
@@ -290,5 +295,3 @@ Sun Mar 20 13:17:13 1988  Richard M. Stallman  (rms at wilson)
 	* server.c [not BSD and not HAVE_SYSVIPC]: fix error message.
 
 	* loadst.c (main) [XENIX]: use /usr/spool/mail, not /usr/mail.
-
-

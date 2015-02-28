@@ -198,7 +198,9 @@ main (argc, argv, envp)
   else
     {
       extern int errno, sys_nerr;
+#if defined(LINUX) && !(defined (__GLIBC__) && (__GLIBC__ >= 2))
       extern char *sys_errlist[];
+#endif
 
       environ = nenv;
       (void) execvp (*argv, argv);

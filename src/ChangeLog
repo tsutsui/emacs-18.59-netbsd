@@ -1,3 +1,35 @@
+1999-11-05  Noah Friedman  <friedman@splode.com>
+
+	* ymakefile [LIBS_TERMCAP]: Use -lncurses, not -lcurses.
+	Define TERMINFO.
+	[LIB_X11_LIB]: Add -L/usr/X11R6/lib
+
+	* s-linux.h [HAVE_DEV_PTMX]: Redefine FIRST_PTY_LETTER to 'z'.
+	Define PTY_NAME_SPRINTF.
+	Define PTY_TTY_NAME_SPRINTF.
+	[LIBS_TERMCAP]: Default to ncurses, not termcap.
+
+1998-05-30  Noah Friedman  <friedman@splode.com>
+
+ 	Patches from Steve Baur <steve@xemacs.org>, received 1997-09-23.
+	* s-linux.h (MAXNAMLEN): Define if using glibc2.
+	(C_OPTIMIZE_SWITCH): More optimization switches.
+	* sysdep.c: Declare sys_errlist if using linux+glibc2.
+ 	* process.c: Here too.
+	* fileio.c: Here too.
+	* ymakefile (CFLAGS): Use both C_DEBUG_SWITCH and C_OPTIMIZE_SWITCH.
+
+Fri Jul  5 02:07:24 1996  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * s-linux.h: New file.
+	* m-intel386.h [linux]: Define ULIMIT_BREAK_VALUE, SEGMENT_MASK.
+	* unexelf.c: Replaced with version from Emacs 19.31.
+	* process.c [!BSD4_1]: Don't declare sys_siglist unless
+	SYS_SIGLIST_DECLARED is also undefined.
+	(create_process) [TIOCSCTTY]: Ignore failures from ioctl call.
+	* sysdep.c (sys_siglist): Don't define unless HAVE_SYS_SIGLIST
+	is undefined.
+
 Fri Oct 30 18:10:34 1992  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
 	* Version 18.59 released.
@@ -832,7 +864,7 @@ Wed Jan 22 22:32:28 1992  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
 Tue Jan 21 21:49:43 1992    (Eric Youngdale at youngdale@v6550c.nrl.navy.mil)
 
-	* sysdep.c (sys_access) [VMS]: Fix bug whereby the default rather 
+	* sysdep.c (sys_access) [VMS]: Fix bug whereby the default rather
 	than the actual privileges were used to determine if we have
 	file access.
 
@@ -844,7 +876,7 @@ Mon Jan 20 12:41:27 1992    (Eric Youngdale at youngdale@v6550c.nrl.navy.mil)
 Sun Jan 19 23:39:10 1992    (Eric Youngdale at youngdale@v6550c.nrl.navy.mil)
 
 	* compile.com: Delete useless object file generated when sensing
-	the presence of a C compiler.  Prevent user from seeing error 
+	the presence of a C compiler.  Prevent user from seeing error
 	message when sensing C compiler.
 
 Sun Jan 19 11:29:00 1992    (Eric Youngdale at youngdale@v6550c.nrl.navy.mil)
@@ -980,7 +1012,7 @@ Thu Nov 28 01:37:13 1991  Richard Stallman  (rms at mole.gnu.ai.mit.edu)
 	(LIB_STANDARD): Remove -lbsd and -lrts.
 	Suggested by tranle@intellicorp.com.
 
-	* sysdep.c (child_setup_tty) [AIX]: If process_send_signal will use 
+	* sysdep.c (child_setup_tty) [AIX]: If process_send_signal will use
 	chars, make sure we have chars for VQUIT and VINTR.
 
 	* lisp.h (DEFVARPERBUFFER, DEFVAR_PER_BUFFER):
@@ -1038,7 +1070,7 @@ Tue Oct 22 01:41:09 1991  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
 Mon Oct 21 23:05:15 1991  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
-	* buffer.c: Doc fix. 
+	* buffer.c: Doc fix.
 
 Sun Oct 20 18:41:06 1991  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
@@ -1313,7 +1345,7 @@ Mon Jul  8 22:04:15 1991  Richard Stallman  (rms at mole.gnu.ai.mit.edu)
 Sun Jul  7 15:47:50 1991  Richard Stallman  (rms at mole.gnu.ai.mit.edu)
 
 	* process.c (Fprocess_send_eof): If using a pipe, close it.
-	(close_process_descs): Check IN and OUT for nonzeroness. 
+	(close_process_descs): Check IN and OUT for nonzeroness.
 
 Thu Jul  4 00:18:48 1991  Richard Stallman  (rms at mole.gnu.ai.mit.edu)
 
@@ -1512,7 +1544,7 @@ Mon Apr 15 16:35:35 1991  Eric Youngdale (youngdale@v6550c.nrl.navy.mil)
 	and __DATA correctly bracket the impure memory.  Increase size of
 	sdata and DATA_START, to make sure that impure memory starts at an
 	address > 8191, since otherwise garbage collection gets very
-	confused and Emacs bombs with peculiar errors.  
+	confused and Emacs bombs with peculiar errors.
 
 	Remove some flotsam in mapin_data - someone was trying to save the
 	argv and argc parameters, but never bothered to pass them in the
@@ -2208,7 +2240,7 @@ Mon Nov  5 18:38:18 1990  Chris Hanson  (cph at kleph)
 
 	* lisp.h (struct handler): Add new element `poll_suppress_count',
 	which records the value of that variable at the time the handler
-	is bound.  
+	is bound.
 	* eval.c (Fcondition_case): Initialize new element.
 	(internal_condition_case): Likewise.
 	(Fsignal): Instead of calling `barf_if_polling_suppressed', abort
@@ -2435,7 +2467,7 @@ Sat Sep 29 00:04:31 1990  Richard Stallman  (rms at mole.ai.mit.edu)
 
 	* x11fns.c (Fcoordinates_in_window_p): Don't fail in minibuffer.
 
-	* x11term.c (internal_socket_read): Backwards if in FocusOut. 
+	* x11term.c (internal_socket_read): Backwards if in FocusOut.
 
 	* term.c (fatal): Declare argument str.
 
@@ -2672,7 +2704,7 @@ Wed Aug 15 14:44:12 1990  Richard Stallman  (rms at mole.ai.mit.edu)
 
 	* term.c (calculate_costs): Make DC_ICcost one element larger.
 
-	* process.c (allocate_pty, create_process): 
+	* process.c (allocate_pty, create_process):
 	(Fopen_network_stream, wait_reading_process_input):
 	Use O_NONBLOCK if it is defined.
 	(wait_reading_process_input): Ignore nread == 0 if using O_NDELAY.
@@ -2716,7 +2748,7 @@ Mon Aug  6 23:48:00 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
 Sun Jul 29 14:16:05 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
-	* x11term.c (local_cursor_vpos, local_cursor_hpos): 
+	* x11term.c (local_cursor_vpos, local_cursor_hpos):
 	New variables, used throughout this file instead of cursor_*.
 	(XTupdate_end): Move cursor to last specified position.
 	This makes cursor_in_echo_area work.
@@ -2864,7 +2896,7 @@ Fri May 25 15:10:30 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	Add missing else in handling cursor_in_echo_area.
 
 	* window.c (Fselect_window): Always get point from the new window.
-	* xdisp.c (redisplay_window): Eliminate lpoint.  Alter opoint 
+	* xdisp.c (redisplay_window): Eliminate lpoint.  Alter opoint
 	if point should be changed permanently in the selected window.
 
 	* xdisp.c (decode_mode_spec): Don't truncate buffer or file name.
@@ -2878,7 +2910,7 @@ Fri May 25 15:10:30 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 Tue May 22 20:50:33 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
 	* Renamings: Renamed functions include
-	move_cursor, bell, read_command_char, insert, output_chars, 
+	move_cursor, bell, read_command_char, insert, output_chars,
 	self_insert_internal, set_buffer_internal.
 	Variables echo_area_contents, cursor_hpos, cursor_vpos, meta_key,
 	update_mode_lines, current_buffer.
@@ -2966,7 +2998,7 @@ Sat May 12 18:09:30 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* process.c (create_process) [not USG]: Put subproc in pgrp 0.
 
 	* buffer.c (SetBfp): Don't bother with selected window or its point.
-	* window.c (Fselect_window): Always set pointm of old window. 
+	* window.c (Fselect_window): Always set pointm of old window.
 
 Thu May 10 18:20:10 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
@@ -2983,7 +3015,7 @@ Wed May  9 16:55:30 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* buffer.c (SetBfp, Frename_buffer): Local cleanups.
 
 	* buffer.c (Fset_buffer): Check for deleted buffer.
-	(SetBfp): Don't check.	
+	(SetBfp): Don't check.
 	* print.c (PRINTPREPARE): Use Fset_buffer.
 
 Tue May  8 23:00:00 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
@@ -3054,7 +3086,7 @@ Sat May  5 13:00:00 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* xdisp.c (try_window, try_window_id, display_text_line): Likewise.
 	(redisplay): Likewise.
 	* buffer.c (list_buffers_1): Likewise.
-	* marker.c (marker_position, Fset_marker, set_marker_restricted): 
+	* marker.c (marker_position, Fset_marker, set_marker_restricted):
 	(Fmarker_position): Likewise.
 	* window.c (unshow_buffer, Fset_window_configuration): Likewise.
 	(Fset_window_buffer): Likewise.
@@ -3091,7 +3123,7 @@ Thu May  3 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
 Mon Apr 30 20:00:00  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
-	* sysdep.c (sys_suspend): Use save_signal_handlers and 
+	* sysdep.c (sys_suspend): Use save_signal_handlers and
 	restore_signal_handlers to save and restore signal state.
 
 	* indent.c (Findent_to): Merge guts of indentation into here.
@@ -3167,7 +3199,7 @@ Wed Apr 25 15:10:00 1990  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* keyboard.c (echo_prompt, echo_char, echo_dash, echo): New functions.
 	(cancel_echoing): Likewise.
 	(immediate_echo, echoptr): New variables.
-	(command_loop_1, request_echo, get_char, read_key_sequence): 
+	(command_loop_1, request_echo, get_char, read_key_sequence):
 	(set_waiting_for_input, interrupt_signal): Related changes.
 
 	* keyboard.c (this_command_key...): New variables.
@@ -3416,7 +3448,7 @@ Sat Aug  5 16:25:04 1989  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* m-ibmps2-aix.h (HAVE_CLOSEDIR): Define this.
 	* sysdep.c (closedir): Don't define if HAVE_CLOSEDIR.
 
-	* m-hp9000s300.h: Include sys/wait.h and define WAITTYPE, 
+	* m-hp9000s300.h: Include sys/wait.h and define WAITTYPE,
 	unless NO_SHORTNAMES.
 
 	* process.c [BSD]: If O_NDELAY missing in file.h, include fcntl.h.
@@ -4213,7 +4245,7 @@ Sun Dec  4 11:15:15 1988  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 	* sysdep.c (setpriority) [USG]: No longer a no-op; use `nice'.
 
 	* keymap.c (Fwhere_is_internal): New 4th arg inhibits looking thru
-	indirect definitions--so you can search for one.	
+	indirect definitions--so you can search for one.
 
 	* alloc.c, fns.c, search.c: Doc fix.
 
@@ -4356,7 +4388,7 @@ Mon Sep 12 16:39:32 1988  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
 Tue Sep  6 20:43:10 1988  Richard Stallman  (rms at sugar-bombs.ai.mit.edu)
 
-	* search.c (search_buffer, string_match, looking_at):	
+	* search.c (search_buffer, string_match, looking_at):
 	Report matcher stack overflow as error, not just failure to match.
 
 	* data.c (Fmake_local_variable): Add local variable to simplify

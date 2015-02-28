@@ -58,7 +58,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <errno.h>
 
 extern int errno;
-#ifndef VMS
+#if !defined(VMS) && (defined(LINUX) && \
+			!(defined (__GLIBC__) && (__GLIBC__ >= 2)))
 extern char *sys_errlist[];
 #endif
 
@@ -2404,6 +2405,7 @@ sys_write (fildes, buf, nbyte)
  *	always negligible.   Fred Fish, Unisoft Systems Inc.
  */
 
+#ifndef HAVE_SYS_SIGLIST
 char *sys_siglist[NSIG + 1] =
 {
 #ifdef AIX
@@ -2464,6 +2466,7 @@ char *sys_siglist[NSIG + 1] =
 #endif /* not AIX */
   0
   };
+#endif /* ! HAVE_SYS_SIGLIST */
 
 /*
  *	Warning, this function may not duplicate 4.2 action properly

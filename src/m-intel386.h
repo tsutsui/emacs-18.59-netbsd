@@ -182,3 +182,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef USG5_4
 #define DATA_SEG_BITS 0x08000000
 #endif
+
+#ifdef linux
+/* libc-linux/sysdeps/linux/i386/ulimit.c says that due to shared library, */
+/* we cannot get the maximum address for brk */
+#define ULIMIT_BREAK_VALUE (32*1024*1024)
+
+#define SEGMENT_MASK ((SEGMENT_SIZE)-1)
+#endif
