@@ -141,6 +141,7 @@ int fatal_error_code;
 int fatal_error_in_progress;
 
 /* Handle bus errors, illegal instruction, etc. */
+void
 fatal_error_signal (sig)
      int sig;
 {

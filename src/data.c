@@ -1596,6 +1596,7 @@ syms_of_data ()
   defsubr (&Slognot);
 }
 
+void
 arith_error (signo)
      int signo;
 {

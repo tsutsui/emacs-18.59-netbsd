@@ -1019,6 +1019,7 @@ Remaining arguments are strings to give program as arguments.")
   return proc;
 }
 
+void
 create_process_1 (signo)
      int signo;
 {
@@ -2019,6 +2020,7 @@ This is intended for use by asynchronous process output filters and sentinels.")
 
 jmp_buf send_process_frame;
 
+void
 send_process_trap ()
 {
 #ifdef BSD4_1
@@ -2186,6 +2188,34 @@ process_send_signal (process, signo, current_group, nomsg)
 	 on other kinds of USG systems, not just on the IRIS.
 	 This should be tried in Emacs 19.  */
 #ifdef SIGNALS_VIA_CHARACTERS
+      /* TERMIOS is the latest and bestest, and seems most likely to
+	 work.  If the system has it, use it.  */
+#ifdef HAVE_TERMIOS
+      struct termios t;
+
+      switch (signo)
+	{
+	case SIGINT:
+	  tcgetattr (XINT (p->infd), &t);
+	  send_process (proc, &t.c_cc[VINTR], 1, Qnil);
+	  return;
+
+	case SIGQUIT:
+	  tcgetattr (XINT (p->infd), &t);
+	  send_process (proc, &t.c_cc[VQUIT], 1, Qnil);
+	  return;
+
+	case SIGTSTP:
+	  tcgetattr (XINT (p->infd), &t);
+#if defined (VSWTCH) && !defined (PREFER_VSUSP)
+	  send_process (proc, &t.c_cc[VSWTCH], 1, Qnil);
+#else
+	  send_process (proc, &t.c_cc[VSUSP], 1, Qnil);
+#endif
+	  return;
+	}
+
+#else /* ! HAVE_TERMIOS */
       struct termio t;
       switch (signo)
 	{
@@ -2204,6 +2234,7 @@ process_send_signal (process, signo, current_group, nomsg)
 	  return Qnil;
 #endif
 	}
+#endif /* HAVE_TERMIOS */
 #endif /* SIGNALS_VIA_CHARACTERS */
 
       /* Get the pgrp using the tty itself, if we have that.
@@ -2416,6 +2447,7 @@ kill_buffer_processes (buffer)
  the queue is empty".  Invoking signal() causes the kernel to reexamine
  the SIGCLD queue.   Fred Fish, UniSoft Systems Inc. */
 
+void
 sigchld_handler (signo)
      int signo;
 {

@@ -1537,6 +1537,7 @@ internal_socket_read(bufp, numchars)
 /* Exit gracefully from gnuemacs, doing an autosave and giving a status.
  */
 
+void
 XExitGracefully ()
 {
 	XCleanUp();
@@ -1698,6 +1699,7 @@ x_error_handler (disp, event)
   Fkill_emacs (make_number (70));
 }
 
+void
 x_io_error_handler ()
 {
   int save_errno = errno;
