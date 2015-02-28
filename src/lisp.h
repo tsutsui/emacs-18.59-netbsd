@@ -819,7 +819,7 @@ extern Lisp_Object Vprin1_to_string_buffer;
 extern Lisp_Object Fprin1 (), Fprin1_to_string (), Fprinc ();
 extern Lisp_Object Fterpri (), Fprint ();
 extern Lisp_Object Vstandard_output, Qstandard_output;
-extern temp_output_buffer_setup (), temp_output_buffer_show ();
+extern void temp_output_buffer_setup (), temp_output_buffer_show ();
 
 /* Defined in lread.c */
 extern Lisp_Object Qvariable_documentation, Qstandard_input;

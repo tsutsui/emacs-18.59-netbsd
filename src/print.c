@@ -243,6 +243,7 @@ write_string_1 (data, size, printcharfun)
 
 #ifndef standalone
 
+void
 temp_output_buffer_setup (bufname)
     char *bufname;
 {
