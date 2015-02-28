@@ -2045,10 +2045,8 @@ static struct sigaction new_action, old_action;
 
 init_signals ()
 {
-#ifdef POSIX_SIGNALS
   sigemptyset (&signal_empty_mask);
   sigfillset (&signal_full_mask);
-#endif
 }
 
 signal_handler_t
@@ -2061,19 +2059,31 @@ sys_signal (int signal_number, signal_handler_t action)
 #else
   sigemptyset (&new_action.sa_mask);
   new_action.sa_handler = action;
+#ifdef SA_RESTART
+  /* Emacs mostly works better with restartable system services. If this
+   * flag exists, we probably want to turn it on here.
+   */
+  new_action.sa_flags = SA_RESTART;
+#else
   new_action.sa_flags = 0;
+#endif
   sigaction (signal_number, &new_action, &old_action);
   return (old_action.sa_handler);
 #endif /* DGUX */
 }
 
-int
-sys_sigpause (sigset_t new_mask)
+#ifndef __GNUC__
+/* If we're compiling with GCC, we don't need this function, since it
+   can be written as a macro.  */
+sigset_t
+sys_sigmask (int sig)
 {
-  /* pause emulating berk sigpause... */
-  sigsuspend (&new_mask);
-  return (EINTR);
+  sigset_t mask;
+  sigemptyset (&mask);
+  sigaddset (&mask, sig);
+  return mask;
 }
+#endif
 
 /* I'd like to have these guys return pointers to the mask storage in here,
    but there'd be trouble if the code was saving multiple masks.  I'll be

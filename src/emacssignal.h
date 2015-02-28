@@ -5,20 +5,31 @@
 #define SIGFULLMASK (signal_full_mask)
 extern sigset_t signal_empty_mask, signal_full_mask;
 
-#ifdef sigmask
+/* POSIX pretty much destroys any possibility of writing sigmask as a
+   macro in standard C.  We always define our own version because the
+   predefined macro in Glibc 2.1 is only provided for compatility for old
+   programs that use int as signal mask type.  */
 #undef sigmask
-#endif
-#define sigmask(SIG) \
-(_mask = SIGEMPTYMASK, sigaddset (&_mask, SIG), _mask)
+#ifdef __GNUC__
+#define sigmask(SIG)				\
+  ({						\
+    sigset_t _mask;				\
+    sigemptyset (&_mask);			\
+    sigaddset (&_mask, SIG);			\
+    _mask;					\
+  })
+#else /* ! defined (__GNUC__) */
+extern sigset_t sys_sigmask ();
+#define sigmask(SIG) (sys_sigmask(SIG))
+#endif /* ! defined (__GNUC__) */
 
-/* Local mask is used to avoid problems if code using any of the macros 
-   below could be reentered due to a signal occurring.
-   This can't happen in Emacs 18.58, but just to be safe... - DJB
-   These macros require GCC.  */
-#define sigpause(SIG)    ({ sigset_t _mask; sys_sigpause(SIG); })
-#define sigblock(SIG)    ({ sigset_t _mask; sys_sigblock(SIG); })
-#define sigunblock(SIG)  ({ sigset_t _mask; sys_sigunblock(SIG); })
-#define sigsetmask(SIG)  ({ sigset_t _mask; sys_sigsetmask(SIG); })
+#undef sigpause
+#define sigpause(MASK)   sigsuspend(&(MASK))
+#define sigblock(SIG)    sys_sigblock(SIG)
+#define sigunblock(SIG)  sys_sigunblock(SIG)
+#ifndef sigsetmask
+#define sigsetmask(SIG)  sys_sigsetmask(SIG)
+#endif
 #define sighold(SIG)     ONLY_USED_IN_BSD_4_1
 #define sigrelse(SIG)    ONLY_USED_IN_BSD_4_1
 
