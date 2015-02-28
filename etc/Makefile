@@ -1,4 +1,4 @@
-CFLAGS= -g
+CFLAGS= -g -O -fno-strict-aliasing
 # For Xenix.  Needed for movemail
 #  LOADLIBES= -lx
 # For Mips.  Needed for who knows what.
