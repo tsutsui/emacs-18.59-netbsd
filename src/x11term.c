@@ -1482,6 +1482,10 @@ internal_socket_read(bufp, numchars)
 	  strcpy(mapping_buf,"\016");
 	  nbytes = 1;
 	  break;
+	case XK_BackSpace:
+	  strcpy(mapping_buf,"\177");
+	  nbytes = 1;
+	  break;
 	}
 #ifndef AIX
       }
