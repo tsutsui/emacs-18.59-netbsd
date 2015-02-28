@@ -164,6 +164,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define POSIX			/* affects only getpagesize.h */
 #define POSIX_SIGNALS		/* uses sigaction from sys_signal */
 
+/* Use terminfo instead of termcap. */
+#define TERMINFO
+
 #ifdef HAVE_PTMX
 
 /* This change means that we don't loop through allocate_pty too many
@@ -250,7 +253,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define C_COMPILER gcc
 #define C_DEBUG_SWITCH -g
-#define C_OPTIMIZE_SWITCH -O3 -malign-loops=2 -malign-jumps=2 -malign-functions=2
+#define C_OPTIMIZE_SWITCH -O2 -malign-loops=2 -malign-jumps=2 -malign-functions=2
 #define OLDXMENU_OPTIONS CFLAGS=-O2 EXTRA=insque.o
 #define START_FILES pre-crt0.o /usr/lib/crt1.o /usr/lib/crti.o
 #define LIBS_DEBUG		/* override in config.h to include -lg */

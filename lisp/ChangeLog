@@ -1,3 +1,9 @@
+2004-03-08  Ulrich Mueller  <ulm@kph.uni-mainz.de>
+
+	* term/linux.el: New file.
+
+	* term/xterm.el: Load vt200.el.
+
 Fri Oct 30 19:36:38 1992  Richard Stallman  (rms@mole.gnu.ai.mit.edu)
 
 	* Version 18.59 released.

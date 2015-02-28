@@ -191,7 +191,7 @@ LOCALCPP= localcpp
 SHORT= shortnames
 #endif /* SHORTNAMES */
 
-CFLAGS= C_DEBUG_SWITCH C_OPTIMIZE_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM C_SWITCH_X_MACHINE C_SWITCH_X_SYSTEM
+CFLAGS= C_OPTIMIZE_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM C_SWITCH_X_MACHINE C_SWITCH_X_SYSTEM
 /* DO NOT use -R.  There is a special hack described in lastfile.c
    which is used instead.  Some initialized data areas are modified
    at initial startup, then labeled as part of the text area when
@@ -284,7 +284,6 @@ obj=    dispnew.o scroll.o xdisp.o window.o \
 	process.o callproc.o $(environobj) \
 	doprnt.o
 
-#define TERMINFO
 #ifdef TERMINFO
 /* Used to be -ltermcap here.  If your machine needs that,
    define LIBS_TERMCAP in the m- file.  */

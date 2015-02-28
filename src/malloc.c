@@ -59,6 +59,9 @@ what you give them.   Help stamp out software-hoarding!  */
  */
 
 #ifdef emacs
+/* Inhibit macro definition of "signal" in m-*.h */
+#define DONT_DEFINE_SIGNAL
+
 /* config.h specifies which kind of system this is.  */
 #include "config.h"
 

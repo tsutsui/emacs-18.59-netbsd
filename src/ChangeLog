@@ -1,3 +1,9 @@
+2004-03-09  Ulrich Mueller  <ulm@kph.uni-mainz.de>
+
+	* malloc.c (DONT_DEFINE_SIGNAL): Defined.
+
+	* s-linux.h (TERMINFO): Moved here from ymakefile.
+
 2004-03-08  Ulrich Mueller  <ulm@kph.uni-mainz.de>
 
 	* unexelf.c: Replaced with version from Emacs 21.3.
