@@ -138,55 +138,37 @@ extern Lisp_Object Qexit;
    On many systems, there is a structure defined for this.
    But on vanilla-ish USG systems there is not.  */
 
-#ifndef WAITTYPE
-#if !defined (BSD) && !defined (UNIPLUS) && !defined (STRIDE) && !(defined (HPUX) && !defined (NOMULTIPLEJOBS)) && !defined (HAVE_WAIT_HEADER)
-#define WAITTYPE int
-#define WIFSTOPPED(w) ((w&0377) == 0177)
-#define WIFSIGNALED(w) ((w&0377) != 0177 && (w&~0377) == 0)
-#define WIFEXITED(w) ((w&0377) == 0)
-#define WRETCODE(w) (w >> 8)
-#define WSTOPSIG(w) (w >> 8)
-#define WTERMSIG(w) (w & 0377)
-#ifndef WCOREDUMP
-#define WCOREDUMP(w) ((w&0200) != 0)
-#endif
-#else
-#ifdef BSD4_1
-#include <wait.h>
-#else
+#ifdef HAVE_SYS_WAIT_H	/* We have sys/wait.h with POSIXoid definitions. */
 #include <sys/wait.h>
-#endif /* not BSD 4.1 */
+#ifndef WCOREDUMP		/* not POSIX */
+#define WCOREDUMP(w) ((w) & 0x80)
+#endif
 
-#define WAITTYPE union wait
-#define WRETCODE(w) w.w_retcode
-#define WCOREDUMP(w) w.w_coredump
+#else  /* !HAVE_SYS_WAIT_H */
 
-#ifdef HPUX
-/* HPUX version 7 has broken definitions of these.  */
-#undef WTERMSIG
-#undef WSTOPSIG
-#undef WIFSTOPPED
-#undef WIFSIGNALED
+/* Note that sys/wait.h may still be included by stdlib.h or something
+   according to XPG.  */
+
+#undef WEXITSTATUS
+#define WEXITSTATUS(w) (((w) & 0xff00) >> 8)
 #undef WIFEXITED
-#endif
+#define WIFEXITED(w) (WTERMSIG(w) == 0)
+#undef WIFSTOPPED
+#define WIFSTOPPED(w) (((w) & 0xff) == 0x7f)
+#undef WIFSIGNALED
+#define WIFSIGNALED(w) (!WIFSTOPPED(w) && !WIFEXITED(w))
+#undef WSTOPSIG
+#define WSTOPSIG(w) WEXITSTATUS(w)
+#undef WTERMSIG
+#define WTERMSIG(w) ((w) & 0x7f)
+#undef WCOREDUMP
+#define WCOREDUMP(w) ((w) & 0x80)
+#endif /* HAVE_SYS_WAIT_H */
 
-#ifndef WTERMSIG
-#define WTERMSIG(w) w.w_termsig
-#endif
-#ifndef WSTOPSIG
-#define WSTOPSIG(w) w.w_stopsig
-#endif
-#ifndef WIFSTOPPED
-#define WIFSTOPPED(w) (WTERMSIG (w) == 0177)
-#endif
-#ifndef WIFSIGNALED
-#define WIFSIGNALED(w) (WTERMSIG (w) != 0177 && (WSTOPSIG (w)) == 0)
-#endif
-#ifndef WIFEXITED
-#define WIFEXITED(w) (WTERMSIG (w) == 0)
-#endif
-#endif /* BSD or UNIPLUS or STRIDE */
-#endif /* no WAITTYPE */
+#undef WAITTYPE
+#define WAITTYPE int
+#undef WRETCODE
+#define WRETCODE(w) WEXITSTATUS (w)
 
 extern errno;
 extern sys_nerr;

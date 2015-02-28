@@ -166,6 +166,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define NO_SIOCTL_H		/* don't have sioctl.h */
 #define SYSV_SYSTEM_DIR		/* use dirent.h */
 #define USG_SYS_TIME		/* use sys/time.h, not time.h */
+#define HAVE_SYS_WAIT_H		/* we have sys/wait.h */
 
 #define POSIX			/* affects only getpagesize.h */
 #define POSIX_SIGNALS		/* uses sigaction from sys_signal */
