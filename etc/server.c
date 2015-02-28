@@ -36,8 +36,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #undef open
 #undef close
 
+#include <stdlib.h>
+#include <string.h>
 
-#if !defined(BSD) && !defined(HAVE_SYSVIPC)
+#if !defined(HAVE_SOCKETS) && !defined(HAVE_SYSVIPC)
 #include <stdio.h>
 
 main ()
@@ -47,9 +49,9 @@ main ()
   exit (1);
 }
 
-#else /* BSD or HAVE_SYSVIPC */
+#else /* HAVE_SOCKETS or HAVE_SYSVIPC */
 
-#if defined (BSD) && ! defined (HAVE_SYSVIPC)
+#if defined (HAVE_SOCKETS)
 /* BSD code is very different from SYSV IPC code */
 
 #include <sys/file.h>
@@ -110,7 +112,7 @@ main ()
   unlink (server.sun_path);
 #endif
 
-  if (bind (s, &server, strlen (server.sun_path) + 2) < 0)
+  if (bind (s, (struct sockaddr *)&server, strlen (server.sun_path) + 2) < 0)
     {
       perror ("bind");
       exit (1);
@@ -128,14 +130,18 @@ main ()
   signal (SIGPIPE, SIG_IGN);
   for (;;)
     {
-      int rmask = (1 << s) + 1;
+      fd_set rmask;
+      FD_ZERO (&rmask);
+      FD_SET (0, &rmask);
+      FD_SET (s, &rmask);
       if (select (s + 1, &rmask, 0, 0, 0) < 0)
 	perror ("select");
-      if (rmask & (1 << s))	/* client sends list of filenames */
+      if (FD_ISSET (s, &rmask))	/* client sends list of filenames */
 	{
 	  fromlen = sizeof (fromunix);
 	  fromunix.sun_family = AF_UNIX;
-	  infd = accept (s, &fromunix, &fromlen); /* open socket fd */
+	  infd = accept (s, (struct sockaddr *)&fromunix, &fromlen);
+				/* open socket fd */
 	  if (infd < 0)
 	    {
 	      if (errno == EMFILE || errno == ENFILE)
@@ -184,7 +190,8 @@ main ()
 	  fflush (infile);
 	  continue;
 	}
-      else if (rmask & 1) /* emacs sends codeword, fd, and string message */
+      else if (FD_ISSET (0, &rmask))
+			/* emacs sends codeword, fd, and string message */
 	{
 	  /* Read command codeword and fd */
 	  clearerr (stdin);
@@ -325,6 +332,4 @@ main ()
 
 #endif /* SYSV IPC */
 
-#endif /* BSD && IPC */
-
-
+#endif /* HAVE_SOCKETS && IPC */

@@ -884,7 +884,7 @@ in that file are in octal!)\n")
 		rawshift = (((unsigned) (XINT (shift_mask))) & 15) << 11;
 		XRebindCode (rawkey, rawshift, rawstring, strsize);
 	}
-#endif notdef
+#endif /* notdef */
 	return Qnil;
 }
   
@@ -918,11 +918,11 @@ See the documentation of x-rebind-key for more information.")
 			XRebindCode (rawkey, i << 11, rawstring, strsize);
 		}
 	}
-#endif notdef
+#endif /* notdef */
 	return Qnil;
 }
 
-#endif foobar
+#endif /* foobar */
 
 XExitWithCoreDump ()
 {
@@ -988,7 +988,7 @@ numerical entries in x-mouse-map.");
   defsubr (&Sx_set_font);
 #ifdef notdef
   defsubr (&Sx_set_icon);
-#endif notdef
+#endif
   defsubr (&Scoordinates_in_window_p);
   defsubr (&Sx_mouse_events);
   defsubr (&Sx_proc_mouse_event);
@@ -1012,7 +1012,7 @@ numerical entries in x-mouse-map.");
 #ifdef notdef
   defsubr (&Sx_rebind_key);
   defsubr (&Sx_rebind_keys);
-#endif notdef
+#endif
   defsubr (&Sx_debug);
 }
 

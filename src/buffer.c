@@ -331,7 +331,7 @@ No arg means return name of current buffer.")
     return XBUFFER (buffer)->number;
   }
  */
-#endif NOTDEF
+#endif /* NOTDEF */
 
 DEFUN ("buffer-file-name", Fbuffer_file_name, Sbuffer_file_name, 0, 1, 0,
   "Return name of file BUFFER is visiting, or NIL if none.\n\
@@ -601,7 +601,7 @@ with `delete-process'.")
 
 #ifdef subprocesses
   kill_buffer_processes (buf);
-#endif subprocesses
+#endif
 
   tem = Vinhibit_quit;
   Vinhibit_quit = Qt;

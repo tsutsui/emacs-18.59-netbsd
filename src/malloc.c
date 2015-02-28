@@ -213,8 +213,6 @@ char *_malloc_base;
 
 static void getpool ();
 
-char *malloc ();
-
 /* Cause reinitialization based on job parameters;
   also declare where the end of pure storage is. */
 void
@@ -412,7 +410,7 @@ getpool ()
     }
 }
 
-char *
+void *
 malloc (n)		/* get a block */
      unsigned n;
 {
@@ -488,8 +486,9 @@ malloc (n)		/* get a block */
   return (char *) p + ((sizeof *p + 7) & ~7);
 }
 
+void
 free (mem)
-     char *mem;
+     void *mem;
 {
   register struct mhead *p;
   {
@@ -509,7 +508,7 @@ free (mem)
     if (p -> mh_alloc != ISALLOC)
       abort ();
 
-#else rcheck
+#else /* rcheck */
     if (p -> mh_alloc != ISALLOC)
       {
 	if (p -> mh_alloc == ISFREE)
@@ -544,9 +543,9 @@ free (mem)
   }
 }
 
-char *
+void *
 realloc (mem, n)
-     char *mem;
+     void *mem;
      register unsigned n;
 {
   register struct mhead *p;
@@ -606,7 +605,7 @@ realloc (mem, n)
 
 /* This is in case something linked with Emacs calls calloc.  */
 
-char *
+void *
 calloc (num, size)
      unsigned num, size;
 {
@@ -621,8 +620,9 @@ calloc (num, size)
 
 /* This is in case something linked with Emacs calls cfree.  */
 
+void
 cfree (mem)
-     char *mem;
+     void *mem;
 {
   return free (mem);
 }
@@ -656,8 +656,8 @@ memalign (alignment, size)
 #ifndef HPUX
 /* This runs into trouble with getpagesize on HPUX.
    Patching out seems cleaner than the ugly fix needed.  */
-char *
-valloc (size)
+void *
+valloc (size_t size)
 {
   return memalign (getpagesize (), size);
 }

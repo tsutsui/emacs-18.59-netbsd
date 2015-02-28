@@ -229,7 +229,7 @@ load_unwind (stream)  /* used as unwind-protect function in load */
      Lisp_Object stream;
 {
   fclose (*(FILE **) XSTRING (stream));
-  free (XPNTR (stream));
+  free ((void *)(XPNTR (stream)));
   if (--load_in_progress < 0) load_in_progress = 0;
   return Qnil;
 }
@@ -465,7 +465,7 @@ nil means discard it; anything else is stream for print.")
   return Qnil;
 }
 
-#endif standalone
+#endif /* standalone */
 
 DEFUN ("read", Fread, Sread, 0, 1, 0,
   "Read one Lisp expression as text from STREAM, return as Lisp object.\n\
@@ -1141,7 +1141,7 @@ defalias (sname, string)
   sym = intern (string);
   XSET (XSYMBOL (sym)->function, Lisp_Subr, sname);
 }
-#endif NOTDEF
+#endif /* NOTDEF */
 
 /* New replacement for DefIntVar; it ignores the doc string argument
    on the assumption that make-docfile will handle that.  */
@@ -1230,7 +1230,7 @@ defvar_per_buffer (namestring, address, doc)
     abort ();
 }
 
-#endif standalone
+#endif /* standalone */
 
 init_read ()
 {

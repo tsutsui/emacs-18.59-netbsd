@@ -983,7 +983,6 @@ extern int immediate_quit;	    /* Nonzero means ^G can quit instantly */
 
 extern void debugger ();
 
-extern char *malloc (), *realloc (), *getenv (), *ctime (), *getwd ();
 extern long *xmalloc (), *xrealloc ();
 
 #ifdef MAINTAIN_ENVIRONMENT

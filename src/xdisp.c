@@ -2107,7 +2107,7 @@ init_xdisp ()
   Lisp_Object root_window;
 #ifndef COMPILER_REGISTER_BUG
   register
-#endif COMPILER_REGISTER_BUG
+#endif
     struct window *mini_w;
 
   this_line_bufpos = 0;

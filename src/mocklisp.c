@@ -193,7 +193,7 @@ If either FROM or LENGTH is negative, the length of STRING is added to it.")
   XSETINT (to, XINT (to) + XINT (from));
   return Fsubstring (string, from, to);
 }
-#endif NOTDEF
+#endif /* NOTDEF */
 DEFUN ("insert-string", Finsert_string, Sinsert_string, 0, MANY, 0,
   "Mocklisp-compatibility insert function.\n\
 Like the function `insert' except that any argument that is a number\n\

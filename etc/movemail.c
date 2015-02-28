@@ -52,6 +52,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #define NO_SHORTNAMES   /* Tell config not to load remap.h */
 #include "../src/config.h"
 
@@ -81,6 +84,7 @@ extern int lk_open (), lk_close ();
 #undef close
 
 char *concat ();
+void *xmalloc ();
 extern int errno;
 
 /* Nonzero means this is name of a lock file to delete on fatal error.  */
@@ -320,7 +324,6 @@ pfatal_with_name (name)
      char *name;
 {
   extern int errno, sys_nerr;
-  extern char *sys_errlist[];
   char *s;
 
   if (errno < sys_nerr)
@@ -334,7 +337,6 @@ pfatal_and_delete (name)
      char *name;
 {
   extern int errno, sys_nerr;
-  extern char *sys_errlist[];
   char *s;
 
   if (errno < sys_nerr)
@@ -365,11 +367,11 @@ concat (s1, s2, s3)
 
 /* Like malloc but get fatal error if memory is exhausted.  */
 
-int
+void *
 xmalloc (size)
      int size;
 {
-  int result = malloc (size);
+  void *result = malloc (size);
   if (!result)
     fatal ("virtual memory exhausted", 0);
   return result;
@@ -704,7 +706,6 @@ char *
 get_errmsg ()
 {
   extern int errno, sys_nerr;
-  extern char *sys_errlist[];
   char *s;
 
   if (errno < sys_nerr)

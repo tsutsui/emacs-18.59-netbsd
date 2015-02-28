@@ -22,7 +22,8 @@ extern sigset_t signal_empty_mask, signal_full_mask;
 #define sighold(SIG)     ONLY_USED_IN_BSD_4_1
 #define sigrelse(SIG)    ONLY_USED_IN_BSD_4_1
 
-int (*sys_signal (int signal_number, int (*action)())) ();
+typedef void (*signal_handler_t) ();
+signal_handler_t sys_signal (int signal_number, signal_handler_t action);
 int sys_sigpause (sigset_t new_mask);
 sigset_t sys_sigblock (sigset_t new_mask);
 sigset_t sys_sigunblock (sigset_t new_mask);

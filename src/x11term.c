@@ -30,7 +30,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #ifndef lint
 static char *rcsid_xterm_c = "$Header: x11term.c,v 1.12 88/02/29 14:11:07 rfrench Exp $";
-#endif	lint
+#endif
 
 /* On 4.3 this loses if it comes after x11term.h.
    On hp-ux it loses if it comes after config.h.  */
@@ -1715,7 +1715,6 @@ x_term_init ()
 
 	extern char *getenv ();
 	extern XTinterrupt_signal ();
-	extern char *malloc ();
 	extern Lisp_Object Vxterm, Vxterm1, Qt;
 	extern int XIgnoreError();
 	int  ix;

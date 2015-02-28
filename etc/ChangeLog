@@ -1,3 +1,11 @@
+2007-01-29  Ulrich Mueller  <ulm@kph.uni-mainz.de>
+
+	* emacsclient.c, server.c: Check for HAVE_SOCKETS instead of BSD.
+
+	* cvtmail.c, emacsclient.c, env.c, etags.c, fakemail.c,
+	make-docfile.c, movemail.c, server.c, sorted-doc.c,
+	test-distrib.c, wakeup.c, yow.c: Fix GCC 4.1 compilation issues.
+
 1998-05-30  Noah Friedman  <friedman@splode.com>
 
 	* env.c (main): Declare sys_errlist if linux + glibc2.

@@ -21,6 +21,8 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Define the symbol ETAGS to make the program "etags",
  which makes emacs-style tag tables by default.
@@ -128,11 +130,10 @@ NODE	*head;			/* the head of the sorted binary tree	*/
 
 char *savestr();
 char *savenstr ();
-char *rindex();
-char *index();
 char *concat ();
 void initbuffer ();
 long readline ();
+void *xmalloc(), *xrealloc();
 
 /* A `struct linebuffer' is a structure which holds a line of text.
  `readline' reads a line from a stream into a linebuffer
@@ -1380,7 +1381,6 @@ TEX_decode_env (evarname, defenv)
      char *defenv;
 {
   register char *env, *p;
-  extern char *savenstr (), *index ();
 
   struct TEX_tabent *tab;
   int size, i;
@@ -1530,47 +1530,6 @@ savenstr(cp, len)
   return dp;
 }
 
-/*
- * Return the ptr in sp at which the character c last
- * appears; NULL if not found
- *
- * Identical to v7 rindex, included for portability.
- */
-
-char *
-rindex(sp, c)
-     register char *sp, c;
-{
-  register char *r;
-
-  r = NULL;
-  do
-    {
-      if (*sp == c)
-	r = sp;
-    } while (*sp++);
-  return(r);
-}
-
-/*
- * Return the ptr in sp at which the character c first
- * appears; NULL if not found
- *
- * Identical to v7 index, included for portability.
- */
-
-char *
-index(sp, c)
-     register char *sp, c;
-{
-  do
-    {
-      if (*sp == c)
-	return (sp);
-    } while (*sp++);
-  return (NULL);
-}
-
 /* Print error message and exit.  */
 
 fatal (s1, s2)
@@ -1609,22 +1568,22 @@ concat (s1, s2, s3)
 
 /* Like malloc but get fatal error if memory is exhausted.  */
 
-int
+void *
 xmalloc (size)
      int size;
 {
-  int result = malloc (size);
+  void *result = malloc (size);
   if (!result)
     fatal ("virtual memory exhausted", 0);
   return result;
 }
 
-int
+void *
 xrealloc (ptr, size)
      char *ptr;
      int size;
 {
-  int result = realloc (ptr, size);
+  void *result = realloc (ptr, size);
   if (!result)
     fatal ("virtual memory exhausted");
   return result;

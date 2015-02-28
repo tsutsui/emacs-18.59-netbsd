@@ -126,6 +126,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* Special hacks needed to make Emacs run on this system.  */
 
+#ifdef emacs
+#include <stdlib.h>
+#include <string.h>
+#endif
+
 /* On USG systems the system calls are interruptable by signals
  that the user program has elected to catch.  Thus the system call
  must be retried in these cases.  To handle this without massive
@@ -224,6 +229,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define MAXNAMLEN NAME_MAX	/* missing SYSV-ism */
 #endif
 
+#undef SIGSYS
 #define SIGSYS SIGUNUSED	/* rename to harmless work-alike */
 #define VSWTCH VSWTC		/* mis-spelling in termios.h? */
 
@@ -253,7 +259,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define C_COMPILER gcc
 #define C_DEBUG_SWITCH -g
-#define C_OPTIMIZE_SWITCH -O2 -malign-loops=2 -malign-jumps=2 -malign-functions=2
+#define C_OPTIMIZE_SWITCH -O2 -falign-loops=2 -falign-jumps=2 -falign-functions=2
 #define OLDXMENU_OPTIONS CFLAGS=-O2 EXTRA=insque.o
 #define START_FILES pre-crt0.o /usr/lib/crt1.o /usr/lib/crti.o
 #define LIBS_DEBUG		/* override in config.h to include -lg */

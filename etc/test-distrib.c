@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Break string in two parts to avoid buggy C compilers that ignore characters
    after nulls in strings.  */

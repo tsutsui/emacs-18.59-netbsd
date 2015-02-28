@@ -90,7 +90,7 @@ init_syntax_once ()
 
 #ifndef NFAILURES
 #define NFAILURES 80
-#endif NFAILURES
+#endif
 
 /* width of a byte in bits */
 
@@ -536,7 +536,7 @@ re_compile_pattern (pattern, size, bufp)
 	      PATFETCH (c);
 	      PATPUSH (syntax_spec_code[c]);
 	      break;
-#endif emacs
+#endif /* emacs */
 
 	    case 'w':
 	      laststart = b;
@@ -833,7 +833,7 @@ re_compile_fastmap (bufp)
 	    if (SYNTAX (j) != (enum syntaxcode) k)
 	      fastmap[j] = 1;
 	  break;
-#endif emacs
+#endif /* emacs */
 
 	case charset:
 	  for (j = *p++ * BYTEWIDTH - 1; j >= 0; j--)
@@ -1475,7 +1475,7 @@ re_match_2 (pbufp, string1, size1, string2, size2, pos, regs, mstop)
 	  PREFETCH;
 	  if (SYNTAX (*d++) != 0) goto fail;
 	  break;
-#endif not emacs
+#endif /* not emacs */
 
 	case begbuf:
 	  if (d == string1)	/* Note, d cannot equal string2 */
@@ -1722,4 +1722,4 @@ error (string)
   exit (1);
 }
 
-#endif test
+#endif /* test */

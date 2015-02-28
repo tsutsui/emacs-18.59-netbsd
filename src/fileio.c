@@ -784,7 +784,7 @@ initial ~ is expanded.  See also the function  substitute-in-file-name.")
 	  if (o == target + 1 && o[-1] == '/' && o[0] == '/')
 	    ++o;
 	  else
-#endif APOLLO
+#endif /* APOLLO */
 	  if (o == target && *o == '/')
 	    ++o;
 	  p += 3;

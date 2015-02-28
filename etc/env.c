@@ -89,6 +89,8 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 
 extern int execvp ();
 extern char *index ();
@@ -102,7 +104,7 @@ char **nenv;
 int nenv_size;
 
 char *progname;
-void setenv ();
+void xsetenv ();
 void fatal ();
 
 main (argc, argv, envp)
@@ -134,7 +136,7 @@ main (argc, argv, envp)
 	if (tem)
 	  {
 	    *tem = '\000';
-	    setenv (*envp, tem + 1);
+	    xsetenv (*envp, tem + 1);
 	  }
      }
 
@@ -145,7 +147,7 @@ main (argc, argv, envp)
 	/* If arg contains a "=" it specifies to set a variable */
 	{
 	  *tem = '\000';
-	  setenv (*argv, tem + 1);
+	  xsetenv (*argv, tem + 1);
 	  argc--; argv++;
 	  continue;
 	}
@@ -161,7 +163,7 @@ main (argc, argv, envp)
 	/* Unset a variable */
 	{
 	  argc--; argv++;
-	  setenv (*argv, 0);
+	  xsetenv (*argv, 0);
 	  argc--; argv++;
 	}
       else if (!strcmp (*argv, "-s") ||
@@ -174,7 +176,7 @@ main (argc, argv, envp)
 	    fatal ("No value specified for variable \"%s\"",
 		   tem);
 	  argc--; argv++;
-	  setenv (tem, *argv);
+	  xsetenv (tem, *argv);
 	  argc--; argv++;
 	}
       else if (!strcmp (*argv, "-") || !strcmp (*argv, "--"))
@@ -216,7 +218,7 @@ main (argc, argv, envp)
 }
 
 void
-setenv (var, val)
+xsetenv (var, val)
   register char *var, *val;
 {
   register char **e;
@@ -274,8 +276,6 @@ fatal (msg, arg1, arg2)
 }
 
 
-extern char *malloc (), *realloc ();
-
 void
 memory_fatal ()
 {

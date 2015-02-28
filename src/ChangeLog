@@ -1,3 +1,9 @@
+2007-01-29  Ulrich Mueller  <ulm@kph.uni-mainz.de>
+
+	* callproc.c, doprnt.c, emacssignal.h, fns.c, lisp.h, lread.c,
+	malloc.c, process.c, s-linux.h, sysdep.c, terminfo.c, x11term.c:
+	Fix GCC 4.1 compilation issues.
+
 2004-03-09  Ulrich Mueller  <ulm@kph.uni-mainz.de>
 
 	* malloc.c (DONT_DEFINE_SIGNAL): Defined.

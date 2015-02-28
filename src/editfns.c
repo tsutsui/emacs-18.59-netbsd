@@ -1046,7 +1046,7 @@ the value is nil.")
     return Qnil;
   return build_string (val);
 }
-#endif MAINTAIN_ENVIRONMENT
+#endif /* MAINTAIN_ENVIRONMENT */
 
 void
 syms_of_editfns ()

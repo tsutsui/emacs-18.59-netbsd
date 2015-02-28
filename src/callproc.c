@@ -21,6 +21,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* This must precede sys/signal.h on certain machines.  */
 #include <sys/types.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "config.h"
 
@@ -241,7 +242,7 @@ If you quit, the process is killed with SIGKILL.")
     {
 #ifndef subprocesses
       wait_without_blocking ();
-#endif subprocesses
+#endif
       return Qnil;
     }
 
@@ -413,7 +414,7 @@ child_setup (in, out, err, new_argv, env)
 
 #ifdef vipc
   something missing here;
-#endif vipc
+#endif
 
   /* execvp does not accept an environment arg so the only way
      to pass this environment is to set environ.  Our caller

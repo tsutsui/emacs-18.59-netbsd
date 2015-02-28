@@ -43,6 +43,7 @@ main ()
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
@@ -123,16 +124,8 @@ static boolean no_problems = true;
 
 extern FILE *popen ();
 extern int fclose (), pclose ();
-extern char *malloc (), *realloc ();
 
-#ifdef CURRENT_USER
-extern struct passwd *getpwuid ();
-extern unsigned short geteuid ();
-static struct passwd *my_entry;
-#define cuserid(s)				\
-(my_entry = getpwuid (((int) geteuid ())),	\
- my_entry->pw_name)
-#endif
+#define cuserid(s) (getpwuid (geteuid ())->pw_name)
 
 /* Utilities */
 
@@ -564,7 +557,6 @@ write_header (the_header)
   return;
 }
 
-void
 main (argc, argv)
      int argc;
      char **argv;

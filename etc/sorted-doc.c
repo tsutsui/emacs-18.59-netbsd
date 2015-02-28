@@ -7,8 +7,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 
-extern char *malloc ();
 char *xmalloc ();
 
 #define NUL	'\0'

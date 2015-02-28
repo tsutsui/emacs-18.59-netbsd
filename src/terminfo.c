@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with GNU Emacs; see the file COPYING.  If not, write to
 the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
+#include "config.h"
+
 /* Define these variables that serve as global parameters to termcap,
    so that we do not need to conditionalize the places in Emacs
    that set them.  */

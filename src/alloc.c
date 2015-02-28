@@ -1073,7 +1073,7 @@ mark_object (objptr)
 	  mark_object (&ptr->contents[i]);
       }
       break;
-#endif 0
+#endif
 
     case Lisp_Symbol:
       {
@@ -1310,7 +1310,7 @@ gc_sweep ()
 	}
   }
 
-#endif standalone
+#endif /* standalone */
 
   /* Free all unmarked vectors */
   {

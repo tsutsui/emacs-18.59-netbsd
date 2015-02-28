@@ -1438,7 +1438,7 @@ Fourth arg SERVICE is name of the service desired, or an integer\n\
 
   while (1)
     {
-      int value = connect (s, &address, sizeof address);
+      int value = connect (s, (struct sockaddr *)&address, sizeof address);
       /* Continue if successeful.  */
       if (value != -1)
 	break;
@@ -1592,7 +1592,8 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
   int xerrno;
   Lisp_Object proc;
 #ifdef HAVE_TIMEVAL
-  struct timeval timeout, end_time, garbage;
+  struct timeval timeout, end_time;
+  struct timezone garbage;
 #else
   long timeout, end_time, temp;
 #endif /* not HAVE_TIMEVAL */

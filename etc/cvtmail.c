@@ -36,7 +36,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+void *xmalloc(), *xrealloc();
 
 main (argc, argv)
      int argc;
@@ -109,22 +112,22 @@ skip_to_lf (stream)
     ;
 }
 
-int
+void *
 xmalloc (size)
      int size;
 {
-  int result = malloc (size);
+  void *result = malloc (size);
   if (!result)
     fatal ("virtual memory exhausted", 0);
   return result;
 }
 
-int
+void *
 xrealloc (ptr, size)
      char *ptr;
      int size;
 {
-  int result = realloc (ptr, size);
+  void *result = realloc (ptr, size);
   if (!result)
     fatal ("virtual memory exhausted");
   return result;
