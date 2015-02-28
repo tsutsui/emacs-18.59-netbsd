@@ -1,3 +1,7 @@
+2004-03-08  Ulrich Mueller  <ulm@kph.uni-mainz.de>
+
+	* unexelf.c: Replaced with version from Emacs 21.3.
+
 1999-11-05  Noah Friedman  <friedman@splode.com>
 
 	* ymakefile [LIBS_TERMCAP]: Use -lncurses, not -lcurses.

@@ -1,4 +1,4 @@
-/* Copyright (C) 1985, 1986, 1987, 1988, 1990, 1992
+/* Copyright (C) 1985, 1986, 1987, 1988, 1990, 1992, 1999, 2000, 01, 02
    Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
@@ -33,14 +33,14 @@ what you give them.   Help stamp out software-hoarding!  */
  * Modified heavily since then.
  *
  * Synopsis:
- *	unexec (new_name, a_name, data_start, bss_start, entry_address)
- *	char *new_name, *a_name;
+ *	unexec (new_name, old_name, data_start, bss_start, entry_address)
+ *	char *new_name, *old_name;
  *	unsigned data_start, bss_start, entry_address;
  *
  * Takes a snapshot of the program and makes an a.out format file in the
  * file named by the string argument new_name.
- * If a_name is non-NULL, the symbol table will be taken from the given file.
- * On some machines, an existing a_name file is required.
+ * If old_name is non-NULL, the symbol table will be taken from the given file.
+ * On some machines, an existing old_name file is required.
  *
  * The boundaries within the a.out file may be adjusted with the data_start
  * and bss_start arguments.  Either or both may be given as 0 for defaults.
@@ -52,11 +52,6 @@ what you give them.   Help stamp out software-hoarding!  */
  * The value you specify may be rounded down to a suitable boundary
  * as required by the machine you are using.
  *
- * Specifying zero for data_start means the boundary between text and data
- * should not be the same as when the program was loaded.
- * If NO_REMAP is defined, the argument data_start is ignored and the
- * segment boundaries are never changed.
- *
  * Bss_start indicates how much of the data segment is to be saved in the
  * a.out file and restored when the program is executed.  It gives the lowest
  * unsaved address, and is rounded up to a page boundary.  The default when 0
@@ -65,9 +60,6 @@ what you give them.   Help stamp out software-hoarding!  */
  * break (2).
  *
  * The new file is set up to start at entry_address.
- *
- * If you make improvements I'd like to get them too.
- * harpo!utah-cs!thomas, thomas@Utah-20
  *
  */
 
@@ -412,22 +404,159 @@ Filesz      Memsz       Flags       Align
 
  */
 
+/*
+ * Modified by rdh@yottayotta.com of Yotta Yotta Incorporated.
+ * 
+ * The code originally used mmap() to create a memory image of the new
+ * and old object files.  This had a few handy features: (1) you get
+ * to use a cool system call like mmap, (2) no need to explicitly
+ * write out the new file before the close, and (3) no swap space
+ * requirements.  Unfortunately, mmap() often fails to work with
+ * nfs-mounted file systems.
+ *
+ * So, instead of relying on the vm subsystem to do the file i/o for
+ * us, it's now done explicitly.  A buffer of the right size for the
+ * file is dynamically allocated, and either the old_name is read into
+ * it, or it is initialized with the correct new executable contents,
+ * and then written to new_name.
+ */
+
+#ifndef emacs
+#define fatal(a, b, c) fprintf (stderr, a, b, c), exit (1)
+#include <string.h>
+#else
+#include "config.h"
+extern void fatal (char *, ...);
+#endif
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <memory.h>
-#include <string.h>
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#if !defined (__NetBSD__) && !defined (__OpenBSD__)
 #include <elf.h>
+#endif
 #include <sys/mman.h>
+#if defined (__sony_news) && defined (_SYSTYPE_SYSV)
+#include <sys/elf_mips.h>
+#include <sym.h>
+#endif /* __sony_news && _SYSTYPE_SYSV */
+#if __sgi
+#include <syms.h> /* for HDRR declaration */
+#endif /* __sgi */
 
-#ifndef emacs
-#define fatal(a, b, c) fprintf (stderr, a, b, c), exit (1)
+#ifndef MAP_ANON
+#ifdef MAP_ANONYMOUS
+#define MAP_ANON MAP_ANONYMOUS
 #else
-#include "config.h"
-extern void fatal (char *, ...);
+#define MAP_ANON 0
+#endif
+#endif
+
+#ifndef MAP_FAILED
+#define MAP_FAILED ((void *) -1)
+#endif
+
+#if defined (__alpha__) && !defined (__NetBSD__) && !defined (__OpenBSD__)
+/* Declare COFF debugging symbol table.  This used to be in
+   /usr/include/sym.h, but this file is no longer included in Red Hat
+   5.0 and presumably in any other glibc 2.x based distribution.  */
+typedef struct {
+	short magic;
+	short vstamp;
+	int ilineMax;
+	int idnMax;
+	int ipdMax;
+	int isymMax;
+	int ioptMax;
+	int iauxMax;
+	int issMax;
+	int issExtMax;
+	int ifdMax;
+	int crfd;
+	int iextMax;
+	long cbLine;
+	long cbLineOffset;
+	long cbDnOffset;
+	long cbPdOffset;
+	long cbSymOffset;
+	long cbOptOffset;
+	long cbAuxOffset;
+	long cbSsOffset;
+	long cbSsExtOffset;
+	long cbFdOffset;
+	long cbRfdOffset;
+	long cbExtOffset;
+} HDRR, *pHDRR; 
+#define cbHDRR sizeof(HDRR)
+#define hdrNil ((pHDRR)0)
+#endif
+
+#ifdef __NetBSD__
+/*
+ * NetBSD does not have normal-looking user-land ELF support.
+ */
+# if defined __alpha__ || defined __sparc_v9__
+#  define ELFSIZE	64
+# else
+#  define ELFSIZE	32
+# endif
+# include <sys/exec_elf.h>
+
+# ifndef PT_LOAD
+#  define PT_LOAD	Elf_pt_load
+#  if 0						/* was in pkgsrc patches for 20.7 */
+#   define SHT_PROGBITS Elf_sht_progbits
+#  endif
+#  define SHT_SYMTAB	Elf_sht_symtab
+#  define SHT_DYNSYM	Elf_sht_dynsym
+#  define SHT_NULL	Elf_sht_null
+#  define SHT_NOBITS	Elf_sht_nobits
+#  define SHT_REL	Elf_sht_rel
+#  define SHT_RELA	Elf_sht_rela
+
+#  define SHN_UNDEF	Elf_eshn_undefined
+#  define SHN_ABS	Elf_eshn_absolute
+#  define SHN_COMMON	Elf_eshn_common
+# endif /* !PT_LOAD */
+
+# ifdef __alpha__
+#  include <sys/exec_ecoff.h>
+#  define HDRR		struct ecoff_symhdr
+#  define pHDRR		HDRR *
+# endif /* __alpha__ */
+
+#ifdef __mips__			/* was in pkgsrc patches for 20.7 */
+# define SHT_MIPS_DEBUG	DT_MIPS_FLAGS
+# define HDRR		struct Elf_Shdr
+#endif /* __mips__ */
+#endif /* __NetBSD__ */
+
+#ifdef __OpenBSD__
+# include <sys/exec_elf.h>
+#endif
+
+#if __GNU_LIBRARY__ - 0 >= 6
+# include <link.h>	/* get ElfW etc */
+#endif
+
+#ifndef ElfW
+# ifdef __STDC__
+#  define ElfBitsW(bits, type) Elf##bits##_##type
+# else
+#  define ElfBitsW(bits, type) Elf/**/bits/**/_/**/type
+# endif
+# ifdef _LP64
+#  define ELFSIZE 64
+# else
+#  define ELFSIZE 32
+# endif
+  /* This macro expands `bits' before invoking ElfBitsW.  */
+# define ElfExpandBitsW(bits, type) ElfBitsW (bits, type)
+# define ElfW(type) ElfExpandBitsW (ELFSIZE, type)
 #endif
 
 #ifndef ELF_BSS_SECTION_NAME
@@ -462,13 +591,13 @@ extern void fatal (char *, ...);
    */
 
 #define OLD_SECTION_H(n) \
-     (*(Elf32_Shdr *) ((byte *) old_section_h + old_file_h->e_shentsize * (n)))
+     (*(ElfW(Shdr) *) ((byte *) old_section_h + old_file_h->e_shentsize * (n)))
 #define NEW_SECTION_H(n) \
-     (*(Elf32_Shdr *) ((byte *) new_section_h + new_file_h->e_shentsize * (n)))
+     (*(ElfW(Shdr) *) ((byte *) new_section_h + new_file_h->e_shentsize * (n)))
 #define OLD_PROGRAM_H(n) \
-     (*(Elf32_Phdr *) ((byte *) old_program_h + old_file_h->e_phentsize * (n)))
+     (*(ElfW(Phdr) *) ((byte *) old_program_h + old_file_h->e_phentsize * (n)))
 #define NEW_PROGRAM_H(n) \
-     (*(Elf32_Phdr *) ((byte *) new_program_h + new_file_h->e_phentsize * (n)))
+     (*(ElfW(Phdr) *) ((byte *) new_program_h + new_file_h->e_phentsize * (n)))
 
 #define PATCH_INDEX(n) \
   do { \
@@ -478,14 +607,53 @@ typedef unsigned char byte;
 
 /* Round X up to a multiple of Y.  */
 
-int
+static ElfW(Addr)
 round_up (x, y)
-     int x, y;
+     ElfW(Addr) x, y;
 {
   int rem = x % y;
   if (rem == 0)
     return x;
   return x - rem + y;
+}
+
+/* Return the index of the section named NAME.
+   SECTION_NAMES, FILE_NAME and FILE_H give information
+   about the file we are looking in.
+
+   If we don't find the section NAME, that is a fatal error
+   if NOERROR is 0; we return -1 if NOERROR is nonzero.  */
+
+static int
+find_section (name, section_names, file_name, old_file_h, old_section_h, noerror)
+     char *name;
+     char *section_names;
+     char *file_name;
+     ElfW(Ehdr) *old_file_h;
+     ElfW(Shdr) *old_section_h;
+     int noerror;
+{
+  int idx;
+
+  for (idx = 1; idx < old_file_h->e_shnum; idx++)
+    {
+#ifdef DEBUG
+      fprintf (stderr, "Looking for %s - found %s\n", name,
+	       section_names + OLD_SECTION_H (idx).sh_name);
+#endif
+      if (!strcmp (section_names + OLD_SECTION_H (idx).sh_name,
+		   name))
+	break;
+    }
+  if (idx == old_file_h->e_shnum)
+    {
+      if (noerror)
+	return -1;
+      else
+	fatal ("Can't find %s in %s.\n", name, file_name);
+    }
+
+  return idx;
 }
 
 /* ****************************************************************
@@ -507,25 +675,36 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   /* Pointers to the base of the image of the two files. */
   caddr_t old_base, new_base;
 
+#if MAP_ANON == 0
+  int mmap_fd;
+#else
+# define mmap_fd -1
+#endif
+
   /* Pointers to the file, program and section headers for the old and new
    * files.
    */
-  Elf32_Ehdr *old_file_h, *new_file_h;
-  Elf32_Phdr *old_program_h, *new_program_h;
-  Elf32_Shdr *old_section_h, *new_section_h;
+  ElfW(Ehdr) *old_file_h, *new_file_h;
+  ElfW(Phdr) *old_program_h, *new_program_h;
+  ElfW(Shdr) *old_section_h, *new_section_h;
 
   /* Point to the section name table in the old file */
   char *old_section_names;
 
-  Elf32_Addr old_bss_addr, new_bss_addr;
-  Elf32_Word old_bss_size, new_data2_size;
-  Elf32_Off  new_data2_offset;
-  Elf32_Addr new_data2_addr;
+  ElfW(Addr) old_bss_addr, new_bss_addr;
+  ElfW(Word) old_bss_size, new_data2_size;
+  ElfW(Off)  new_data2_offset;
+  ElfW(Addr) new_data2_addr;
 
-  int n, nn, old_bss_index, old_data_index, new_data2_index;
+  int n, nn;
+  int old_bss_index, old_sbss_index;
+  int old_data_index, new_data2_index;
+  int old_mdebug_index;
   struct stat stat_buf;
+  int old_file_size;
 
-  /* Open the old file & map it into the address space. */
+  /* Open the old file, allocate a buffer of the right size, and read
+   * in the file contents. */
 
   old_file = open (old_name, O_RDONLY);
 
@@ -535,52 +714,80 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (fstat (old_file, &stat_buf) == -1)
     fatal ("Can't fstat (%s): errno %d\n", old_name, errno);
 
-  old_base = mmap (0, stat_buf.st_size, PROT_READ, MAP_SHARED, old_file, 0);
-
-  if (old_base == (caddr_t) -1)
-    fatal ("Can't mmap (%s): errno %d\n", old_name, errno);
-
-#ifdef DEBUG
-  fprintf (stderr, "mmap (%s, %x) -> %x\n", old_name, stat_buf.st_size,
-	   old_base);
+#if MAP_ANON == 0
+  mmap_fd = open ("/dev/zero", O_RDONLY);
+  if (mmap_fd < 0)
+    fatal ("Can't open /dev/zero for reading: errno %d\n", errno);
 #endif
+
+  /* We cannot use malloc here because that may use sbrk.  If it does,
+     we'd dump our temporary buffers with Emacs, and we'd have to be
+     extra careful to use the correct value of sbrk(0) after
+     allocating all buffers in the code below, which we aren't.  */
+  old_file_size = stat_buf.st_size;
+  old_base = mmap (NULL, old_file_size, PROT_READ | PROT_WRITE,
+		   MAP_ANON | MAP_PRIVATE, mmap_fd, 0);
+  if (old_base == MAP_FAILED)
+    fatal ("Can't allocate buffer for %s\n", old_name);
+
+  if (read (old_file, old_base, stat_buf.st_size) != stat_buf.st_size)
+    fatal ("Didn't read all of %s: errno %d\n", old_name, errno);
 
   /* Get pointers to headers & section names */
 
-  old_file_h = (Elf32_Ehdr *) old_base;
-  old_program_h = (Elf32_Phdr *) ((byte *) old_base + old_file_h->e_phoff);
-  old_section_h = (Elf32_Shdr *) ((byte *) old_base + old_file_h->e_shoff);
+  old_file_h = (ElfW(Ehdr) *) old_base;
+  old_program_h = (ElfW(Phdr) *) ((byte *) old_base + old_file_h->e_phoff);
+  old_section_h = (ElfW(Shdr) *) ((byte *) old_base + old_file_h->e_shoff);
   old_section_names = (char *) old_base
     + OLD_SECTION_H (old_file_h->e_shstrndx).sh_offset;
+
+  /* Find the mdebug section, if any.  */
+
+  old_mdebug_index = find_section (".mdebug", old_section_names,
+				   old_name, old_file_h, old_section_h, 1);
 
   /* Find the old .bss section.  Figure out parameters of the new
    * data2 and bss sections.
    */
 
-  for (old_bss_index = 1; old_bss_index < (int) old_file_h->e_shnum;
-       old_bss_index++)
-    {
-#ifdef DEBUG
-      fprintf (stderr, "Looking for .bss - found %s\n",
-	       old_section_names + OLD_SECTION_H (old_bss_index).sh_name);
-#endif
-      if (!strcmp (old_section_names + OLD_SECTION_H (old_bss_index).sh_name,
-		   ELF_BSS_SECTION_NAME))
-	break;
-    }
-  if (old_bss_index == old_file_h->e_shnum)
-    fatal ("Can't find .bss in %s.\n", old_name, 0);
+  old_bss_index = find_section (".bss", old_section_names,
+				old_name, old_file_h, old_section_h, 0);
 
-  old_bss_addr = OLD_SECTION_H (old_bss_index).sh_addr;
-  old_bss_size = OLD_SECTION_H (old_bss_index).sh_size;
-#if defined(emacs) || !defined(DEBUG)
-  new_bss_addr = (Elf32_Addr) sbrk (0);
+  old_sbss_index = find_section (".sbss", old_section_names,
+				 old_name, old_file_h, old_section_h, 1);
+  if (old_sbss_index != -1)
+    if (OLD_SECTION_H (old_sbss_index).sh_type == SHT_PROGBITS)
+      old_sbss_index = -1;
+
+  if (old_sbss_index == -1)
+    {
+      old_bss_addr = OLD_SECTION_H (old_bss_index).sh_addr;
+      old_bss_size = OLD_SECTION_H (old_bss_index).sh_size;
+      new_data2_index = old_bss_index;
+    }
+  else
+    {
+      old_bss_addr = OLD_SECTION_H (old_sbss_index).sh_addr;
+      old_bss_size = OLD_SECTION_H (old_bss_index).sh_size
+	+ OLD_SECTION_H (old_sbss_index).sh_size;
+      new_data2_index = old_sbss_index;
+    }
+
+  /* Find the old .data section.  Figure out parameters of
+     the new data2 and bss sections.  */
+
+  old_data_index = find_section (".data", old_section_names,
+				 old_name, old_file_h, old_section_h, 0);
+
+#if defined (emacs) || !defined (DEBUG)
+  new_bss_addr = (ElfW(Addr)) sbrk (0);
 #else
   new_bss_addr = old_bss_addr + old_bss_size + 0x1234;
 #endif
   new_data2_addr = old_bss_addr;
   new_data2_size = new_bss_addr - old_bss_addr;
-  new_data2_offset = OLD_SECTION_H (old_bss_index).sh_offset;
+  new_data2_offset  = OLD_SECTION_H (old_data_index).sh_offset +
+    (new_data2_addr - OLD_SECTION_H (old_data_index).sh_addr);
 
 #ifdef DEBUG
   fprintf (stderr, "old_bss_index %d\n", old_bss_index);
@@ -595,9 +802,9 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if ((unsigned) new_bss_addr < (unsigned) old_bss_addr + old_bss_size)
     fatal (".bss shrank when undumping???\n", 0, 0);
 
-  /* Set the output file to the right size and mmap it.  Set
-   * pointers to various interesting objects.  stat_buf still has
-   * old_file data.
+  /* Set the output file to the right size.  Allocate a buffer to hold
+   * the image of the new file.  Set pointers to various interesting
+   * objects.  stat_buf still has old_file data.
    */
 
   new_file = open (new_name, O_RDWR | O_CREAT, 0666);
@@ -609,20 +816,14 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (ftruncate (new_file, new_file_size))
     fatal ("Can't ftruncate (%s): errno %d\n", new_name, errno);
 
-#ifdef UNEXEC_USE_MAP_PRIVATE
-  new_base = mmap (0, new_file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE,
-		   new_file, 0);
-#else
-  new_base = mmap (0, new_file_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-		   new_file, 0);
-#endif
+  new_base = mmap (NULL, new_file_size, PROT_READ | PROT_WRITE,
+		   MAP_ANON | MAP_PRIVATE, mmap_fd, 0);
+  if (new_base == MAP_FAILED)
+    fatal ("Can't allocate buffer for %s\n", old_name);
 
-  if (new_base == (caddr_t) -1)
-    fatal ("Can't mmap (%s): errno %d\n", new_name, errno);
-
-  new_file_h = (Elf32_Ehdr *) new_base;
-  new_program_h = (Elf32_Phdr *) ((byte *) new_base + old_file_h->e_phoff);
-  new_section_h = (Elf32_Shdr *)
+  new_file_h = (ElfW(Ehdr) *) new_base;
+  new_program_h = (ElfW(Phdr) *) ((byte *) new_base + old_file_h->e_phoff);
+  new_section_h = (ElfW(Shdr) *)
     ((byte *) new_base + old_file_h->e_shoff + new_data2_size);
 
   /* Make our new file, program and section headers as copies of the
@@ -661,12 +862,22 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   for (n = new_file_h->e_phnum - 1; n >= 0; n--)
     {
       /* Compute maximum of all requirements for alignment of section.  */
-      int alignment = (NEW_PROGRAM_H (n)).p_align;
+      ElfW(Word) alignment = (NEW_PROGRAM_H (n)).p_align;
       if ((OLD_SECTION_H (old_bss_index)).sh_addralign > alignment)
 	alignment = OLD_SECTION_H (old_bss_index).sh_addralign;
 
-      if (NEW_PROGRAM_H (n).p_vaddr + NEW_PROGRAM_H (n).p_filesz > old_bss_addr)
-	fatal ("Program segment above .bss in %s\n", old_name, 0);
+#ifdef __sgi
+	  /* According to r02kar@x4u2.desy.de (Karsten Kuenne)
+	     and oliva@gnu.org (Alexandre Oliva), on IRIX 5.2, we
+	     always get "Program segment above .bss" when dumping
+	     when the executable doesn't have an sbss section.  */
+      if (old_sbss_index != -1)
+#endif /* __sgi */
+      if (NEW_PROGRAM_H (n).p_vaddr + NEW_PROGRAM_H (n).p_filesz
+	  > (old_sbss_index == -1
+	     ? old_bss_addr
+	     : round_up (old_bss_addr, alignment)))
+	  fatal ("Program segment above .bss in %s\n", old_name, 0);
 
       if (NEW_PROGRAM_H (n).p_type == PT_LOAD
 	  && (round_up ((NEW_PROGRAM_H (n)).p_vaddr
@@ -678,7 +889,9 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (n < 0)
     fatal ("Couldn't find segment next to .bss in %s\n", old_name, 0);
 
-  NEW_PROGRAM_H (n).p_filesz += new_data2_size;
+  /* Make sure that the size includes any padding before the old .bss
+     section.  */
+  NEW_PROGRAM_H (n).p_filesz = new_bss_addr - NEW_PROGRAM_H (n).p_vaddr;
   NEW_PROGRAM_H (n).p_memsz = NEW_PROGRAM_H (n).p_filesz;
 
 #if 0 /* Maybe allow section after data2 - does this ever happen? */
@@ -712,12 +925,14 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   for (n = 1, nn = 1; n < (int) old_file_h->e_shnum; n++, nn++)
     {
       caddr_t src;
-      /* If it is bss section, insert the new data2 section before it. */
-      if (n == old_bss_index)
+      /* If it is (s)bss section, insert the new data2 section before it.  */
+      /* new_data2_index is the index of either old_sbss or old_bss, that was
+	 chosen as a section for new_data2.   */
+      if (n == new_data2_index)
 	{
 	  /* Steal the data section header for this data2 section. */
 	  memcpy (&NEW_SECTION_H (nn), &OLD_SECTION_H (old_data_index),
-	  new_file_h->e_shentsize);
+		  new_file_h->e_shentsize);
 
 	  NEW_SECTION_H (nn).sh_addr = new_data2_addr;
 	  NEW_SECTION_H (nn).sh_offset = new_data2_offset;
@@ -737,13 +952,17 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       memcpy (&NEW_SECTION_H (nn), &OLD_SECTION_H (n),
 	      old_file_h->e_shentsize);
 
-      /* The new bss section's size is zero, and its file offset and virtual
-	 address should be off by NEW_DATA2_SIZE. */
-      if (n == old_bss_index)
+      if (n == old_bss_index
+	  /* The new bss and sbss section's size is zero, and its file offset
+	     and virtual address should be off by NEW_DATA2_SIZE.  */
+	  || n == old_sbss_index
+	  )
 	{
-	  /* NN should be `old_bss_index + 1' at this point. */
-	  NEW_SECTION_H (nn).sh_offset += new_data2_size;
-	  NEW_SECTION_H (nn).sh_addr += new_data2_size;
+	  /* NN should be `old_s?bss_index + 1' at this point. */
+	  NEW_SECTION_H (nn).sh_offset =
+	    NEW_SECTION_H (new_data2_index).sh_offset + new_data2_size;
+	  NEW_SECTION_H (nn).sh_addr =
+	    NEW_SECTION_H (new_data2_index).sh_addr + new_data2_size;
 	  /* Let the new bss section address alignment be the same as the
 	     section address alignment followed the old bss section, so
 	     this section will be placed in exactly the same place. */
@@ -767,7 +986,9 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 	      >= OLD_SECTION_H (old_bss_index-1).sh_offset)
 	    NEW_SECTION_H (nn).sh_offset += new_data2_size;
 #else
-	  if (NEW_SECTION_H (nn).sh_offset >= new_data2_offset)
+	  if (round_up (NEW_SECTION_H (nn).sh_offset,
+			OLD_SECTION_H (old_bss_index).sh_addralign)
+	      >= new_data2_offset)
 	    NEW_SECTION_H (nn).sh_offset += new_data2_size;
 #endif
 	  /* Any section that was originally placed after the section
@@ -787,18 +1008,54 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       if (NEW_SECTION_H (nn).sh_type != SHT_SYMTAB
 	  && NEW_SECTION_H (nn).sh_type != SHT_DYNSYM)
 	PATCH_INDEX (NEW_SECTION_H (nn).sh_info);
+      
+      if (old_sbss_index != -1)
+	if (!strcmp (old_section_names + NEW_SECTION_H (nn).sh_name, ".sbss"))
+	  {
+	    NEW_SECTION_H (nn).sh_offset = 
+	      round_up (NEW_SECTION_H (nn).sh_offset,
+			NEW_SECTION_H (nn).sh_addralign);
+	    NEW_SECTION_H (nn).sh_type = SHT_PROGBITS;
+	  }
 
       /* Now, start to copy the content of sections.  */
       if (NEW_SECTION_H (nn).sh_type == SHT_NULL
 	  || NEW_SECTION_H (nn).sh_type == SHT_NOBITS)
 	continue;
 
-  /* Write out the sections. .data and .data1 (and data2, called
+      /* Write out the sections. .data and .data1 (and data2, called
 	 ".data" in the strings table) get copied from the current process
 	 instead of the old file.  */
       if (!strcmp (old_section_names + NEW_SECTION_H (n).sh_name, ".data")
 	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
-		      ".data1"))
+		      ".sdata")
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".lit4")
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".lit8")
+	  /* The conditional bit below was in Oliva's original code
+	     (1999-08-25) and seems to have been dropped by mistake
+	     subsequently.  It prevents a crash at startup under X in
+	     `IRIX64 6.5 6.5.17m' with c_dev 7.3.1.3m.  It causes no
+	     trouble on the other ELF platforms I could test (Irix
+	     6.5.15m, Solaris 8, Debian Potato x86, Debian Woody
+	     SPARC); however, it's reported to cause crashes under
+	     some version of GNU/Linux.  It's not yet clear what's
+	     changed in that Irix version to cause the problem, or why
+	     the fix sometimes fails under GNU/Linux.  There's
+	     probably no good reason to have something Irix-specific
+	     here, but this will have to do for now.  IRIX6_5 is the
+	     most specific macro we have to test.  -- fx 2002-10-01  */
+#ifdef IRIX6_5
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".got")
+#endif
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".sdata1")
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".data1")
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".sbss"))
 	src = (caddr_t) OLD_SECTION_H (n).sh_addr;
       else
 	src = old_base + OLD_SECTION_H (n).sh_offset;
@@ -806,13 +1063,114 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       memcpy (NEW_SECTION_H (nn).sh_offset + new_base, src,
 	      NEW_SECTION_H (nn).sh_size);
 
+#ifdef __alpha__
+      /* Update Alpha COFF symbol table: */
+      if (strcmp (old_section_names + OLD_SECTION_H (n).sh_name, ".mdebug")
+	  == 0)
+	{
+	  pHDRR symhdr = (pHDRR) (NEW_SECTION_H (nn).sh_offset + new_base);
+
+	  symhdr->cbLineOffset += new_data2_size;
+	  symhdr->cbDnOffset += new_data2_size;
+	  symhdr->cbPdOffset += new_data2_size;
+	  symhdr->cbSymOffset += new_data2_size;
+	  symhdr->cbOptOffset += new_data2_size;
+	  symhdr->cbAuxOffset += new_data2_size;
+	  symhdr->cbSsOffset += new_data2_size;
+	  symhdr->cbSsExtOffset += new_data2_size;
+	  symhdr->cbFdOffset += new_data2_size;
+	  symhdr->cbRfdOffset += new_data2_size;
+	  symhdr->cbExtOffset += new_data2_size;
+	}
+#endif /* __alpha__ */
+
+#if defined (__sony_news) && defined (_SYSTYPE_SYSV)
+      if (NEW_SECTION_H (nn).sh_type == SHT_MIPS_DEBUG
+	  && old_mdebug_index != -1) 
+        {
+	  int diff = NEW_SECTION_H(nn).sh_offset 
+	 	- OLD_SECTION_H(old_mdebug_index).sh_offset;
+	  HDRR *phdr = (HDRR *)(NEW_SECTION_H (nn).sh_offset + new_base);
+
+	  if (diff)
+	    {
+	      phdr->cbLineOffset += diff;
+	      phdr->cbDnOffset   += diff;
+	      phdr->cbPdOffset   += diff;
+	      phdr->cbSymOffset  += diff;
+	      phdr->cbOptOffset  += diff;
+	      phdr->cbAuxOffset  += diff;
+	      phdr->cbSsOffset   += diff;
+	      phdr->cbSsExtOffset += diff;
+	      phdr->cbFdOffset   += diff;
+	      phdr->cbRfdOffset  += diff;
+	      phdr->cbExtOffset  += diff;
+	    }
+	}
+#endif /* __sony_news && _SYSTYPE_SYSV */
+
+#if __sgi
+      /* Adjust  the HDRR offsets in .mdebug and copy the 
+	 line data if it's in its usual 'hole' in the object.
+	 Makes the new file debuggable with dbx.
+	 patches up two problems: the absolute file offsets
+	 in the HDRR record of .mdebug (see /usr/include/syms.h), and
+	 the ld bug that gets the line table in a hole in the
+	 elf file rather than in the .mdebug section proper.
+	 David Anderson. davea@sgi.com  Jan 16,1994.  */
+      if (n == old_mdebug_index)
+	{
+#define MDEBUGADJUST(__ct,__fileaddr)		\
+  if (n_phdrr->__ct > 0)			\
+    {						\
+      n_phdrr->__fileaddr += movement;		\
+    }
+
+	  HDRR * o_phdrr = (HDRR *)((byte *)old_base + OLD_SECTION_H (n).sh_offset);
+	  HDRR * n_phdrr = (HDRR *)((byte *)new_base + NEW_SECTION_H (nn).sh_offset);
+	  unsigned movement = new_data2_size;
+
+	  MDEBUGADJUST (idnMax, cbDnOffset);
+	  MDEBUGADJUST (ipdMax, cbPdOffset);
+	  MDEBUGADJUST (isymMax, cbSymOffset);
+	  MDEBUGADJUST (ioptMax, cbOptOffset);
+	  MDEBUGADJUST (iauxMax, cbAuxOffset);
+	  MDEBUGADJUST (issMax, cbSsOffset);
+	  MDEBUGADJUST (issExtMax, cbSsExtOffset);
+	  MDEBUGADJUST (ifdMax, cbFdOffset);
+	  MDEBUGADJUST (crfd, cbRfdOffset);
+	  MDEBUGADJUST (iextMax, cbExtOffset);
+	  /* The Line Section, being possible off in a hole of the object,
+	     requires special handling.  */
+	  if (n_phdrr->cbLine > 0)
+	    {
+	      if (o_phdrr->cbLineOffset > (OLD_SECTION_H (n).sh_offset
+					   + OLD_SECTION_H (n).sh_size))
+		{
+		  /* line data is in a hole in elf. do special copy and adjust
+		     for this ld mistake.
+		     */
+		  n_phdrr->cbLineOffset += movement;
+
+		  memcpy (n_phdrr->cbLineOffset + new_base,
+			  o_phdrr->cbLineOffset + old_base, n_phdrr->cbLine);
+		}
+	      else
+		{
+		  /* somehow line data is in .mdebug as it is supposed to be.  */
+		  MDEBUGADJUST (cbLine, cbLineOffset);
+		}
+	    }
+	}
+#endif /* __sgi */
+
       /* If it is the symbol table, its st_shndx field needs to be patched.  */
       if (NEW_SECTION_H (nn).sh_type == SHT_SYMTAB
 	  || NEW_SECTION_H (nn).sh_type == SHT_DYNSYM)
 	{
-	  Elf32_Shdr *spt = &NEW_SECTION_H (nn);
+	  ElfW(Shdr) *spt = &NEW_SECTION_H (nn);
 	  unsigned int num = spt->sh_size / spt->sh_entsize;
-	  Elf32_Sym * sym = (Elf32_Sym *) (NEW_SECTION_H (nn).sh_offset +
+	  ElfW(Sym) * sym = (ElfW(Sym) *) (NEW_SECTION_H (nn).sh_offset +
 					   new_base);
 	  for (; num--; sym++)
 	    {
@@ -830,7 +1188,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   for (n = new_file_h->e_shnum - 1; n; n--)
     {
       byte *symnames;
-      Elf32_Sym *symp, *symendp;
+      ElfW(Sym) *symp, *symendp;
 
       if (NEW_SECTION_H (n).sh_type != SHT_DYNSYM
 	  && NEW_SECTION_H (n).sh_type != SHT_SYMTAB)
@@ -838,12 +1196,14 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 
       symnames = ((byte *) new_base
 		  + NEW_SECTION_H (NEW_SECTION_H (n).sh_link).sh_offset);
-      symp = (Elf32_Sym *) (NEW_SECTION_H (n).sh_offset + new_base);
-      symendp = (Elf32_Sym *) ((byte *)symp + NEW_SECTION_H (n).sh_size);
+      symp = (ElfW(Sym) *) (NEW_SECTION_H (n).sh_offset + new_base);
+      symendp = (ElfW(Sym) *) ((byte *)symp + NEW_SECTION_H (n).sh_size);
 
       for (; symp < symendp; symp ++)
 	if (strcmp ((char *) (symnames + symp->st_name), "_end") == 0
-	    || strcmp ((char *) (symnames + symp->st_name), "_edata") == 0)
+	    || strcmp ((char *) (symnames + symp->st_name), "end") == 0
+	    || strcmp ((char *) (symnames + symp->st_name), "_edata") == 0
+	    || strcmp ((char *) (symnames + symp->st_name), "edata") == 0)
 	  memcpy (&symp->st_value, &new_bss_addr, sizeof (new_bss_addr));
     }
 
@@ -851,7 +1211,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
      that it can undo relocations performed by the runtime linker.  */
   for (n = new_file_h->e_shnum - 1; n; n--)
     {
-      Elf32_Shdr section = NEW_SECTION_H (n);
+      ElfW(Shdr) section = NEW_SECTION_H (n);
       switch (section.sh_type) {
       default:
 	break;
@@ -863,37 +1223,65 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 	nn = section.sh_info;
 	if (!strcmp (old_section_names + NEW_SECTION_H (nn).sh_name, ".data")
 	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".sdata")
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".lit4")
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".lit8")
+#ifdef IRIX6_5			/* see above */
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".got")
+#endif
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".sdata1")
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
 			".data1"))
 	  {
-	    Elf32_Addr offset = NEW_SECTION_H (nn).sh_addr -
+	    ElfW(Addr) offset = NEW_SECTION_H (nn).sh_addr -
 	      NEW_SECTION_H (nn).sh_offset;
 	    caddr_t reloc = old_base + section.sh_offset, end;
 	    for (end = reloc + section.sh_size; reloc < end;
 		 reloc += section.sh_entsize)
 	      {
-		Elf32_Addr addr = ((Elf32_Rel *) reloc)->r_offset - offset;
-		memcpy (new_base + addr, old_base + addr, 4);
-    }
+		ElfW(Addr) addr = ((ElfW(Rel) *) reloc)->r_offset - offset;
+#ifdef __alpha__
+		/* The Alpha ELF binutils currently have a bug that
+		   sometimes results in relocs that contain all
+		   zeroes.  Work around this for now...  */
+		if (((ElfW(Rel) *) reloc)->r_offset == 0)
+		    continue;
+#endif
+		memcpy (new_base + addr, old_base + addr, sizeof(ElfW(Addr)));
+	      }
 	  }
 	break;
       }
     }
 
-#ifdef UNEXEC_USE_MAP_PRIVATE
-  if (lseek (new_file, 0, SEEK_SET) == -1)
-    fatal ("Can't rewind (%s): errno %d\n", new_name, errno);
+  /* Write out new_file, close it, and free the buffer containing its
+   * contents */
 
   if (write (new_file, new_base, new_file_size) != new_file_size)
-    fatal ("Can't write (%s): errno %d\n", new_name, errno);
-#endif
+    fatal ("Didn't write %d bytes to %s: errno %d\n", 
+	   new_file_size, new_base, errno);
 
-  /* Close the files and make the new file executable.  */
+  if (close (new_file))
+    fatal ("Can't close (%s): errno %d\n", new_name, errno);
+
+  munmap (new_base, new_file_size);
+
+  /* Close old_file, and free the corresponding buffer */
+
+#if MAP_ANON == 0
+  close (mmap_fd);
+#endif
 
   if (close (old_file))
     fatal ("Can't close (%s): errno %d\n", old_name, errno);
 
-  if (close (new_file))
-    fatal ("Can't close (%s): errno %d\n", new_name, errno);
+  munmap (old_base, old_file_size);
+
+  /* Make the new file executable */
 
   if (stat (new_name, &stat_buf) == -1)
     fatal ("Can't stat (%s): errno %d\n", new_name, errno);
