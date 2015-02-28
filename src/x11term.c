@@ -2104,6 +2104,9 @@ x_init_1 ()
 #ifdef F_SETOWN
 	extern int old_fcntl_owner;
 #endif
+#if defined(F_SETFL) && defined(FASYNC)
+	extern int old_fcntl_flags;
+#endif
 
 	dup2 (ConnectionNumber(XXdisplay), 0);
 #ifndef SYSV_STREAMS
@@ -2130,6 +2133,13 @@ x_init_1 ()
 	fcntl (0, F_SETOWN, getpid ());
 #endif /* F_SETOWN_SOCK_NEG */
 #endif /* F_SETOWN */
+#if defined(F_SETFL) && defined(FASYNC)
+	/*
+	 * Since libxcb sets O_NONBLOCK, copy the bit so that it won't
+	 * dropped by unrequest_sigio().
+	 */
+	old_fcntl_flags = fcntl (0, F_GETFL, 0) & ~FASYNC;
+#endif
 
 	/* Enable interrupt_input because otherwise we cannot asynchronously
 	   detect C-g sent as a keystroke event from the X server.  */
