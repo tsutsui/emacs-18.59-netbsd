@@ -410,7 +410,7 @@ getpool ()
 
 void *
 malloc (n)		/* get a block */
-     unsigned n;
+     size_t n;
 {
   register struct mhead *p;
   register unsigned int nbytes;
@@ -544,7 +544,7 @@ free (mem)
 void *
 realloc (mem, n)
      void *mem;
-     register unsigned n;
+     register size_t n;
 {
   register struct mhead *p;
   register unsigned int tocopy;
@@ -605,7 +605,7 @@ realloc (mem, n)
 
 void *
 calloc (num, size)
-     unsigned num, size;
+     size_t num, size;
 {
   register char *mem;
 
