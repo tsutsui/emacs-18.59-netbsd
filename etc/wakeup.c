@@ -11,7 +11,7 @@ main (argc, argv)
      char **argv;
 {
   int period = 60;
-  long when;
+  time_t when;
   struct tm *tp;
 
   if (argc > 1)

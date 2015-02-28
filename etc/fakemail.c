@@ -272,7 +272,7 @@ line_list
 make_file_preface ()
 {
   char *the_string, *temp;
-  long idiotic_interface;
+  time_t idiotic_interface;
   long prefix_length;
   long user_length;
   long date_length;
