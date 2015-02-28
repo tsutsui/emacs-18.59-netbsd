@@ -85,7 +85,6 @@ extern int lk_open (), lk_close ();
 
 char *concat ();
 void *xmalloc ();
-extern int errno;
 
 /* Nonzero means this is name of a lock file to delete on fatal error.  */
 char *delete_lockname;
@@ -323,7 +322,6 @@ error (s1, s2, s3)
 pfatal_with_name (name)
      char *name;
 {
-  extern int errno, sys_nerr;
   char *s;
 
   if (errno < sys_nerr)
@@ -336,7 +334,6 @@ pfatal_with_name (name)
 pfatal_and_delete (name)
      char *name;
 {
-  extern int errno, sys_nerr;
   char *s;
 
   if (errno < sys_nerr)
@@ -705,7 +702,6 @@ multiline (buf, n, f)
 char *
 get_errmsg ()
 {
-  extern int errno, sys_nerr;
   char *s;
 
   if (errno < sys_nerr)

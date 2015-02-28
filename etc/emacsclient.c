@@ -56,9 +56,6 @@ main (argc, argv)
 #include <unistd.h>
 #include <sys/stat.h>
 
-extern int sys_nerr;
-extern int errno;
-
 main (argc, argv)
      int argc;
      char **argv;
