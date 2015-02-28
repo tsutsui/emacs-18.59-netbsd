@@ -1131,8 +1131,8 @@ init_buffer ()
   char buf[MAXPATHLEN+1];
 
   Fset_buffer (Fget_buffer_create (build_string ("*scratch*")));
-  if (getwd (buf) == 0)
-    fatal ("`getwd' failed: %s.\n", buf);
+  if (getcwd (buf, MAXPATHLEN+1) == 0)
+    fatal ("`getcwd' failed: %s.\n", strerror (errno));
 
 #ifndef VMS
   /* Maybe this should really use some standard subroutine
