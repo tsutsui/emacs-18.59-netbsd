@@ -78,6 +78,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 #endif
 
+#ifdef HAVE_PERSONALITY_LINUX32
+#include <sys/personality.h>
+#ifndef ADDR_NO_RANDOMIZE
+#define ADDR_NO_RANDOMIZE 0x0040000
+#endif
+#endif
+
 #ifndef O_RDWR
 #define O_RDWR 2
 #endif
@@ -242,6 +249,27 @@ main (argc, argv, envp)
   extern int errno;
   extern void malloc_warning ();
 
+#ifdef HAVE_PERSONALITY_LINUX32
+  /* See if there is a gap between the end of BSS and the heap.
+     In that case, set personality and exec ourself again.  */
+  if (!initialized
+      && strcmp (argv[argc-1], "dump") == 0
+      && !getenv ("EMACS_HEAP_EXEC"))
+    {
+      /* Set this so we only do this once.  */
+      putenv ("EMACS_HEAP_EXEC=true");
+
+      /* A flag to turn off address randomization which is introduced
+	 in linux kernel shipped with fedora core 4 */
+      personality (PER_LINUX32 | ADDR_NO_RANDOMIZE);
+
+      execvp (argv[0], argv);
+
+      /* If the exec fails, try to dump anyway.  */
+      perror ("execvp");
+    }
+#endif /* HAVE_PERSONALITY_LINUX32 */
+ 
 /* Map in shared memory, if we are using that.  */
 #ifdef HAVE_SHM
   if (argc > 1 && !strcmp (argv[1], "-nl"))

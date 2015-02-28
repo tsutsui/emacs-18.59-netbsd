@@ -1,3 +1,13 @@
+2008-10-21  Ulrich Mueller  <ulm@gentoo.org>
+
+	* emacs.c: Handle gap between end of BSS and heap, backported
+	from Emacs 22. Original changes by Jan Djarv and Masatake YAMATO.
+	This fixes dumping on Linux 2.6.25.
+	(main): Unconditionally set PER_LINUX32 | ADDR_NO_RANDOMIZE
+	and exec ourself again if HAVE_PERSONALITY_LINUX32 is defined.
+
+	* s-linux.h (HAVE_PERSONALITY_LINUX32): Define.
+
 2007-01-30  Ulrich Mueller  <ulm@kph.uni-mainz.de>
 
 	* x11term.c (internal_socket_read): Handle XK_BackSpace key.
