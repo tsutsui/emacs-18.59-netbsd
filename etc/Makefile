@@ -25,35 +25,35 @@ test-distrib: test-distrib.c
 	./test-distrib
 
 etags: etags.c
-	$(CC) -o etags ${CFLAGS} -DETAGS etags.c $(LOADLIBES)
+	$(CC) -o etags ${CFLAGS} ${LDFLAGS} -DETAGS etags.c $(LOADLIBES)
 
 ctags: etags.c
-	$(CC) -o ctags ${CFLAGS} -DCTAGS etags.c $(LOADLIBES)
+	$(CC) -o ctags ${CFLAGS} ${LDFLAGS} -DCTAGS etags.c $(LOADLIBES)
 
 wakeup: wakeup.c
-	$(CC) -o wakeup ${CFLAGS} wakeup.c $(LOADLIBES)
+	$(CC) -o wakeup ${CFLAGS} ${LDFLAGS} wakeup.c $(LOADLIBES)
 
 make-docfile: make-docfile.c
-	$(CC) -o make-docfile ${CFLAGS} make-docfile.c $(LOADLIBES)
+	$(CC) -o make-docfile ${CFLAGS} ${LDFLAGS} make-docfile.c $(LOADLIBES)
 
 digest-doc: digest-doc.c
-	$(CC) -o digest-doc ${CFLAGS} digest-doc.c $(LOADLIBES)
+	$(CC) -o digest-doc ${CFLAGS} ${LDFLAGS} digest-doc.c $(LOADLIBES)
 
 sorted-doc: sorted-doc.c
-	$(CC) -o sorted-doc ${CFLAGS} sorted-doc.c $(LOADLIBES)
+	$(CC) -o sorted-doc ${CFLAGS} ${LDFLAGS} sorted-doc.c $(LOADLIBES)
 
 #
 movemail: movemail.c ../src/config.h
-	$(CC) -o movemail ${CFLAGS} movemail.c $(LOADLIBES)
+	$(CC) -o movemail ${CFLAGS} ${LDFLAGS} movemail.c $(LOADLIBES)
 
 cvtmail: cvtmail.c
-	$(CC) -o cvtmail ${CFLAGS} cvtmail.c $(LOADLIBES)
+	$(CC) -o cvtmail ${CFLAGS} ${LDFLAGS} cvtmail.c $(LOADLIBES)
 
 fakemail: fakemail.c ../src/config.h
-	$(CC) -o fakemail ${CFLAGS} fakemail.c $(LOADLIBES)
+	$(CC) -o fakemail ${CFLAGS} ${LDFLAGS} fakemail.c $(LOADLIBES)
 
 yow: yow.c ../src/paths.h
-	$(CC) -o yow ${CFLAGS} yow.c $(LOADLIBES)
+	$(CC) -o yow ${CFLAGS} ${LDFLAGS} yow.c $(LOADLIBES)
 
 # this is silly -- just use emacs to edit this file!
 # (in any case this program doesn't preserve alphabetical ordering,
@@ -62,26 +62,26 @@ yow: yow.c ../src/paths.h
 #	$(CC) -o addyow ${CFLAGS} addyow.c
 
 env: env.c ../src/config.h
-	$(CC) -o env -DEMACS ${CFLAGS} env.c $(LOADLIBES)
+	$(CC) -o env -DEMACS ${CFLAGS} ${LDFLAGS} env.c $(LOADLIBES)
 
 server: server.c ../src/config.h
-	$(CC) -o server ${CFLAGS} server.c $(LOADLIBES)
+	$(CC) -o server ${CFLAGS} ${LDFLAGS} server.c $(LOADLIBES)
 
 emacsclient: emacsclient.c ../src/config.h
-	$(CC) -o emacsclient ${CFLAGS} emacsclient.c $(LOADLIBES)
+	$(CC) -o emacsclient ${CFLAGS} ${LDFLAGS} emacsclient.c $(LOADLIBES)
 
 # This one is NOT included in EXECUTABLES.
 # See ../src/ymakefile.
 emacstool: emacstool.c
-	$(CC) -o emacstool ${CFLAGS} emacstool.c -lsuntool -lsunwindow -lpixrect $(LOADLIBES)
+	$(CC) -o emacstool ${CFLAGS} ${LDFLAGS} emacstool.c -lsuntool -lsunwindow -lpixrect $(LOADLIBES)
 
 nemacstool: emacstool.c
-	$(CC) -o nemacstool ${CFLAGS} -DJLE emacstool.c -lsuntool -lmle -lsunwindow -lpixrect $(LOADLIBES)	# For SUN Japanese Language Environment
+	$(CC) -o nemacstool ${CFLAGS} ${LDFLAGS} -DJLE emacstool.c -lsuntool -lmle -lsunwindow -lpixrect $(LOADLIBES)	# For SUN Japanese Language Environment
 
 xvetool: emacstool.c
-	$(CC) -o xvetool ${CFLAGS} -DXVIEW         emacstool.c -lxview -lolgx -lX -I$(OPENWINHOME)/include -L$(OPENWINHOME)/lib $(LOADLIBES)
+	$(CC) -o xvetool ${CFLAGS} ${LDFLAGS} -DXVIEW         emacstool.c -lxview -lolgx -lX -I$(OPENWINHOME)/include -L$(OPENWINHOME)/lib $(LOADLIBES)
 
 xveterm: emacstool.c
-	$(CC) -o xveterm ${CFLAGS} -DXVIEW -DTTERM emacstool.c -lxview -lolgx -lX -I$(OPENWINHOME)/include -L$(OPENWINHOME)/lib $(LOADLIBES)
+	$(CC) -o xveterm ${CFLAGS} ${LDFLAGS} -DXVIEW -DTTERM emacstool.c -lxview -lolgx -lX -I$(OPENWINHOME)/include -L$(OPENWINHOME)/lib $(LOADLIBES)
 
 
