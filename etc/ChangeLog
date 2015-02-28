@@ -1,3 +1,9 @@
+2009-05-29  Ulrich Mueller  <ulm@gentoo.org>
+
+	* etags.c (etags_getline): Renamed from getline, fixes compilation
+	with glibc 2.10 headers.
+	(put_entries): Fix format specifier for long int.
+
 2007-01-29  Ulrich Mueller  <ulm@kph.uni-mainz.de>
 
 	* emacsclient.c, server.c: Check for HAVE_SOCKETS instead of BSD.
