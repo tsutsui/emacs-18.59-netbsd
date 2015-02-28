@@ -160,7 +160,7 @@ fatal_error_signal (sig)
   /* If we are controlling the terminal, reset terminal modes */
 #ifdef BSD
   if (ioctl(0, TIOCGPGRP, &tpgrp) == 0
-      && tpgrp == getpgrp (0))
+      && tpgrp == getpgrp ())
 #endif /* BSD */
     {
       reset_sys_modes ();
