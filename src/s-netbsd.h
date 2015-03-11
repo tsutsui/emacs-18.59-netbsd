@@ -91,8 +91,8 @@
 #include <sys/socket.h>
 #endif
 
-#undef LD_SWITCH_SYSTEM
-#define LD_SWITCH_SYSTEM -L/usr/lib -L/usr/X11R7/lib -Wl,-R/usr/X11R7/lib
-#define C_SWITCH_SYSTEM -I/usr/X11R7/include
+#define LD_SWITCH_SYSTEM
+#define C_SWITCH_SYSTEM
+#define C_SWITCH_X_SYSTEM -I/usr/X11R7/include
 #define C_DEBUG_SWITCH -O -g
 #define C_OPTIMIZE_SWITCH -Wall -g -O -fno-strict-aliasing
