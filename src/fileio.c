@@ -89,6 +89,8 @@ extern unsigned char vms_file_written[];	/* set in rename_sans_version */
 
 #include "filetypes.h"
 
+extern void make_gap (int);
+
 #ifndef O_WRONLY
 #define O_WRONLY 1
 #endif
