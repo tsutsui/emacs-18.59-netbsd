@@ -66,9 +66,7 @@
 #define UNEXEC_USE_MAP_PRIVATE
 
 #define HAVE_TEXT_START
-#define START_FILES pre-crt0.o /usr/lib/crt0.o /usr/lib/crti.o /usr/lib/crtbegin.o
-#define LIBS_DEBUG
-#define LIBS_SYSTEM -lgcc -lc -lgcc /usr/lib/crtend.o /usr/lib/crtn.o
+#define ORDINARY_LINK
 
 #define LIB_X11_LIB -L/usr/X11R7/lib -Wl,-R/usr/X11R7/lib -lX11
 
