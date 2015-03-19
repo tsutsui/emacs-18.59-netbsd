@@ -36,7 +36,6 @@ Lisp_Object Vlast_kbd_macro;
 Lisp_Object Vexecuting_macro;
 int executing_macro_index;
 
-Lisp_Object Fexecute_kbd_macro ();
 
 DEFUN ("start-kbd-macro", Fstart_kbd_macro, Sstart_kbd_macro, 1, 1, "P",
   "Record subsequent keyboard input, defining a keyboard macro.\n\
@@ -110,6 +109,7 @@ counting the definition just completed as the first repetition.")
 
 /* Store character c into kbd macro being defined */
 
+void
 store_kbd_macro_char (c)
      unsigned char c;
 {
@@ -129,6 +129,7 @@ store_kbd_macro_char (c)
 /* Declare that all chars stored so far in the kbd macro being defined
  really belong to it.  This is done in between editor commands.  */
 
+void
 finalize_kbd_macro_chars ()
 {
   kbd_macro_end = kbd_macro_ptr;

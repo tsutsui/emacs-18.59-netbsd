@@ -68,8 +68,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "dispextern.h"
 #include "lisp.h"
 #include "buffer.h"
+#include "process.h"
 #include "window.h"
 #include "commands.h"
+#ifdef HAVE_X_WINDOWS
+#include "x11term.h"
+#endif
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -185,6 +189,16 @@ extern int num_input_chars;
 
 struct matrix *make_screen_structure ();
 
+void free_screen_structure (struct matrix *);
+int count_blanks (char *);
+void rotate_vector (char *, int, int);
+void safe_bcopy (char *, char *, int);
+int scrolling (void);
+void update_line (int);
+int count_match (char *, char *);
+void change_screen_size_1 (int, int, int, int);
+void bell (void);
+
 remake_screen_structures ()
 {
   int i;
@@ -260,6 +274,7 @@ make_screen_structure (empty)
   return new;
 }
 
+void
 free_screen_structure (matrix)
      struct matrix *matrix;
 {
@@ -342,12 +357,14 @@ line_draw_cost (m, vpos)
 
 /* cancel_line eliminates any request to display a line at position `vpos' */
 
+void
 cancel_line (vpos)
      int vpos;
 {
   new_screen->enable[vpos] = 0;
 }
 
+void
 clear_screen_records ()
 {
   int i;
@@ -470,6 +487,7 @@ scroll_screen_lines (from, end, amount)
 /* Rotate a vector of SIZE bytes, by DISTANCE bytes.
    DISTANCE may be negative.  */
 
+void
 rotate_vector (vector, size, distance)
      char *vector;
      int size;
@@ -487,6 +505,7 @@ rotate_vector (vector, size, distance)
 
 /* Like bcopy except never gets confused by overlap.  */
 
+void
 safe_bcopy (from, to, size)
      char *from, *to;
      int size;
@@ -519,6 +538,7 @@ safe_bcopy (from, to, size)
  from current_screen to new_screen,
  so that update_screen will not change those columns.  */
 
+void
 preserve_other_columns (w)
      struct window *w;
 {
@@ -560,6 +580,7 @@ preserve_other_columns (w)
  so that when the window is displayed over again
  get_display_line will not complain. */
 
+void
 cancel_my_columns (w)
      struct window *w;
 {
@@ -873,6 +894,7 @@ scrolling ()
   return 0;
 }
 
+void
 update_line (vpos)
      int vpos;
 {
@@ -1269,6 +1291,7 @@ window_change_signal ()
 
 /* Do any change in screen size that was requested by a signal.  */
 
+void
 do_pending_window_change ()
 {
   /* If change_screen_size should have run before, run it now.  */
@@ -1295,6 +1318,7 @@ do_pending_window_change ()
    FORCE means finish redisplay now regardless of pending input.
    This is effective only is DELAYED is not set.  */
 
+void
 change_screen_size (newlength, newwidth, pretend, delayed, force)
      register int newlength, newwidth, pretend, delayed, force;
 {
@@ -1316,6 +1340,7 @@ change_screen_size (newlength, newwidth, pretend, delayed, force)
     }
 }
 
+void
 change_screen_size_1 (newlength, newwidth, pretend, force)
      register int newlength, newwidth, pretend, force;
 {
@@ -1396,6 +1421,7 @@ is given.")
   return Qnil;
 }
 
+void
 bell ()
 {
   if (noninteractive)

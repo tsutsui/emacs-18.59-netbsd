@@ -66,6 +66,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 
 #include "lisp.h"
+#include "process.h"
 #include "window.h"
 
 #ifdef HAVE_X_WINDOWS
@@ -649,7 +650,6 @@ the appropriate function to act upon this event.")
 	register char key_mask;
 	register Lisp_Object tempx;
 	register Lisp_Object tempy;
-	extern Lisp_Object get_keyelt ();
 	extern int meta_prefix_char;
 	
 	check_xterm ();
@@ -950,11 +950,13 @@ DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
 	return (Qnil);
 }
 
+void
 XRedrawDisplay ()
 {
 	Fredraw_display ();
 }
 
+void
 XCleanUp ()
 {
 	Fdo_auto_save (Qt);

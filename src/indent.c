@@ -65,6 +65,7 @@ Whether the line is visible (if `selective-display' is t) has no effect.")
 
 /* Cancel any recorded value of the horizontal position.  */
 
+void
 invalidate_current_column ()
 {
   last_known_column_point = 0;

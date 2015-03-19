@@ -87,6 +87,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include "extern.h"
 #endif
 
 #define LD_SWITCH_SYSTEM

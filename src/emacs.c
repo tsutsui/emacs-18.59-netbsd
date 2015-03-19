@@ -30,6 +30,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "lisp.h"
 #undef NULL
 #include "commands.h"
+#include "process.h"
 
 /* Get FIONREAD, if it is available,
    just to help decide whether SIGIO should be defined.  */

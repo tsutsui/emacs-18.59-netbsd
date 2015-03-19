@@ -27,6 +27,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 Lisp_Object Qsyntax_table_p;
 
+int char_quoted (int);
+
 DEFUN ("syntax-table-p", Fsyntax_table_p, Ssyntax_table_p, 1, 1, 0,
   "Return t if ARG is a syntax table.\n\
 Any vector of 256 elements will do.")
@@ -45,7 +47,7 @@ check_syntax_table (obj)
   register Lisp_Object tem;
   while (tem = Fsyntax_table_p (obj),
 	 NULL (tem))
-    obj = wrong_type_argument (Qsyntax_table_p, obj, 0);
+    obj = wrong_type_argument (Qsyntax_table_p, obj);
   return obj;
 }   
 

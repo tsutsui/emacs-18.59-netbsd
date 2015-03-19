@@ -128,8 +128,8 @@ static int readchar (readcharfun)
 #define READCHAR readchar(readcharfun)
 #define UNREAD(c) (unrch = c)
 
-static Lisp_Object read0 (), read1 (), read_list (), read_vector ();
-static int read_escape ();
+static Lisp_Object read0 (Lisp_Object), read1 (Lisp_Object), read_list (int, Lisp_Object), read_vector (Lisp_Object);
+static int read_escape (Lisp_Object);
 
 /* get a character from the tty */
 
@@ -158,8 +158,8 @@ DEFUN ("get-file-char", Fget_file_char, Sget_file_char, 0, 0, 0,
   return val;
 }
 
-static void readevalloop ();
-static Lisp_Object load_unwind ();
+static void readevalloop (Lisp_Object, FILE *, Lisp_Object (*)(), int);
+static Lisp_Object load_unwind (Lisp_Object);
 
 DEFUN ("load", Fload, Sload, 1, 4, 0,
   "Execute a file of Lisp code named FILE.\n\
@@ -479,7 +479,6 @@ STREAM or standard-input may be:\n\
   (readcharfun)
      Lisp_Object readcharfun;
 {
-  extern Lisp_Object Fread_minibuffer ();
 
   unrch = -1;	/* Allow buffering-back only within a read. */
 
@@ -909,8 +908,7 @@ check_obarray (obarray)
   return obarray;
 }
 
-static int hash_string ();
-Lisp_Object oblookup ();
+static int hash_string (unsigned char *, int);
 
 Lisp_Object
 intern (str)
@@ -1224,7 +1222,7 @@ defvar_per_buffer (namestring, address, doc)
   XSET (XSYMBOL (sym)->value, Lisp_Buffer_Objfwd,
 	(Lisp_Object *) offset);
   *(Lisp_Object *)(offset + (char *)&buffer_local_symbols) = sym;
-  if (*(int *)(offset + (char *)&buffer_local_flags) == 0)
+  if (*(Lisp_Object_Int *)(offset + (char *)&buffer_local_flags) == 0)
     /* Did a DEFVAR_PER_BUFFER without initializing the corresponding
        slot of buffer_local_flags */
     abort ();

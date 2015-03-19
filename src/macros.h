@@ -29,3 +29,6 @@ extern int executing_macro_index;
 /* Nonzero while defining a kbd macro */
 
 extern int defining_kbd_macro;
+
+extern void finalize_kbd_macro_chars (void);
+extern void store_kbd_macro_char (unsigned char);

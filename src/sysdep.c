@@ -26,6 +26,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "config.h"
 #include "lisp.h"
 #undef NULL
+#include "cm.h"
 
 #define min(x,y) ((x) > (y) ? (y) : (x))
 
@@ -381,6 +382,7 @@ static struct sensemode {
 #define TABS_OK(str) ((str.tt_char & TT$M_MECHTAB) != 0)
 #endif /* VMS */
 
+void
 discard_tty_input ()
 {
   TERMINAL buf;
@@ -417,6 +419,7 @@ discard_tty_input ()
 
 #ifdef SIGTSTP
 
+void
 stuff_char (c)
      char c;
 {
@@ -430,6 +433,7 @@ stuff_char (c)
 
 #endif /* SIGTSTP */
 
+void
 init_baud_rate ()
 {
   TERMINAL sg;
@@ -455,6 +459,7 @@ init_baud_rate ()
 }
 
 /*ARGSUSED*/
+void
 set_exclusive_use (fd)
      int fd;
 {
@@ -483,6 +488,7 @@ int wait_debugging;   /* Set nonzero to make following function work under dbx
 /* Wait for subprocess with process id `pid' to terminate and
    make sure it will get eliminated (not remain forever as a zombie) */
 
+void
 wait_for_termination (pid)
      int pid;
 {
@@ -568,6 +574,7 @@ wait_for_termination (pid)
  *      (may flush input as well; it does not matter the way we use it)
  */
  
+void
 flush_pending_output (channel)
      int channel;
 {
@@ -589,6 +596,7 @@ flush_pending_output (channel)
     It should not echo or do line-editing, since that is done
     in Emacs.  No padding needed for insertion into an Emacs buffer.  */
 
+void
 child_setup_tty (out)
      int out;
 {
@@ -674,6 +682,7 @@ child_setup_tty (out)
 #endif /* subprocesses */
 
 /*ARGSUSED*/
+void
 setpgrp_of_tty (pid)
      int pid;
 {
@@ -791,6 +800,7 @@ sys_suspend ()
 #endif /* not VMS */
 }
 
+void
 save_signal_handlers (saved_handlers)
      struct save_signal *saved_handlers;
 {
@@ -802,6 +812,7 @@ save_signal_handlers (saved_handlers)
     }
 }
 
+void
 restore_signal_handlers (saved_handlers)
      struct save_signal *saved_handlers;
 {
@@ -824,6 +835,7 @@ init_sigio ()
   request_sigio ();
 }
 
+void
 reset_sigio ()
 {
   unrequest_sigio ();
@@ -831,6 +843,7 @@ reset_sigio ()
 
 #ifdef FASYNC		/* F_SETFL does not imply existance of FASYNC */
 
+void
 request_sigio ()
 {
 #ifdef SIGWINCH
@@ -841,6 +854,7 @@ request_sigio ()
   interrupts_deferred = 0;
 }
 
+void
 unrequest_sigio ()
 {
 #ifdef SIGWINCH
@@ -921,6 +935,7 @@ static struct ltchars new_ltchars = {-1,-1,-1,-1,-1,-1};
   static struct tchars new_tchars = {-1,-1,-1,-1,-1,-1};
 #endif 
 
+void
 init_sys_modes ()
 {
   TERMINAL tty;
@@ -1177,6 +1192,7 @@ init_sys_modes ()
 /* Return nonzero if safe to use tabs in output.
    At the time this is called, init_sys_modes has not been done yet.  */
    
+int
 tabs_safe_p ()
 {
   TERMINAL tty;
@@ -1195,6 +1211,7 @@ tabs_safe_p ()
    Store number of lines into *heightp and width into *widthp.
    If zero or a negative number is stored, the value is not valid.  */
 
+void
 get_screen_size (widthp, heightp)
      int *widthp, *heightp;
 {
@@ -1232,6 +1249,7 @@ get_screen_size (widthp, heightp)
 #endif /* not TIOCGWINSZ */
 }
 
+void
 reset_sys_modes ()
 {
   if (noninteractive)
@@ -1311,6 +1329,7 @@ reset_sys_modes ()
 
 /* Set up the proper status flags for use of a pty.  */
 
+void
 setup_pty (fd)
      int fd;
 {

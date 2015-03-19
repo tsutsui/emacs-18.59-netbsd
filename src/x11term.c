@@ -270,8 +270,14 @@ static struct _xdeftab xDefaultsValueTable[]
 
 int (*handler)();
 
-static void x_init_1 ();
-static int XInitWindow ();
+static void x_init_1 (void);
+static int XInitWindow (void);
+void XTmove_cursor (int, int);
+void x_clear_end_of_line (int);
+void XTclear_screen (void);
+void stufflines (int);
+void scraplines (int);
+int internal_socket_read(unsigned char *, int);
 
 /* HLmode -- Changes the GX function for output strings.  Could be used to
  * change font.  Check an XText library function call.
@@ -334,6 +340,7 @@ XTset_terminal_modes ()
  * update is in progress in order to toggle it on.
  */
 
+void
 XTmove_cursor (row, col)
      register int row, col;
 {
@@ -427,6 +434,7 @@ XTclear_end_of_line (end)
 /* Erase current line from column START to right margin.
    Leave cursor at START.  */
 
+void
 x_clear_end_of_line (start)
      register int start;
 {
@@ -475,6 +483,7 @@ XTreset_terminal_modes ()
 	XTclear_screen ();
 }
 
+void
 XTclear_screen ()
 {
 	BLOCK_INPUT_DECLARE ();
@@ -1037,6 +1046,7 @@ XTdelete_chars (n)
 	updateline (0);
 }
 
+void
 stufflines (n)
      register int n;
 {
@@ -1077,6 +1087,7 @@ stufflines (n)
 	UNBLOCK_INPUT ();
 }
 
+void
 scraplines (n)
      register int n;
 {
@@ -1549,6 +1560,7 @@ XIgnoreError ()
 
 static int server_ping_timer;
 
+void
 xfixscreen ()
 {
 	BLOCK_INPUT_DECLARE ();
@@ -1703,12 +1715,13 @@ x_io_error_handler ()
   int save_errno = errno;
   if (errno == EPIPE)
     kill (0, SIGHUP);
-  Fdo_auto_save ();
+  Fdo_auto_save (0);
   errno = save_errno;
   perror ("Fatal X-windows I/O error");
   kill (0, SIGILL);
 }
 
+void
 x_term_init ()
 {
 	register char *vardisplay;
@@ -2146,11 +2159,13 @@ x_init_1 ()
 	Fset_input_mode (Qt, Qnil, Qnil);
 }
 
+void
 XSetFlash ()
 {
 	ring_bell_hook = XTflash;
 }
 
+void
 XSetFeep ()
 {
 	ring_bell_hook = XTfeep;
@@ -2220,6 +2235,7 @@ XNewFont (newname)
 
 /* Flip foreground/background colors */
 
+void
 XFlipColor ()
 {
 	Lisp_Object_Int tempcolor;
@@ -2586,6 +2602,7 @@ XT_Set_WM_Hints(w)
 /* ------------------------------------------------------------
  *  Change just the size of the window.
  */
+void
 XSetWindowSize(rows, cols)
     int rows, cols;
 {

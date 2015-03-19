@@ -32,6 +32,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "termhooks.h"
 #include "lisp.h"
 #include "macros.h"
+#include "process.h"
 #include "window.h"
 #include "commands.h"
 #include "buffer.h"
@@ -237,10 +238,16 @@ int flow_control;
 #endif
 
 /* Function for init_keyboard to call with no args (if nonzero).  */
-void (*keyboard_init_hook) ();
+void (*keyboard_init_hook) (void);
 
-static void read_avail_input ();
-static void get_input_pending ();
+static void read_avail_input (int);
+static void get_input_pending (int *);
+
+void echo (void);
+int read_key_sequence (char *, int, unsigned char *, int);
+int kbd_buffer_read_command_char (void);
+void input_available_signal (int);
+void interrupt_signal (void);
 
 /* Non-zero tells input_available_signal to call read_socket_hook
    even if FIONREAD returns zero.  */
@@ -279,8 +286,6 @@ echo_prompt (str)
 echo_char (c)
      int c;
 {
-  extern char *push_key_description ();
-
   if (immediate_echo)
     {
       char *ptr = echoptr;
@@ -324,6 +329,7 @@ echo_dash ()
 /* Display the current echo string, and begin echoing if not already
    doing so.  */
 
+void
 echo ()
 {
   if (!immediate_echo)
@@ -353,12 +359,13 @@ cancel_echoing ()
 }
 
 /* When an auto-save happens, record the "time", and don't do again soon.  */
+void
 record_auto_save ()
 {
   last_auto_save = num_input_chars;
 }
 
-Lisp_Object recursive_edit_unwind (), command_loop ();
+Lisp_Object recursive_edit_unwind (Lisp_Object), command_loop (void);
 
 DEFUN ("recursive-edit", Frecursive_edit, Srecursive_edit, 0, 0, "",
   "Invoke the editor command loop recursively.\n\
@@ -491,10 +498,9 @@ cmd_error (data)
   return make_number (0);
 }
 
-Lisp_Object command_loop_1 ();
-Lisp_Object command_loop_2 ();
-Lisp_Object cmd_error ();
-Lisp_Object top_level_1 ();
+Lisp_Object command_loop_2 (void);
+Lisp_Object cmd_error (Lisp_Object);
+Lisp_Object top_level_1 (void);
 
 /* Entry to editor-command-loop.
    This level has the catches for exiting/returning to editor command loop.
@@ -580,8 +586,6 @@ DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 
 
 /* This is the actual command reading loop,
  sans error-handling encapsulation */
-
-Lisp_Object Fcommand_execute ();
 
 Lisp_Object
 command_loop_1 ()
@@ -793,7 +797,7 @@ command_loop_1 ()
 
 /* Input of single characters from keyboard */
 
-Lisp_Object print_help ();
+Lisp_Object print_help (Lisp_Object);
 
 int echo_flag;
 int echo_now;
@@ -861,6 +865,7 @@ input_poll_signal ()
 /* Begin signals to poll for input, if they are appropriate.
    This function is called unconditionally from various places.  */
 
+void
 start_polling ()
 {
 #ifdef POLL_FOR_INPUT
@@ -879,6 +884,7 @@ start_polling ()
 
 /* Turn off polling.  */
 
+void
 stop_polling ()
 {
 #ifdef POLL_FOR_INPUT
@@ -1771,6 +1777,7 @@ detect_input_pending ()
 /* This is called in some cases before a possible quit.
    It cases the next call to detect_input_pending to recompute input_pending.
    So calling this function unnecessarily can't do any harm.  */
+void
 clear_input_pending ()
 {
   input_pending = 0;
@@ -1872,7 +1879,6 @@ Otherwise, suspend normally and after resumption call\n\
   int old_height, old_width;
   int width, height;
   struct gcpro gcpro1;
-  extern init_sys_modes ();
 
   if (!NULL (stuffstring))
     CHECK_STRING (stuffstring, 0);
@@ -1917,6 +1923,7 @@ Otherwise, suspend normally and after resumption call\n\
 /* If STUFFSTRING is a string, stuff its contents as pending terminal input.
    Then in any case stuff anthing Emacs has read ahead and not used.  */
 
+void
 stuff_buffered_input (stuffstring)
      Lisp_Object stuffstring;
 {
@@ -1946,6 +1953,7 @@ stuff_buffered_input (stuffstring)
 #endif /* BSD and not BSD4_1 */
 }
 
+void
 set_waiting_for_input (word_to_clear)
      long *word_to_clear;
 {
@@ -1970,6 +1978,7 @@ set_waiting_for_input (word_to_clear)
     }
 }
 
+void
 clear_waiting_for_input ()
 {
   /* Tell interrupt_signal not to throw back to read_command_char,  */
@@ -2078,6 +2087,7 @@ interrupt_signal ()
 
 /* Handle a C-g by making read_command_char return C-g.  */
 
+void
 quit_throw_to_read_command_char ()
 {
   quit_error_check ();

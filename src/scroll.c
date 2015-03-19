@@ -50,12 +50,17 @@ struct matrix_elt
 /* This exceeds the sum of any reasonable number of INFINITY's.  */
 #define SUPER_INFINITY (1000 * INFINITY)
 
+void calculate_scrolling (struct matrix_elt *, int, int, int *, int *, int *, int);
+void do_scrolling (struct matrix_elt *,int, int);
+void CalcIDCosts1 (char *, char *, char *, char *, int *, int *, int);
+
 /* See CalcIDCosts for on the arrays below */
 int *ILcost;
 int *DLcost;
 int *ILncost;
 int *DLncost;
 
+void
 scrolling_1 (window_size, unchanged_at_top, unchanged_at_bottom,
 	     draw_cost, old_hash, new_hash, free_at_end)
      int window_size, unchanged_at_top, unchanged_at_bottom;
@@ -91,6 +96,7 @@ scrolling_1 (window_size, unchanged_at_top, unchanged_at_bottom,
    to the place at which the first mismatch between old and
    new contents appears.  */
 
+void
 calculate_scrolling (matrix, window_size, lines_below,
 		     draw_cost, old_hash, new_hash,
 		     free_at_end)
@@ -224,6 +230,7 @@ calculate_scrolling (matrix, window_size, lines_below,
  according to the costs in the matrix.
  Updates the contents of current_screen to record what was done. */
 
+void
 do_scrolling (matrix, window_size, unchanged_at_top)
      struct matrix_elt *matrix;
      int window_size;
@@ -427,6 +434,7 @@ scroll_cost (from, to, amount)
    Deletion is essentially the same as insertion.
  */
 
+void
 CalcIDCosts (ins_line_string, multi_ins_string,
 	     del_line_string, multi_del_string,
 	     setup_string, cleanup_string)
@@ -462,6 +470,7 @@ CalcIDCosts (ins_line_string, multi_ins_string,
 		DLcost, DLncost, 0);
 }
 
+void
 CalcIDCosts1 (one_line_string, multi_string,
 	      setup_string, cleanup_string,
 	      costvec, ncostvec, extra)
@@ -489,6 +498,7 @@ CalcIDCosts1 (one_line_string, multi_string,
 }
 
 /* Calculate the line ID overhead and multiply factor values */
+void
 CalcLID (ov1, pf1, ovn, pfn, ov, mf)
      int ov1, ovn;
      int pf1, pfn;

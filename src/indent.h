@@ -27,5 +27,8 @@ struct position
     int contin;
   };
 
-struct position *compute_motion ();
-struct position *vmotion ();
+struct position *compute_motion (Lisp_Object_Int, int, int, Lisp_Object_Int, Lisp_Object_Int, Lisp_Object_Int, Lisp_Object_Int, Lisp_Object_Int, int);
+void invalidate_current_column (void);
+int position_indentation (int);
+int pos_tab_offset (struct window *, int);
+struct position *vmotion (int, int, int, int, Lisp_Object);

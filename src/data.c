@@ -56,7 +56,7 @@ wrong_type_argument (predicate, value)
 	{
 	 if (XTYPE (value) == Lisp_String &&
 	     (EQ (predicate, Qintegerp) || EQ (predicate, Qinteger_or_marker_p)))
-	   return Fstring_to_int (value, Qt);
+	   return Fstring_to_int (value);
 	 if (XTYPE (value) == Lisp_Int && EQ (predicate, Qstringp))
 	   return Fint_to_string (value);
 	}

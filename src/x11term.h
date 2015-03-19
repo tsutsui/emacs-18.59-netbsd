@@ -20,3 +20,15 @@
 
 extern char *black_color;
 extern char *white_color;
+
+extern void xfixscreen (void);
+extern int x_set_cursor_colors (void);
+extern void x_term_init (void);
+extern int CursorToggle (void);
+extern void XCleanUp (void);
+extern void XFlipColor (void);
+extern int XNewFont (char *);
+extern void XRedrawDisplay (void);
+extern void XSetFeep (void);
+extern void XSetFlash (void);
+extern void XSetWindowSize(int, int);

@@ -182,7 +182,7 @@ Symbols are also allowed; their print names are used instead.")
   return i < XSTRING (s2)->size ? Qt : Qnil;
 }
 
-static Lisp_Object concat ();
+static Lisp_Object concat (int, Lisp_Object *, enum Lisp_Type, int);
 
 /* ARGSUSED */
 Lisp_Object
@@ -635,7 +635,7 @@ See also the function  nreverse, which is used more often.")
   return Flist (XINT (length), vec);
 }
 
-Lisp_Object merge ();
+Lisp_Object merge (Lisp_Object, Lisp_Object, Lisp_Object);
 
 DEFUN ("sort", Fsort, Ssort, 2, 2, 0,
   "Sort LIST, stably, comparing elements using PREDICATE.\n\

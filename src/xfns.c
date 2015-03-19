@@ -641,7 +641,6 @@ the appropriate function to act upon this event.")
   register char key_mask;
   register Lisp_Object tempx;
   register Lisp_Object tempy;
-  extern Lisp_Object get_keyelt ();
 
   check_xterm ();
   if (unloadxrepbuffer (&xrep, &Xxrepbuffer) == 0) 
@@ -692,7 +691,6 @@ otherwise, wait for an event.")
 
   register Lisp_Object tempx;
   register Lisp_Object tempy;
-  extern Lisp_Object get_keyelt ();
 
   check_xterm ();
 

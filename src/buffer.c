@@ -34,6 +34,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "commands.h"
 #include "buffer.h"
 #include "syntax.h"
+#include "process.h"
 
 struct buffer *current_buffer;		/* the current buffer */
 
@@ -81,8 +82,6 @@ struct buffer buffer_local_symbols;
 /* A Lisp_Object pointer to the above, used for staticpro */
 static Lisp_Object Vbuffer_local_symbols;
 
-Lisp_Object Fset_buffer ();
-
 /* Alist of all buffer names vs the buffers. */
 /* This used to be a variable, but is no longer,
  to prevent lossage due to user rplac'ing this alist or its elements.  */
@@ -94,6 +93,8 @@ Lisp_Object QSFundamental;	/* A string "Fundamental" */
 
 /* For debugging; temporary.  See set_buffer_internal.  */
 /* Lisp_Object Qlisp_mode, Vcheck_symbol; */
+
+void reset_buffer_local_variables (struct buffer *);
 
 nsberror (spec)
      Lisp_Object spec;
@@ -246,6 +247,7 @@ reset_buffer (b)
   reset_buffer_local_variables(b);
 }
 
+void
 reset_buffer_local_variables(b)
      register struct buffer *b;
 {
@@ -632,6 +634,7 @@ with `delete-process'.")
  It keeps buffer-alist in the order of recency of selection
  so that other_buffer will return something nice.  */
 
+void
 record_buffer (buf)
      Lisp_Object buf;
 {
@@ -787,6 +790,7 @@ extern int last_known_column_point;
 /* Set the current buffer to B, which is a C pointer,
    rather than a Lisp object.  */
 
+void
 set_buffer_internal (b)
      register struct buffer *b;
 {
@@ -908,6 +912,7 @@ DEFUN ("erase-buffer", Ferase_buffer, Serase_buffer, 0, 0, 0,
   return Qnil;
 }
 
+void
 validate_region (b, e)
      register Lisp_Object *b, *e;
 {

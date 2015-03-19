@@ -42,6 +42,7 @@ static dummy () {}
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #endif /* HAVE_SOCKETS */
 
 #if defined(BSD) || defined(STRIDE)
@@ -272,7 +273,7 @@ Lisp_Object Vprocess_alist;
 
 Lisp_Object Qprocessp;
 
-Lisp_Object get_process ();
+Lisp_Object get_process (Lisp_Object);
 
 /* Buffered-ahead input char from process, indexed by channel.
    -1 means empty (no char is buffered).
@@ -290,6 +291,13 @@ Lisp_Object filter_process, filter_string;
 
 /* Compute the Lisp form of the process status, p->status,
    from the numeric status that was returned by `wait'.  */
+
+Lisp_Object status_convert (WAITTYPE);
+void deactivate_process (Lisp_Object);
+void status_notify (void);
+void create_process (Lisp_Object, char **);
+int read_process_output (Lisp_Object, int);
+void exec_sentinel (Lisp_Object, Lisp_Object);
 
 update_status (p)
      struct Lisp_Process *p;
@@ -1048,6 +1056,7 @@ create_process_sigchld ()
 #endif
 #endif
 
+void
 create_process (process, new_argv)
      Lisp_Object process;
      char **new_argv;
@@ -1477,6 +1486,7 @@ Fourth arg SERVICE is name of the service desired, or an integer\n\
 }
 #endif	/* HAVE_SOCKETS */
 
+void
 deactivate_process (proc)
      Lisp_Object proc;
 {
@@ -1505,6 +1515,7 @@ deactivate_process (proc)
    with subprocess.  This is used in a newly-forked subprocess
    to get rid of irrelevant descriptors.  */
 
+void
 close_process_descs ()
 {
   int i;
@@ -1568,6 +1579,7 @@ static int waiting_for_user_input_p;
  do_display means redisplay should be done to show
  subprocess output that arrives.  */
 
+void
 wait_reading_process_input (time_limit, read_kbd, do_display)
      int time_limit;
      Lisp_Object_Int read_kbd;
@@ -2408,6 +2420,7 @@ nil or no arg means current buffer's process.")
 /* Kill all processes associated with `buffer'.
  If `buffer' is nil, kill all processes  */
 
+void
 kill_buffer_processes (buffer)
      Lisp_Object buffer;
 {
@@ -2575,6 +2588,7 @@ sigchld_handler (signo)
    (either run the sentinel or output a message).
    This is done while Emacs is waiting for keyboard input.  */
 
+void
 status_notify ()
 {
   register Lisp_Object proc, buffer;
@@ -2675,6 +2689,7 @@ status_notify ()
   UNGCPRO;
 }
 
+void
 exec_sentinel (proc, reason)
      Lisp_Object proc, reason;
 {

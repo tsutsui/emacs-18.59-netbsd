@@ -863,7 +863,7 @@ Argument is a command definition, usually a symbol with a function definition.")
   return Qnil;
 }
 
-Lisp_Object describe_buffer_bindings ();
+Lisp_Object describe_buffer_bindings (Lisp_Object);
 
 DEFUN ("describe-bindings", Fdescribe_bindings, Sdescribe_bindings, 0, 0, "",
   "Show a list of all defined keys, and their definitions.\n\
@@ -912,6 +912,7 @@ describe_buffer_bindings (descbuf)
    (such as `undefined').
    If SHADOW is non-nil, don't mention keys which would be shadowed by it */
 
+void
 describe_map_tree (startmap, partial, shadow)
      Lisp_Object startmap, shadow;
      int partial;
@@ -972,6 +973,7 @@ describe_command (definition)
    itself is reached by the sequence of prefix keys STRING (a string).
    PARTIAL and SHADOW are the same as in `describe_map_tree' above.  */
 
+void
 describe_map (map, string, partial, shadow)
      Lisp_Object map, string;
      int partial;
@@ -992,6 +994,7 @@ describe_map (map, string, partial, shadow)
 		     partial, shadow);
 }
 
+void
 describe_alist (alist, elt_prefix, elt_describer, partial, shadow)
      register Lisp_Object alist;
      Lisp_Object elt_prefix;
@@ -1048,6 +1051,7 @@ describe_alist (alist, elt_prefix, elt_describer, partial, shadow)
     }
 }
 
+void
 describe_vector (vector, elt_prefix, elt_describer, partial, shadow)
      register Lisp_Object vector;
      Lisp_Object elt_prefix;

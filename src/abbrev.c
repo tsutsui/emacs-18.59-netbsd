@@ -75,7 +75,6 @@ Lisp_Object Vlast_abbrev_text;
 
 int last_abbrev_point;
 
-extern Lisp_Object oblookup ();
 
 DEFUN ("make-abbrev-table", Fmake_abbrev_table, Smake_abbrev_table, 0, 0, 0,
   "Create a new, empty abbrev table object.")

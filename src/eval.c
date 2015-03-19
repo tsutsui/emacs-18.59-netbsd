@@ -115,10 +115,7 @@ int debug_on_quit;
 
 Lisp_Object Vdebugger;
 
-void specbind (), unbind_to (), record_unwind_protect ();
-
-Lisp_Object funcall_lambda ();
-extern Lisp_Object ml_apply (); /* Apply a mocklisp function to unevaluated argument list */
+Lisp_Object funcall_lambda (Lisp_Object, int, Lisp_Object *);
 
 init_eval_once ()
 {
@@ -1012,7 +1009,7 @@ internal_condition_case (bfun, handlers, hfun)
   return val;
 }
 
-static Lisp_Object find_handler_clause ();
+static Lisp_Object find_handler_clause (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object *);
 
 DEFUN ("signal", Fsignal, Ssignal, 2, 2, 0,
   "Signal an error.  Args are SIGNAL-NAME, and associated DATA.\n\
@@ -1240,6 +1237,7 @@ un_autoload (oldqueue)
   return Qnil;
 }
 
+void
 do_autoload (fundef, funname)
      Lisp_Object fundef, funname;
 {

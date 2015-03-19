@@ -158,10 +158,8 @@ extern Lisp_Object selected_window;
    when the minibuffer is selected.  */
 extern Lisp_Object Vminibuf_scroll_window;
 
-extern Lisp_Object Fnext_window ();
-extern Lisp_Object Fselect_window ();
-extern Lisp_Object Fdisplay_buffer ();
-extern Lisp_Object Fset_window_buffer ();
+extern void set_window_height (Lisp_Object, int, int);
+extern void set_window_width (Lisp_Object, int, int);
 
 /* Prompt to display in front of the minibuffer contents.  */
 extern char *minibuf_prompt;

@@ -66,8 +66,11 @@ static struct re_registers search_regs;
 
 Lisp_Object Qinvalid_regexp;
 
+void skip_chars (int, Lisp_Object, Lisp_Object);
+
 /* Compile a regexp and signal a Lisp error if anything goes wrong.  */
 
+void
 compile_pattern (pattern, bufp, translate)
      Lisp_Object pattern;
      struct re_pattern_buffer *bufp;
@@ -196,6 +199,7 @@ matched by parenthesis constructs in the pattern.")
   return make_number (val);
 }
 
+int
 scan_buffer (target, pos, cnt, shortage)
      int *shortage, pos;
      register int cnt, target;
@@ -302,6 +306,7 @@ See skip-chars-forward for details.")
   return Qnil;
 }
 
+void
 skip_chars (forwardp, string, lim)
      int forwardp;
      Lisp_Object string, lim;
@@ -1174,7 +1179,7 @@ LIST should have been created by calling match-data previously.")
   register Lisp_Object marker;
 
   if (!CONSP (list) && !NULL (list))
-    list = wrong_type_argument (Qconsp, list, 0);
+    list = wrong_type_argument (Qconsp, list);
 
   for (i = 0; i < RE_NREGS; i++)
     {

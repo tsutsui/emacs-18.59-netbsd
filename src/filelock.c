@@ -40,10 +40,20 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef USG
 #include <fcntl.h>
 #endif /* USG */
+#ifdef POSIX_SIGNALS
+#include <signal.h>
+#endif
 
 #include "filetypes.h"
 
 extern int errno;
+
+void fill_in_lock_file_name (char *l, Lisp_Object);
+int lock_if_free (char *);
+void lock_superlock (char *);
+int lock_file_1 (char *, int);
+int current_lock_owner (char *);
+int current_lock_owner_1 (char *);
 
 #ifdef VMS
 /* Prevent the file from being totally empty.  */
@@ -153,6 +163,7 @@ lock_file (fn)
   /* User says ignore the lock */
 }
 
+void
 fill_in_lock_file_name (lockfile, fn)
      register char *lockfile;
      register Lisp_Object fn;
@@ -312,6 +323,7 @@ unlock_file (fn)
   unlink (PATH_SUPERLOCK);
 }
 
+void
 lock_superlock (lfname)
      char *lfname;
 {
@@ -387,6 +399,7 @@ if it should normally be locked.")
 
 /* Unlock the file visited in buffer BUFFER.  */
 
+void
 unlock_buffer (buffer)
      struct buffer *buffer;
 {

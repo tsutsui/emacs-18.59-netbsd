@@ -196,6 +196,7 @@ set_marker_restricted (marker, pos, buffer)
  so we must be careful to ignore and preserve mark bits,
  including those in chain fields of markers.  */
 
+void
 unchain_marker (marker)
      register Lisp_Object marker;
 {
@@ -241,6 +242,7 @@ unchain_marker (marker)
   XMARKER (marker)->buffer = 0;
 }
 
+int
 marker_position (marker)
      Lisp_Object marker;
 {

@@ -104,6 +104,7 @@ addcol (n) {
  * out of <sgtty.h>.)
  */
 
+void
 cmcostinit ()
 {
     char *p;
@@ -266,6 +267,7 @@ done:
     return totalcost;
 }
 
+void
 losecursor ()
 {
   curY = -1;
@@ -276,6 +278,7 @@ losecursor ()
 #define	USELL	2
 #define	USECR	3
 
+void
 cmgoto (row, col)
 {
     int     homecost,
@@ -377,6 +380,7 @@ cmgoto (row, col)
    Used before copying into it the info on the actual terminal.
  */
 
+void
 Wcm_clear ()
 {
   bzero (&Wcm, sizeof Wcm);

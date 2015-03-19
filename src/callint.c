@@ -32,9 +32,6 @@ Lisp_Object Vprefix_arg, Vcurrent_prefix_arg, Qminus;
 Lisp_Object Qcall_interactively;
 Lisp_Object Vcommand_history;
 
-extern Lisp_Object ml_apply ();
-extern Lisp_Object Fread_buffer (), Fread_key_sequence (), Fread_file_name ();
-
 /* This comment supplies the doc string for interactive,
    for make-docfile to see.  We cannot put this in the real DEFUN
    due to limits in the Unix cpp.
@@ -183,7 +180,7 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
       if (!string)
 	{
 	lose:
-	  function = wrong_type_argument (Qcommandp, function, 0);
+	  function = wrong_type_argument (Qcommandp, function);
 	  goto retry;
 	}
       else if ((int) string == 1)

@@ -251,7 +251,6 @@ self_insert_internal (c1, noautofill)
      char c1;
      int noautofill;
 {
-  extern Lisp_Object Fexpand_abbrev ();
   int hairy = 0;
   Lisp_Object tem;
   register enum syntaxcode synt;

@@ -108,7 +108,7 @@ int debug_end_pos;
 /* Nonzero means display mode line highlighted */
 int mode_line_inverse_video;
 
-struct position *display_text_line ();
+struct position *display_text_line (struct window *, Lisp_Object_Int, Lisp_Object_Int, Lisp_Object_Int, int);
 
 /* Prompt to display in front of the minibuffer contents */
 char *minibuf_prompt;
@@ -148,7 +148,18 @@ int clip_changed;
  since last redisplay that finished */
 int windows_or_buffers_changed;
 
-char *decode_mode_spec ();
+char *decode_mode_spec (struct window *, char, int);
+void mark_window_display_accurate (Lisp_Object, int);
+void display_echo_area_contents (void);
+void redisplay_all_windows (void);
+void redisplay_window (Lisp_Object, int);
+void redisplay_windows (Lisp_Object);
+void try_window (Lisp_Object, int);
+int try_window_id (Lisp_Object);
+void display_mode_line (struct window *);
+Lisp_Object_Int display_string (struct window *, int, unsigned char *, int, char, Lisp_Object_Int, Lisp_Object_Int);
+int display_mode_element (struct window *, int, int, int, int, int, Lisp_Object);
+
 
 DEFUN ("redraw-display", Fredraw_display, Sredraw_display, 0, 0, "",
   "Clear the screen and output again what is supposed to appear on it.")
@@ -178,7 +189,9 @@ int message_buf_print;
 
 /* dump an informative message to the minibuf */
 /* VARARGS 1 */
+void
 message (m, a1, a2, a3)
+     Lisp_Object_Int a1, a2, a3;
      char *m;
 {
   if (noninteractive)
@@ -214,6 +227,7 @@ message (m, a1, a2, a3)
 }
 
 /* Specify m, a string, as a message in the minibuf.  */
+void
 message1 (m)
      char *m;
 {
@@ -237,6 +251,7 @@ message1 (m)
     }
 }
 
+void
 display_echo_area_contents ()
 {
   register Lisp_Object_Int vpos;
@@ -295,6 +310,7 @@ display_echo_area_contents ()
    See Fcall_process; if you called it from here, it could be
    entered recursively.  */
 
+void
 redisplay ()
 {
   register struct window *w = XWINDOW (selected_window);
@@ -529,6 +545,7 @@ redisplay_preserve_echo_area ()
     redisplay ();
 }
 
+void
 mark_window_display_accurate (window, flag)
      Lisp_Object window;
      int flag;
@@ -572,6 +589,7 @@ int do_id = 1;
 
 /* Entry point to redisplay all windows */
 
+void
 redisplay_all_windows ()
 {
   buffer_shared = 0;
@@ -579,6 +597,7 @@ redisplay_all_windows ()
   redisplay_windows (XWINDOW (minibuf_window)->prev);
 }
 
+void
 redisplay_windows (window)
      Lisp_Object window;
 {
@@ -586,6 +605,7 @@ redisplay_windows (window)
     redisplay_window (window, 0);
 }
 
+void
 redisplay_window (window, just_this_one)
      Lisp_Object window;
      int just_this_one;
@@ -831,6 +851,7 @@ done:
 /* Do full redisplay on one window,
    starting at position `pos'.  */
 
+void
 try_window (window, pos)
      Lisp_Object window;
      register int pos;
@@ -1573,6 +1594,7 @@ display_text_line (w, start, vpos, hpos, taboffset)
 
 /* Display the mode line for window w */
 
+void
 display_mode_line (w)
      struct window *w;
 {
@@ -1959,6 +1981,7 @@ decode_mode_spec (w, c, maxwidth)
 
   Returns ending hpos */
 
+Lisp_Object_Int
 display_string (w, vpos, string, hpos, truncate, mincol, maxcol)
      struct window *w;
      int vpos;

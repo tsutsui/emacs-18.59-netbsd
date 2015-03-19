@@ -68,6 +68,7 @@ what you give them.   Help stamp out software-hoarding!  */
 /* This must precede sys/signal.h on certain machines.  */
 #include <sys/types.h>
 #include <signal.h>
+#include <stdint.h>
 #else
 
 /* Determine which kind of system this is.  */
@@ -211,7 +212,8 @@ static int gotpool;
 
 char *_malloc_base;
 
-static void getpool ();
+static void getpool (void);
+void get_lim_data (void);
 
 /* Cause reinitialization based on job parameters;
   also declare where the end of pure storage is. */
@@ -320,8 +322,8 @@ morecore (nu)			/* ask system for more memory */
 	break;
       }
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
-    sbrk (1024 - ((int) cp & 0x3ff));
+  if ((uintptr_t) cp & 0x3ff)	/* land on 1K boundaries */
+    sbrk (1024 - ((uintptr_t) cp & 0x3ff));
 #endif /* not VMS */
 
  /* Take at least 2k, and figure out how many blocks of the desired size
@@ -343,9 +345,9 @@ morecore (nu)			/* ask system for more memory */
   malloc_sbrk_unused = lim_data - siz;
 
 #ifndef VMS
-  if ((int) cp & 7)
+  if ((uintptr_t) cp & 7)
     {		/* shouldn't happen, but just in case */
-      cp = (char *) (((int) cp + 8) & ~7);
+      cp = (char *) (((uintptr_t) cp + 8) & ~7);
       nblks--;
     }
 #endif /* not VMS */
@@ -376,8 +378,8 @@ getpool ()
   register int nu;
   register char *cp = sbrk (0);
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
-    sbrk (1024 - ((int) cp & 0x3ff));
+  if ((uintptr_t) cp & 0x3ff)	/* land on 1K boundaries */
+    sbrk (1024 - ((uintptr_t) cp & 0x3ff));
 
   /* Record address of start of space allocated by malloc.  */
   if (_malloc_base == 0)
@@ -638,10 +640,10 @@ memalign (alignment, size)
   if (ptr == 0)
     return 0;
   /* If entire block has the desired alignment, just accept it.  */
-  if (((int) ptr & (alignment - 1)) == 0)
+  if (((uintptr_t) ptr & (alignment - 1)) == 0)
     return ptr;
   /* Otherwise, get address of byte in the block that has that alignment.  */
-  aligned = (char *) (((int) ptr + alignment - 1) & -alignment);
+  aligned = (char *) (((uintptr_t) ptr + alignment - 1) & -alignment);
 
   /* Store a suitable indication of how to free the block,
      so that free can find the true beginning of it.  */
@@ -746,6 +748,7 @@ malloc_mem_free ()
 
 #ifdef USG
 
+void
 get_lim_data ()
 {
   extern long ulimit ();

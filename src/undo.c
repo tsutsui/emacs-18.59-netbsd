@@ -25,11 +25,14 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* Last buffer for which undo information was recorded.  */
 Lisp_Object last_undo_buffer;
 
+void record_first_change (void);
+
 /* Record an insertion that just happened or is about to happen,
    for LENGTH characters at position BEG.
    (It is possible to record an insertion before or after the fact
    because we don't need to record the contents.)  */
 
+void
 record_insert (beg, length)
      Lisp_Object beg, length;
 {
@@ -68,6 +71,7 @@ record_insert (beg, length)
 /* Record that a deletion is about to take place,
    for LENGTH characters at location BEG.  */
 
+void
 record_delete (beg, length)
      int beg, length;
 {
@@ -97,6 +101,7 @@ record_delete (beg, length)
    for LENGTH characters at location BEG.
    The replacement does not change the number of characters.  */
 
+void
 record_change (beg, length)
      int beg, length;
 {
@@ -108,6 +113,7 @@ record_change (beg, length)
    Record the file modification date so that when undoing this entry
    we can tell whether it is obsolete because the file was saved again.  */
 
+void
 record_first_change ()
 {
   Lisp_Object high, low;
