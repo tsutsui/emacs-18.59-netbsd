@@ -78,9 +78,9 @@ Lisp_Object memory_exhausted_message;
 
 #ifndef HAVE_SHM
 #ifdef VMS
-int pure[PURESIZE / sizeof (int)];	/*no need to initialize - wasted space*/
+Lisp_Object_Int pure[PURESIZE / sizeof (Lisp_Object)];	/*no need to initialize - wasted space*/
 #else
-int pure[PURESIZE / sizeof (int)] = {0,};   /* Force it into data space! */
+Lisp_Object_Int pure[PURESIZE / sizeof (Lisp_Object)] = {0,};   /* Force it into data space! */
 #endif	/* NOT VMS */
 #define PUREBEG (char *) pure
 #else
@@ -195,7 +195,7 @@ init_cons ()
 free_cons (ptr)
      struct Lisp_Cons *ptr;
 {
-  XFASTINT (ptr->car) = (int) cons_free_list;
+  XFASTINT (ptr->car) = (Lisp_Object_Int) cons_free_list;
   cons_free_list = ptr;
 }
 
@@ -256,7 +256,7 @@ DEFUN ("make-list", Fmake_list, Smake_list, 2, 2, 0,
      register Lisp_Object length, init;
 {
   register Lisp_Object val;
-  register int size;
+  register Lisp_Object_Int size;
 
   if (XTYPE (length) != Lisp_Int || XINT (length) < 0)
     length = wrong_type_argument (Qnatnump, length);
@@ -277,7 +277,8 @@ DEFUN ("make-vector", Fmake_vector, Smake_vector, 2, 2, 0,
   (length, init)
      register Lisp_Object length, init;
 {
-  register int sizei, index;
+  Lisp_Object_Int sizei;
+  register int  index;
   register Lisp_Object vector;
   register struct Lisp_Vector *p;
 
@@ -480,13 +481,13 @@ DEFUN ("make-marker", Fmake_marker, Smake_marker, 0, 0, 0,
 struct string_block_head
   {
     struct string_block *next, *prev;
-    int pos;
+    Lisp_Object_Int pos;
   };
 
 struct string_block
   {
     struct string_block *next, *prev;
-    int pos;
+    Lisp_Object_Int pos;
     char chars[STRING_BLOCK_SIZE];
   };
 
@@ -506,7 +507,7 @@ struct string_block *large_string_blocks;
    the string occupies in a string_block (including padding).  */
 
 #define STRING_FULLSIZE(SIZE)   \
-(((SIZE) + 2 * sizeof (int)) & ~(sizeof (int) - 1))
+(((SIZE) + 2 * sizeof (Lisp_Object)) & ~(sizeof (Lisp_Object) - 1))
 
 void
 init_strings ()
@@ -550,7 +551,7 @@ make_string (contents, length)
      int length;
 {
   register Lisp_Object val;
-  val = make_uninit_string (length, 0);
+  val = make_uninit_string (length);
   bcopy (contents, XSTRING (val)->data, length);
   return val;
 }
@@ -626,7 +627,7 @@ make_pure_string (data, length)
      int length;
 {
   register Lisp_Object new;
-  register int size = sizeof (int) + length + 1;
+  register int size = sizeof (Lisp_Object) + length + 1;
 
   if (pureptr + size > PURESIZE)
     error ("Pure Lisp storage exhausted");
@@ -634,8 +635,8 @@ make_pure_string (data, length)
   XSTRING (new)->size = length;
   bcopy (data, XSTRING (new)->data, length);
   XSTRING (new)->data[length] = 0;
-  pureptr += (size + sizeof (int) - 1)
-	     / sizeof (int) * sizeof (int);
+  pureptr += (size + sizeof (Lisp_Object) - 1)
+	     / sizeof (Lisp_Object) * sizeof (Lisp_Object);
   return new;
 }
 
@@ -1038,9 +1039,9 @@ mark_object (objptr)
 	      }
 	    else
 	      XFASTINT (*objptr) = ptr->size;
-	    if ((int)objptr & 1) abort ();
-	    ptr->size = (int) objptr & ~MARKBIT;
-	    if ((int) objptr & MARKBIT)
+	    if ((Lisp_Object_Int)objptr & 1) abort ();
+	    ptr->size = (Lisp_Object_Int) objptr & ~MARKBIT;
+	    if ((Lisp_Object_Int) objptr & MARKBIT)
 	      ptr->size ++;
 	  }
       }
@@ -1052,7 +1053,7 @@ mark_object (objptr)
     case Lisp_Window_Configuration:
       {
 	register struct Lisp_Vector *ptr = XVECTOR (obj);
-	register int size = ptr->size;
+	register Lisp_Object_Int size = ptr->size;
 	register int i;
 
 	if (size & ARRAY_MARK_FLAG) break;   /* Already marked */
@@ -1204,7 +1205,7 @@ gc_sweep ()
 	for (i = 0; i < lim; i++)
 	  if (!XMARKBIT (cblk->conses[i].car))
 	    {
-	      XFASTINT (cblk->conses[i].car) = (int) cons_free_list;
+	      XFASTINT (cblk->conses[i].car) = (Lisp_Object_Int) cons_free_list;
 	      num_free++;
 	      cons_free_list = &cblk->conses[i];
 	    }
@@ -1233,7 +1234,7 @@ gc_sweep ()
 	for (i = 0; i < lim; i++)
 	  if (!XMARKBIT (sblk->symbols[i].plist))
 	    {
-	      XFASTINT (sblk->symbols[i].value) = (int) symbol_free_list;
+	      XFASTINT (sblk->symbols[i].value) = (Lisp_Object_Int) symbol_free_list;
 	      symbol_free_list = &sblk->symbols[i];
 	      num_free++;
 	    }
@@ -1272,7 +1273,7 @@ gc_sweep ()
 	      XSET (tem, Lisp_Marker, tem1);
 	      if (tem1->buffer)
 		unchain_marker (tem);
-	      XFASTINT (mblk->markers[i].chain) = (int) marker_free_list;
+	      XFASTINT (mblk->markers[i].chain) = (Lisp_Object_Int) marker_free_list;
 	      marker_free_list = &mblk->markers[i];
 	      num_free++;
 	    }
@@ -1389,18 +1390,18 @@ compact_strings ()
 	    = (struct Lisp_String *) &from_sb->chars[pos];
 
 	  register struct Lisp_String *newaddr;
-	  register int size = nextstr->size;
+	  register Lisp_Object_Int size = nextstr->size;
 
 	  /* NEXTSTR is the old address of the next string.
 	     Just skip it if it isn't marked.  */
-	  if ((unsigned) size > STRING_BLOCK_SIZE)
+	  if ((unsigned Lisp_Object_Int) size > STRING_BLOCK_SIZE)
 	    {
 	      /* It is marked, so its size field is really a chain of refs.
 		 Find the end of the chain, where the actual size lives.  */
-	      while ((unsigned) size > STRING_BLOCK_SIZE)
+	      while ((unsigned Lisp_Object_Int) size > STRING_BLOCK_SIZE)
 		{
 		  if (size & 1) size ^= MARKBIT | 1;
-		  size = *(int *)size & ~MARKBIT;
+		  size = *(Lisp_Object_Int *)size & ~MARKBIT;
 		}
 
 	      total_string_size += size;
@@ -1426,13 +1427,13 @@ compact_strings ()
 
 	      /* Copy the string itself to the new place.  */
 	      if (nextstr != newaddr)
-		bcopy (nextstr, newaddr, size + 1 + sizeof (int));
+		bcopy (nextstr, newaddr, size + 1 + sizeof (Lisp_Object_Int));
 
 	      /* Go through NEXTSTR's chain of references
 		 and make each slot in the chain point to
 		 the new address of this string.  */
 	      size = newaddr->size;
-	      while ((unsigned) size > STRING_BLOCK_SIZE)
+	      while ((unsigned Lisp_Object_Int) size > STRING_BLOCK_SIZE)
 		{
 		  register Lisp_Object *objptr;
 		  if (size & 1) size ^= MARKBIT | 1;

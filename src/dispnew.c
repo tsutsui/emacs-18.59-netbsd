@@ -391,7 +391,7 @@ get_display_line (vpos, hpos)
 
 int
 scroll_screen_lines (from, end, amount)
-     int from, end, amount;
+     Lisp_Object_Int from, end, amount;
 {
   register int i;
 

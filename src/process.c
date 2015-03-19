@@ -1569,7 +1569,9 @@ static int waiting_for_user_input_p;
  subprocess output that arrives.  */
 
 wait_reading_process_input (time_limit, read_kbd, do_display)
-     int time_limit, read_kbd, do_display;
+     int time_limit;
+     Lisp_Object_Int read_kbd;
+     int do_display;
 {
   register int channel, nfds, m;
   SELECT_TYPE Available;

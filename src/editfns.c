@@ -994,7 +994,7 @@ the argument used by %d, %b, %o, %x or %c must be a number.")
 Lisp_Object
 #ifdef NO_ARG_ARRAY
 format1 (string1, arg0, arg1, arg2, arg3, arg4)
-     int arg0, arg1, arg2, arg3, arg4;
+     Lisp_Object_Int arg0, arg1, arg2, arg3, arg4;
 #else
 format1 (string1)
 #endif
@@ -1002,7 +1002,7 @@ format1 (string1)
 {
   char buf[100];
 #ifdef NO_ARG_ARRAY
-  int args[5];
+  Lisp_Object_Int args[5];
   args[0] = arg0;
   args[1] = arg1;
   args[2] = arg2;

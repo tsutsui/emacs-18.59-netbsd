@@ -322,7 +322,7 @@ legal_filename_p (fn)
 
    If `bp' is zero, space is dynamically allocated.  */
 
-int
+Lisp_Object_Int
 tgetent (bp, name)
      char *bp, *name;
 {
@@ -452,7 +452,7 @@ tgetent (bp, name)
  ret:
   term_entry = bp;
   if (malloc_size)
-    return (int) bp;
+    return (Lisp_Object_Int) bp;
   return 1;
 }
 
@@ -621,7 +621,7 @@ main (argc, argv)
   printf ("TERM: %s\n", term);
 
   buf = (char *) tgetent (0, term);
-  if ((int) buf <= 0)
+  if ((Lisp_Object_Int) buf <= 0)
     {
       printf ("No entry.\n");
       return 0;

@@ -177,7 +177,7 @@ re_compile_pattern (pattern, size, bufp)
   register char *b = bufp->buffer;
   register char *p = pattern;
   char *pend = pattern + size;
-  register unsigned c, c1;
+  register unsigned Lisp_Object_Int c, c1;
   char *p1;
   unsigned char *translate = (unsigned char *) bufp->translate;
 

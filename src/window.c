@@ -137,9 +137,9 @@ POS defaults to point; WINDOW, to the selected window.")
      Lisp_Object pos, window;
 {
   register struct window *w;
-  register int top;
-  register int height;
-  register int posint;
+  register Lisp_Object_Int top;
+  register Lisp_Object_Int height;
+  register Lisp_Object_Int posint;
   register struct buffer *buf;
   struct position posval;
 
@@ -220,7 +220,7 @@ DEFUN ("window-width", Fwindow_width, Swindow_width, 0, 1, 0,
   (window)
      Lisp_Object window;
 {
-  register int w = decode_window (window)->width;
+  register Lisp_Object w = decode_window (window)->width;
   /* If this window does not end at the right margin,
      must deduct one column for the border */
   if (w + decode_window (window)->left == screen_width)
@@ -342,7 +342,7 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
   (window)
      register Lisp_Object window;
 {
-  int osize;
+  Lisp_Object_Int osize;
   register Lisp_Object tem, parent;
   register struct window *p;
   register struct window *par;
@@ -529,7 +529,7 @@ DEFUN ("other-window", Fother_window, Sother_window, 1, 1, "p",
   (n)
      register Lisp_Object n;
 {
-  register int i;
+  register Lisp_Object_Int i;
   register Lisp_Object w;
 
   CHECK_NUMBER (n, 0);
@@ -712,8 +712,8 @@ set_window_height (window, height, nodelete)
 {
   register struct window *w = XWINDOW (window);
   register struct window *c;
-  int oheight = XFASTINT (w->height);
-  int top, pos, lastbot, opos, lastobot;
+  Lisp_Object_Int oheight = XFASTINT (w->height);
+  Lisp_Object_Int top, pos, lastbot, opos, lastobot;
   Lisp_Object child;
 
   if (window_min_height < 2)
@@ -777,8 +777,8 @@ set_window_width (window, width, nodelete)
 {
   register struct window *w = XWINDOW (window);
   register struct window *c;
-  int owidth = XFASTINT (w->width);
-  int left, pos, lastright, opos, lastoright;
+  Lisp_Object_Int owidth = XFASTINT (w->width);
+  Lisp_Object_Int left, pos, lastright, opos, lastoright;
   Lisp_Object child;
 
   if (!nodelete
@@ -1063,7 +1063,7 @@ and put SIZE columns in the first of the pair.")
 {
   register Lisp_Object new;
   register struct window *o, *p;
-  register int size;
+  register Lisp_Object_Int size;
 
   if (NULL (window))
     window = selected_window;
@@ -1333,7 +1333,7 @@ window_scroll (window, n, noerror)
 {
   register struct window *w = XWINDOW (window);
   register int opoint = point;
-  register int ht, pos;
+  register Lisp_Object_Int ht, pos;
   register Lisp_Object tem;
   int lose;
   Lisp_Object bolp;
@@ -1571,7 +1571,7 @@ negative means relative to bottom of window.")
      register Lisp_Object arg;
 {
   register struct window *w = XWINDOW (selected_window);
-  register int height = XFASTINT (w->height);
+  register Lisp_Object_Int height = XFASTINT (w->height);
   register int start;
 
   if (!EQ (selected_window, minibuf_window)) height--;

@@ -760,8 +760,8 @@ sequence found, rather than a list of all possible key sequences.")
 
   for (; !NULL (maps); maps = Fcdr (maps))
     {
-      register this = Fcar (Fcar (maps)); /* Key sequence to reach map */
-      register map = Fcdr (Fcar (maps)); /* The map that it reaches */
+      register Lisp_Object this = Fcar (Fcar (maps)); /* Key sequence to reach map */
+      register Lisp_Object map = Fcdr (Fcar (maps)); /* The map that it reaches */
       register int i = 0;
 	 
       if (CONSP (map))

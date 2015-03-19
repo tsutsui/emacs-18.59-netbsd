@@ -193,7 +193,7 @@ message (m, a1, a2, a3)
   else if (FROM_KBD)
     {
 #ifdef NO_ARG_ARRAY
-      int a[3];
+      Lisp_Object_Int a[3];
       a[0] = a1;
       a[1] = a2;
       a[2] = a3;
@@ -239,7 +239,7 @@ message1 (m)
 
 display_echo_area_contents ()
 {
-  register int vpos;
+  register Lisp_Object_Int vpos;
 
   if (screen_garbaged)
     {
@@ -302,7 +302,7 @@ redisplay ()
   int inhibit_hairy_id = 0;
   int must_finish = 0;
   int all_windows;
-  register int tlbufpos, tlendpos;
+  register Lisp_Object_Int tlbufpos, tlendpos;
   struct position pos;
   extern int input_pending;
 
@@ -591,12 +591,12 @@ redisplay_window (window, just_this_one)
      int just_this_one;
 {
   register struct window *w = XWINDOW (window);
-  int height;
+  Lisp_Object_Int height;
   struct buffer *old = current_buffer;
-  register int width = XFASTINT (w->width) - 1
+  register Lisp_Object_Int width = XFASTINT (w->width) - 1
     - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
   register int startp;
-  register int hscroll = XINT (w->hscroll);
+  register Lisp_Object_Int hscroll = XINT (w->hscroll);
   struct position pos;
   int opoint;
   int tem;
@@ -892,8 +892,8 @@ try_window_id (window)
   int pos;
   register struct window *w = XWINDOW (window);
   register int height = XFASTINT (w->height) - !EQ (window, minibuf_window);
-  int top = XFASTINT (w->top);
-  int start = marker_position (w->start);
+  Lisp_Object_Int top = XFASTINT (w->top);
+  Lisp_Object_Int start = marker_position (w->start);
   int width = XFASTINT (w->width) - 1
     - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
   int hscroll = XINT (w->hscroll);
@@ -1275,9 +1275,9 @@ struct position val_display_text_line;
 struct position *
 display_text_line (w, start, vpos, hpos, taboffset)
      struct window *w;
-     int start;
-     int vpos;
-     int hpos;
+     Lisp_Object_Int start;
+     Lisp_Object_Int vpos;
+     Lisp_Object_Int hpos;
      int taboffset;
 {
   register int pos = start;
@@ -1965,7 +1965,7 @@ display_string (w, vpos, string, hpos, truncate, mincol, maxcol)
      unsigned char *string;
      int hpos;
      char truncate;
-     int mincol, maxcol;
+     Lisp_Object_Int mincol, maxcol;
 {
   register int c;
   register unsigned char *p1;
@@ -2049,7 +2049,7 @@ display_string (w, vpos, string, hpos, truncate, mincol, maxcol)
     }
 
   {
-    register int len = p1 - new_screen->contents[vpos];
+    register Lisp_Object_Int len = p1 - new_screen->contents[vpos];
     if (len > new_screen->used[vpos])
       new_screen->used[vpos] = len;
     new_screen->contents[vpos][new_screen->used[vpos]] = 0;

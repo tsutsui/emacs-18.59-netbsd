@@ -20,10 +20,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 struct position
   {
-    int bufpos;
+    Lisp_Object_Int bufpos;
     int hpos;
     int vpos;
-    int prevhpos;
+    Lisp_Object_Int prevhpos;
     int contin;
   };
 

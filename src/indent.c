@@ -344,16 +344,21 @@ struct position val_compute_motion;
 
 struct position *
 compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, tab_offset)
-     int from, fromvpos, fromhpos, to, tovpos, tohpos;
-     register int width;
-     int hscroll, tab_offset;
+
+     Lisp_Object_Int from;
+     int fromvpos, fromhpos; 
+     Lisp_Object_Int to, tovpos, tohpos;
+     register Lisp_Object_Int width;
+     Lisp_Object_Int hscroll;
+     int  tab_offset;
+
 {
   register int hpos = fromhpos;
   register int vpos = fromvpos;
 
-  register int pos;
+  register Lisp_Object_Int pos;
   register int c;
-  register int tab_width = XFASTINT (current_buffer->tab_width);
+  register Lisp_Object_Int tab_width = XFASTINT (current_buffer->tab_width);
   register int ctl_arrow = !NULL (current_buffer->ctl_arrow);
   int selective
     = XTYPE (current_buffer->selective_display) == Lisp_Int

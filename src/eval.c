@@ -1120,6 +1120,7 @@ find_handler_clause (handlers, conditions, sig, data, debugger_value_ptr)
 void
 error (m, a1, a2, a3)
      char *m;
+     Lisp_Object_Int a1, a2, a3;
 {
   char buf[200];
   sprintf (buf, m, a1, a2, a3);

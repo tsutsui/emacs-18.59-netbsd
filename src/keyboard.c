@@ -80,7 +80,7 @@ struct backtrace
  do not execute it; call disabled-command-hook's value instead. */
 Lisp_Object Qdisabled, Vdisabled_command_hook;
 
-int recent_keys_index;	/* Index for storing next element into recent_keys */
+Lisp_Object_Int recent_keys_index;	/* Index for storing next element into recent_keys */
 int total_keys;		/* Total number of elements stored into recent_keys */
 char recent_keys[100];	/* Holds last 100 keystrokes */
 

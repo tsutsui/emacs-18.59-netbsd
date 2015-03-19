@@ -20,6 +20,18 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* Define the fundamental Lisp data structures */
 
+/* Define an integer type with the same size as Lisp_Object.
+   It's usually `int', but some platforms needs `long'.
+   In such case, LONG_LISP_OBJECT should be defined within m-*.h. */
+
+#ifndef Lisp_Object_Int
+#ifdef LONG_LISP_OBJECT
+#define Lisp_Object_Int long
+#else
+#define Lisp_Object_Int int
+#endif
+#endif
+
 /* This is the set of Lisp data types */
 
 enum Lisp_Type
@@ -227,22 +239,40 @@ Lisp_Object;
 
 #ifdef NO_UNION_TYPE
 
-#define Lisp_Object int
+#define Lisp_Object Lisp_Object_Int
 
 /* These values are overridden by the m- file on some machines.  */
+
+/* LISP_OBJECT_BITS is defined as 32 by puresize.h, which may be
+   overridden by the m- file on some machines. */
+
 #ifndef VALBITS
+#if LISP_OBJECT_BITS > 32
+#define VALBITS 56
+#else
 #define VALBITS 24
+#endif
 #endif
 
 #ifndef GCTYPEBITS
 #define GCTYPEBITS 7
 #endif
 
-#ifndef VALMASK
-#define VALMASK ((1<<VALBITS) - 1)
+#ifdef LONG_LISP_OBJECT
+#define LISP_OBJECT_1 1L
+#else
+#define LISP_OBJECT_1 1
 #endif
-#define GCTYPEMASK ((1<<GCTYPEBITS) - 1)
-#define MARKBIT (1 << (VALBITS + GCTYPEBITS))
+
+#ifndef VALMASK
+#define VALMASK ((LISP_OBJECT_1 << VALBITS) - 1)
+#endif
+#ifndef GCTYPEMASK
+#define GCTYPEMASK ((LISP_OBJECT_1 << GCTYPEBITS) - 1)
+#endif
+#ifndef MARKBIT
+#define MARKBIT (LISP_OBJECT_1 << (VALBITS + GCTYPEBITS))
+#endif
 
 #endif /* NO_UNION_TYPE */
 
@@ -261,7 +291,7 @@ Lisp_Object;
 #endif
 
 #ifndef XSETTYPE
-#define XSETTYPE(a, b) ((a)  =  XUINT (a) | ((int)(b) << VALBITS))
+#define XSETTYPE(a, b) ((a)  =  XUINT (a) | ((Lisp_Object_Int)(b) << VALBITS))
 #endif
 
 /* Use XFASTINT for fast retrieval and storage of integers known
@@ -271,14 +301,18 @@ Lisp_Object;
 /* Extract the value of a Lisp_Object as a signed integer.  */
 
 #ifndef XINT   /* Some machines need to do this differently.  */
+#ifdef LONG_LISP_OBJECT
+#define XINT(a)	(((Lisp_Object_Int)(a) << (LONGBITS-VALBITS)) >> (LONGBITS-VALBITS))
+#else
 #define XINT(a) (((a) << (INTBITS-VALBITS)) >> (INTBITS-VALBITS))
+#endif
 #endif
 
 /* Extract the value as an unsigned integer.  This is a basis
    for exctacting it as a pointer to a structure in storage.  */
 
 #ifndef XUINT
-#define XUINT(a) ((a) & VALMASK)
+#define XUINT(a) ((Lisp_Object_Int)(a) & VALMASK)
 #endif
 
 #ifdef HAVE_SHM
@@ -299,7 +333,7 @@ Lisp_Object;
 #endif /* not HAVE_SHM */
 
 #ifndef XSETINT
-#define XSETINT(a, b)  ((a) = ((a) & ~VALMASK) |  ((b) & VALMASK))
+#define XSETINT(a, b)  ((a) = (Lisp_Object_Int)((a) & ~VALMASK) |  (Lisp_Object_Int)((b) & VALMASK))
 #endif
 
 #ifndef XSETUINT
@@ -312,7 +346,7 @@ Lisp_Object;
 
 #ifndef XSET
 #define XSET(var, type, ptr) \
-   ((var) = ((int)(type) << VALBITS) + ((int) (ptr) & VALMASK))
+   ((var) = ((Lisp_Object_Int)(type) << VALBITS) + ((Lisp_Object_Int) (ptr) & VALMASK))
 #endif
 
 /* During garbage collection, XGCTYPE must be used for extracting types
@@ -329,6 +363,7 @@ Lisp_Object;
 #if VALBITS + GCTYPEBITS == INTBITS - 1
 #define XMARKBIT(a) ((a) < 0)
 #define XSETMARKBIT(a,b) ((a) = ((a) & ~MARKBIT) | ((b) ? MARKBIT : 0))
+#endif
 */
 
 #ifndef XMARKBIT
@@ -402,18 +437,18 @@ Lisp_Object;
 #define XWINDOW(a) ((struct window *) XPNTR(a))
 #define XPROCESS(a) ((struct Lisp_Process *) XPNTR(a))
 
-#define XSETCONS(a, b) XSETPNTR(a, (int) (b))
-#define XSETBUFFER(a, b) XSETPNTR(a, (int) (b))
-#define XSETVECTOR(a, b) XSETPNTR(a, (int) (b))
-#define XSETSUBR(a, b) XSETPNTR(a, (int) (b))
-#define XSETSTRING(a, b) XSETPNTR(a, (int) (b))
-#define XSETSYMBOL(a, b) XSETPNTR(a, (int) (b))
-#define XSETFUNCTION(a, b) XSETPNTR(a, (int) (b))
-#define XSETMARKER(a, b) XSETPNTR(a, (int) (b))
-#define XSETOBJFWD(a, b) XSETPNTR(a, (int) (b))
-#define XSETINTPTR(a, b) XSETPNTR(a, (int) (b))
-#define XSETWINDOW(a, b) XSETPNTR(a, (int) (b))
-#define XSETPROCESS(a, b) XSETPNTR(a, (int) (b))
+#define XSETCONS(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETBUFFER(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETVECTOR(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETSUBR(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETSTRING(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETSYMBOL(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETFUNCTION(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETMARKER(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETOBJFWD(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETINTPTR(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETWINDOW(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
+#define XSETPROCESS(a, b) XSETPNTR(a, (Lisp_Object_Int) (b))
 
 /* In a cons, the markbit of the car is the gc mark bit */
 
@@ -436,13 +471,13 @@ struct Lisp_Buffer_Cons
 
 struct Lisp_String
   {
-    int size;
+    Lisp_Object_Int size;
     unsigned char data[1];
   };
 
 struct Lisp_Vector
   {
-    int size;
+    Lisp_Object_Int size;
     struct Lisp_Vector *next;
     Lisp_Object contents[1];
   };

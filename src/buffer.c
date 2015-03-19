@@ -390,7 +390,7 @@ does not change the local values.")
 
     for (offset = (char *)&buffer_local_symbols.name - (char *)&buffer_local_symbols;
 	 offset < sizeof (struct buffer);
-	 offset += (sizeof (int))) /* sizeof int == sizeof Lisp_Object */
+	 offset += (sizeof (Lisp_Object)))
       {
 	mask = *(int *)(offset + (char *) &buffer_local_flags);
 	if (mask == -1 || (buf->local_var_flags & mask))
@@ -911,7 +911,7 @@ DEFUN ("erase-buffer", Ferase_buffer, Serase_buffer, 0, 0, 0,
 validate_region (b, e)
      register Lisp_Object *b, *e;
 {
-  register int i;
+  register Lisp_Object_Int i;
 
   CHECK_NUMBER_COERCE_MARKER (*b, 0);
   CHECK_NUMBER_COERCE_MARKER (*e, 1);
@@ -1079,7 +1079,7 @@ init_buffer_once ()
      The local flag bits are in the local_var_flags slot of the buffer.  */
 
   /* Nothing can work if this isn't true */
-  if (sizeof (int) != sizeof (Lisp_Object)) abort ();
+  if (sizeof (Lisp_Object_Int) != sizeof (Lisp_Object)) abort ();
 
   /* 0 means not a lisp var, -1 means always local, else mask */
   bzero (&buffer_local_flags, sizeof buffer_local_flags);

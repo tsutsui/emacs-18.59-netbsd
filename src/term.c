@@ -25,6 +25,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "termchar.h"
 #include "termopts.h"
 #include "cm.h"
+#undef NULL
+#include "lisp.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -1232,6 +1234,7 @@ It may be necessary to do `unsetenv TERMCAP' as well.\n",
 /* VARARGS 1 */
 fatal (str, arg1, arg2)
      char *str;
+     Lisp_Object_Int arg1, arg2;
 {
   fprintf (stderr, "emacs: ");
   fprintf (stderr, str, arg1, arg2);

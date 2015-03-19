@@ -280,7 +280,7 @@ static int XInitWindow ();
 HLmode (new)
      int new;
 {
-	extern Lisp_Object inverse_video;
+	extern int inverse_video;
 	
 	CurHL = new;
 }
@@ -2046,7 +2046,7 @@ x_term_init ()
 
 
 	if (reversevideo) {
-		int tempcolor;
+		unsigned Lisp_Object_Int tempcolor;
 		char *tempname;
 		brdr = back;
 		brdr_color = back_color;
@@ -2222,7 +2222,7 @@ XNewFont (newname)
 
 XFlipColor ()
 {
-	int tempcolor;
+	Lisp_Object_Int tempcolor;
 	char *tempname;
 	XColor forec, backc;
 	BLOCK_INPUT_DECLARE ();

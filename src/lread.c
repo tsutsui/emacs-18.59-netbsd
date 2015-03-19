@@ -212,7 +212,7 @@ Return t if file exists.")
   GCPRO1 (str);
   ptr = (FILE **) xmalloc (sizeof (FILE *));
   *ptr = stream;
-  XSET (lispstream, Lisp_Internal_Stream, (int) ptr);
+  XSET (lispstream, Lisp_Internal_Stream, (Lisp_Object_Int) ptr);
   record_unwind_protect (load_unwind, lispstream);
   load_in_progress++;
   readevalloop (Qget_file_char, stream, Feval, 0);

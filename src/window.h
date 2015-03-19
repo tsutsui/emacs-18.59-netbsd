@@ -72,7 +72,7 @@ struct window
   {
     /* The first two fields are really the header of a vector */
     /* The window code does not refer to them.  */
-    int size;
+    Lisp_Object_Int size;
     struct Lisp_Vector *vec_next;
     /* Following child (to right or down) at same level of tree */
     Lisp_Object next;
