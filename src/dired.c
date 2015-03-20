@@ -96,7 +96,7 @@ If MATCH is non-NIL, only pathnames containing that regexp are returned.")
 #ifdef VMS
       compile_pattern (match, &searchbuf, (char *) downcase_table);
 #else
-      compile_pattern (match, &searchbuf, 0, 0);
+      compile_pattern (match, &searchbuf, 0);
 #endif
     }
 
