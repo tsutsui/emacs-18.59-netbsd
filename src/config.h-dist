@@ -93,10 +93,15 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    Note that s-vms.h and m-sun2.h may override this default.  */
 
 #ifndef PURESIZE
-#ifdef HAVE_X_WINDOWS
-#define PURESIZE 122000
+#if defined(LONG_LISP_OBJECT) && LONGBITS > 32
+#define PURESIZE_RATE 2
 #else
-#define PURESIZE 120000
+#define PURESIZE_RATE 1
+#endif
+#ifdef HAVE_X_WINDOWS
+#define PURESIZE (122000 * PURESIZE_RATE)
+#else
+#define PURESIZE (120000 * PURESIZE_RATE)
 #endif
 #endif
 
