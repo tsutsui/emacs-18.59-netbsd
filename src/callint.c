@@ -160,7 +160,6 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
   char *tem1;
   int arg_from_tty = 0;
   struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
-  extern char *index ();
 
   /* Save this now, since use ofminibuffer will clobber it. */
   prefix_arg = Vcurrent_prefix_arg;

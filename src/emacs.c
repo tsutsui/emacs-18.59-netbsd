@@ -755,7 +755,6 @@ decode_env_path (evarname, defalt)
      char *evarname, *defalt;
 {
   register char *path, *p;
-  extern char *index ();
 
   Lisp_Object lpath;
 

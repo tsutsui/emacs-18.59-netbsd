@@ -44,7 +44,6 @@ get_doc_string (filepos)
   register char *name;
   register char *p, *p1;
   register int count;
-  extern char *index ();
 
   if (XTYPE (Vexec_directory) != Lisp_String
       || XTYPE (Vdoc_file_name) != Lisp_String)
@@ -182,7 +181,6 @@ when doc strings are referred to later in the dumped Emacs.")
   register char *p, *end;
   Lisp_Object sym, fun, tem;
   char *name;
-  extern char *index ();
 
   CHECK_STRING (filename, 0);
 

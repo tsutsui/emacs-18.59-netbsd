@@ -53,7 +53,6 @@ init_editfns ()
   register unsigned char *p, *q;
   struct passwd *pw;		/* password entry for the current user */
   Lisp_Object tem;
-  extern char *index ();
 
   /* Turn off polling so the SIGALRM won't bother getpwuid.  */
   stop_polling ();
@@ -918,7 +917,6 @@ the argument used by %d, %b, %o, %x or %c must be a number.")
   char *buf;
   register unsigned char *format;
   register unsigned char **strings;
-  extern char *index ();
   /* It should not be necessary to GCPRO ARGS, because
      the caller in the interpreter should take care of that.  */
 

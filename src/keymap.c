@@ -1190,7 +1190,6 @@ insert_first_line (prefix, str)
      char *prefix;
      Lisp_Object str;
 {
-  extern char *index ();
   register unsigned char *p;
   register unsigned char *p1;
   register unsigned char *p2;
