@@ -28,28 +28,12 @@
    variable.  */
 
 #define LIBS_TERMCAP -ltermcap
-#define LIBS_SYSTEM -lutil	/* for openpty(3) */
 
 /* NetBSD is nominally a POSIX.1 OS and has setsid.  */
 
 #define HAVE_SETSID
 #define HAVE_CLOCK
-
 #define HAVE_PTYS
-#define HAVE_OPENPTY
-#define PTY_ITERATION	for (i = 0; i < 1; i++)
-#define PTY_NAME_SPRINTF	/* none */
-#define PTY_TTY_NAME_SPRINTF	/* none */
-#define PTY_OPEN							\
-  do									\
-    {									\
-      int slave;							\
-      if (openpty (&fd, &slave, pty_name, 0, 0) == -1)			\
-	fd = -1;							\
-      else								\
-	close (slave);							\
-    }									\
-  while (0)
 
 #define NEED_TERMIOS
 #define HAVE_TERMIOS
@@ -103,7 +87,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/socket.h>
-#include <util.h>
 #include "extern.h"
 #endif
 
