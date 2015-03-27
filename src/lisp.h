@@ -977,7 +977,7 @@ extern Lisp_Object Fwrite_char (Lisp_Object, Lisp_Object);
 extern Lisp_Object Vstandard_output, Qstandard_output;
 extern void temp_output_buffer_setup (char *);
 extern void write_string_1 (char *, int, Lisp_Object);
-extern Lisp_Object internal_with_output_to_temp_buffer (char *, Lisp_Object (*)(), Lisp_Object);
+extern Lisp_Object internal_with_output_to_temp_buffer (char *, Lisp_Object (*)(Lisp_Object), Lisp_Object);
 
 
 /* Defined in lread.c */
@@ -995,7 +995,7 @@ extern Lisp_Object Feval_current_buffer (Lisp_Object);
 extern Lisp_Object Feval_region (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object intern (char *);
 extern Lisp_Object oblookup (Lisp_Object, char *, int);
-extern void map_obarray (Lisp_Object, int (*)(), Lisp_Object);
+extern void map_obarray (Lisp_Object, int (*)(Lisp_Object, Lisp_Object), Lisp_Object);
 extern int openp (Lisp_Object, Lisp_Object, char *, Lisp_Object *, int);
 
 /* Defined in eval.c */
@@ -1044,13 +1044,13 @@ extern Lisp_Object call2 (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object call3 (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object apply_lambda (Lisp_Object, Lisp_Object, int);
 extern Lisp_Object internal_catch (Lisp_Object, Lisp_Object (*)(Lisp_Object), Lisp_Object);
-extern Lisp_Object internal_condition_case (Lisp_Object (*)(), Lisp_Object, Lisp_Object (*)());
+extern Lisp_Object internal_condition_case (Lisp_Object (*)(void), Lisp_Object, Lisp_Object (*)(Lisp_Object));
 extern void unbind_to (int);
 extern void error ();
 extern Lisp_Object un_autoload (Lisp_Object);
 
 extern void specbind (Lisp_Object, Lisp_Object);
-extern void record_unwind_protect (Lisp_Object (*)(), Lisp_Object);
+extern void record_unwind_protect (Lisp_Object (*)(Lisp_Object), Lisp_Object);
 
 extern void defvar_int (char *, int *, char *);
 extern void defvar_bool (char *, int *, char *);
@@ -1333,8 +1333,8 @@ extern Lisp_Object get_keymap (Lisp_Object);
 extern void ndefkey (Lisp_Object, int, char *);
 extern void describe_map_tree (Lisp_Object, int, Lisp_Object);
 extern void describe_map (Lisp_Object, Lisp_Object, int, Lisp_Object);
-extern void describe_alist (Lisp_Object, Lisp_Object, int (*)(), int, Lisp_Object);
-extern void describe_vector (Lisp_Object, Lisp_Object, int (*)(), int, Lisp_Object);
+extern void describe_alist (Lisp_Object, Lisp_Object, int (*)(Lisp_Object), int, Lisp_Object);
+extern void describe_vector (Lisp_Object, Lisp_Object, int (*)(Lisp_Object), int, Lisp_Object);
 extern Lisp_Object get_keymap_1 (Lisp_Object, int);
 
 /* defined in indent.c */

@@ -158,7 +158,7 @@ DEFUN ("get-file-char", Fget_file_char, Sget_file_char, 0, 0, 0,
   return val;
 }
 
-static void readevalloop (Lisp_Object, FILE *, Lisp_Object (*)(), int);
+static void readevalloop (Lisp_Object, FILE *, Lisp_Object (*)(Lisp_Object), int);
 static Lisp_Object load_unwind (Lisp_Object);
 
 DEFUN ("load", Fload, Sload, 1, 4, 0,
@@ -360,7 +360,7 @@ static void
 readevalloop (readcharfun, stream, evalfun, printflag)
      Lisp_Object readcharfun;
      FILE *stream;     
-     Lisp_Object (*evalfun) ();
+     Lisp_Object (*evalfun) (Lisp_Object);
      int printflag;
 {
   register int c;
@@ -1037,7 +1037,7 @@ hash_string (ptr, len)
 void
 map_obarray (obarray, fn, arg)
      Lisp_Object obarray;
-     int (*fn) ();
+     int (*fn) (Lisp_Object, Lisp_Object);
      Lisp_Object arg;
 {
   register int i;
@@ -1213,7 +1213,7 @@ defvar_per_buffer (namestring, address, doc)
      char *doc;
 {
   Lisp_Object sym;
-  int offset;
+  Lisp_Object_Int offset;
   extern struct buffer buffer_local_symbols;
 
   sym = intern (namestring);

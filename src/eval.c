@@ -791,7 +791,7 @@ return from  catch.")
 Lisp_Object
 internal_catch (tag, func, arg)
      Lisp_Object tag;
-     Lisp_Object (*func) ();
+     Lisp_Object (*func) (Lisp_Object);
      Lisp_Object arg;
 {
   /* This structure is made part of the chain `catchlist'.  */
@@ -974,9 +974,9 @@ See SIGNAL for more info.")
 
 Lisp_Object
 internal_condition_case (bfun, handlers, hfun)
-     Lisp_Object (*bfun) ();
+     Lisp_Object (*bfun) (void);
      Lisp_Object handlers;
-     Lisp_Object (*hfun) ();
+     Lisp_Object (*hfun) (Lisp_Object);
 {
   Lisp_Object val;
   struct catchtag c;
