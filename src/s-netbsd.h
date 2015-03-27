@@ -33,7 +33,37 @@
 
 #define HAVE_SETSID
 #define HAVE_CLOCK
+
 #define HAVE_PTYS
+#define UNIX98_PTYS
+#define PTY_ITERATION	for (i = 0; i < 1; i++)
+#define PTY_NAME_SPRINTF	/* none */
+#define PTY_TTY_NAME_SPRINTF						\
+  {									\
+    char *ptyname = 0;							\
+    sigset_t blocked;							\
+    sigemptyset (&blocked);						\
+    sigaddset (&blocked, SIGCHLD);					\
+    pthread_sigmask (SIG_BLOCK, &blocked, 0);				\
+    if (grantpt (fd) != -1 && unlockpt (fd) != -1)			\
+      ptyname = ptsname(fd);						\
+    pthread_sigmask (SIG_UNBLOCK, &blocked, 0);				\
+    if (!ptyname)							\
+      {									\
+        close (fd);							\
+        return -1;							\
+      }									\
+    snprintf (pty_name, sizeof pty_name, "%s", ptyname);		\
+  }
+
+#define PTY_OPEN							\
+  do									\
+    {									\
+      fd = posix_openpt (O_RDWR | O_CLOEXEC | O_NOCTTY);		\
+      if (fd < 0 && errno == EINVAL)					\
+        fd = posix_openpt (O_RDWR | O_NOCTTY);				\
+    }									\
+  while (0)
 
 #define NEED_TERMIOS
 #define HAVE_TERMIOS
