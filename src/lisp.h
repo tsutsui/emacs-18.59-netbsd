@@ -1545,7 +1545,7 @@ extern int immediate_quit;	    /* Nonzero means ^G can quit instantly */
 
 extern void debugger ();
 
-extern long *xmalloc (int), *xrealloc (long *, int);
+extern void *xmalloc (int), *xrealloc (void *, int);
 
 #ifdef MAINTAIN_ENVIRONMENT
 extern unsigned char *egetenv ();

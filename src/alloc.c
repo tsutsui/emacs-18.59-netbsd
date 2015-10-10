@@ -134,29 +134,29 @@ memory_full ()
 
 /* like malloc and realloc but check for no memory left */
 
-long *
+void *
 xmalloc (size)
      int size;
 {
-  register long *val;
+  register void *val;
   /* Avoid failure if malloc (0) returns 0.  */
   if (size == 0)
     size = 1;
-  val = (long *) malloc (size);
+  val = (void *) malloc (size);
   if (!val) memory_full ();
   return val;
 }
 
-long *
+void *
 xrealloc (block, size)
-     long *block;
+     void *block;
      int size;
 {
-  register long *val;
+  register void *val;
   /* Avoid failure if malloc (0) returns 0.  */
   if (size == 0)
     size = 1;
-  val = (long *) realloc (block, size);
+  val = (void *) realloc (block, size);
   if (!val) memory_full ();
   return val;
 }
