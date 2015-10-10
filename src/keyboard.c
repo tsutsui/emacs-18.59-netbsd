@@ -190,7 +190,7 @@ unsigned char *kbd_ptr;
 
 /* Address (if not 0) of word to zero out
    if a SIGIO interrupt happens */
-long *input_available_clear_word;
+time_t *input_available_clear_word;
 
 /* Nonzero means use SIGIO interrupts; zero means use CBREAK mode.
    Default is 1 if INTERRUPT_INPUT is defined.  */
@@ -1967,7 +1967,7 @@ stuff_buffered_input (stuffstring)
 
 void
 set_waiting_for_input (word_to_clear)
-     long *word_to_clear;
+     time_t *word_to_clear;
 {
   input_available_clear_word = word_to_clear;
 

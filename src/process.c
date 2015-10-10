@@ -1596,7 +1596,7 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
   struct timeval timeout, end_time;
   struct timezone garbage;
 #else
-  long timeout, end_time, temp;
+  time_t timeout, end_time, temp;
 #endif /* not HAVE_TIMEVAL */
   SELECT_TYPE Atemp;
   int wait_channel = 0;
@@ -1719,7 +1719,11 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
       /* Cause quitting and alarm signals to take immediate action,
 	 and cause input available signals to zero out timeout */
       if (read_kbd < 0)
+#ifdef HAVE_TIMEVAL
+	set_waiting_for_input (&timeout.tv_sec);
+#else
 	set_waiting_for_input (&timeout);
+#endif
 
       /* Wait till there is something to do */
 

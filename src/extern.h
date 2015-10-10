@@ -87,7 +87,7 @@ extern void gobble_input (void);
 extern void quit_throw_to_read_command_char (void);
 extern int read_command_char (int);
 extern void record_auto_save (void);
-extern void set_waiting_for_input (long *);
+extern void set_waiting_for_input (time_t *);
 extern void start_polling (void);
 extern void stop_polling (void);
 
