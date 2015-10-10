@@ -499,11 +499,6 @@ typedef struct {
 /*
  * NetBSD does not have normal-looking user-land ELF support.
  */
-# if defined __alpha__ || defined __sparc_v9__
-#  define ELFSIZE	64
-# else
-#  define ELFSIZE	32
-# endif
 # include <sys/exec_elf.h>
 
 # ifndef PT_LOAD
@@ -549,10 +544,12 @@ typedef struct {
 # else
 #  define ElfBitsW(bits, type) Elf/**/bits/**/_/**/type
 # endif
-# ifdef _LP64
-#  define ELFSIZE 64
-# else
-#  define ELFSIZE 32
+# ifndef ELFSIZE
+#  ifdef _LP64
+#   define ELFSIZE 64
+#  else
+#   define ELFSIZE 32
+#  endif
 # endif
   /* This macro expands `bits' before invoking ElfBitsW.  */
 # define ElfExpandBitsW(bits, type) ElfBitsW (bits, type)
