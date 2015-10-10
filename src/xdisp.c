@@ -648,7 +648,7 @@ redisplay_window (window, just_this_one)
   if (w != XWINDOW (minibuf_window))
     height--;
   else if (echo_area_contents)
-    return 0;
+    return;
 
   current_buffer = XBUFFER (w->buffer);
 
