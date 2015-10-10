@@ -266,7 +266,7 @@ temp_output_buffer_setup (bufname)
 Lisp_Object
 internal_with_output_to_temp_buffer (bufname, function, args)
      char *bufname;
-     Lisp_Object (*function) ();
+     Lisp_Object (*function) (Lisp_Object);
      Lisp_Object args;
 {
   int count = specpdl_ptr - specpdl;
@@ -318,7 +318,7 @@ to get the buffer displayed.  It gets one argument, the buffer to display.")
 }
 #endif /* not standalone */
 
-static void print ();
+static void print (Lisp_Object, Lisp_Object, int);
 
 DEFUN ("terpri", Fterpri, Sterpri, 0, 1, 0,
   "Output a newline to STREAM (or value of standard-output).")

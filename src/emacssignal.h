@@ -33,7 +33,7 @@ extern sigset_t sys_sigmask ();
 #define sighold(SIG)     ONLY_USED_IN_BSD_4_1
 #define sigrelse(SIG)    ONLY_USED_IN_BSD_4_1
 
-typedef void (*signal_handler_t) ();
+typedef void (*signal_handler_t) (int);
 signal_handler_t sys_signal (int signal_number, signal_handler_t action);
 int sys_sigpause (sigset_t new_mask);
 sigset_t sys_sigblock (sigset_t new_mask);

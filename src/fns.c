@@ -1358,6 +1358,7 @@ load FILENAME.  FILENAME is optional and defaults to FEATURE.")
   return feature;
 }
 
+void
 syms_of_fns ()
 {
   Qstring_lessp = intern ("string-lessp");

@@ -150,6 +150,7 @@ current_column ()
   return col;
 }
 
+void
 ToCol (col)
      int col;
 {
@@ -246,6 +247,7 @@ following any initial whitespace.")
   return val;
 }
 
+int
 position_indentation (pos)
      register int pos;
 {
@@ -483,6 +485,7 @@ compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, ta
   return &val_compute_motion;
 }
 
+int
 pos_tab_offset (w, pos)
      struct window *w;
      register int pos;
@@ -620,6 +623,7 @@ Returns number of lines moved; may be closer to zero than LINES\n\
   return make_number (pos.vpos);
 }
 
+void
 syms_of_indent ()
 {
   DEFVAR_BOOL ("indent-tabs-mode", &indent_tabs_mode,

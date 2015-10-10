@@ -60,7 +60,10 @@ Lisp_Object Qkeymapp, Qkeymap;
 
 extern int meta_prefix_char;
 
-static void insert_first_line ();
+Lisp_Object describe_buffer_bindings (Lisp_Object);
+void describe_command (Lisp_Object);
+
+static void insert_first_line (char *, Lisp_Object);
 
 DEFUN ("make-keymap", Fmake_keymap, Smake_keymap, 0, 0, 0,
   "Construct and return a new keymap, a vector of length 128.\n\
@@ -863,7 +866,6 @@ Argument is a command definition, usually a symbol with a function definition.")
   return Qnil;
 }
 
-Lisp_Object describe_buffer_bindings (Lisp_Object);
 
 DEFUN ("describe-bindings", Fdescribe_bindings, Sdescribe_bindings, 0, 0, "",
   "Show a list of all defined keys, and their definitions.\n\
@@ -946,6 +948,7 @@ describe_map_tree (startmap, partial, shadow)
   UNGCPRO;
 }
 
+void
 describe_command (definition)
      Lisp_Object definition;
 {
@@ -998,7 +1001,7 @@ void
 describe_alist (alist, elt_prefix, elt_describer, partial, shadow)
      register Lisp_Object alist;
      Lisp_Object elt_prefix;
-     int (*elt_describer) ();
+     void (*elt_describer) (Lisp_Object);
      int partial;
      Lisp_Object shadow;
 {
@@ -1055,7 +1058,7 @@ void
 describe_vector (vector, elt_prefix, elt_describer, partial, shadow)
      register Lisp_Object vector;
      Lisp_Object elt_prefix;
-     int (*elt_describer) ();
+     void (*elt_describer) (Lisp_Object);
      int partial;
      Lisp_Object shadow;
 {
@@ -1133,7 +1136,7 @@ describe_vector (vector, elt_prefix, elt_describer, partial, shadow)
 Lisp_Object apropos_predicate;
 Lisp_Object apropos_accumulate;
 
-static
+static void
 apropos_accum (symbol, string)
      Lisp_Object symbol, string;
 {
@@ -1237,6 +1240,7 @@ does not display them, just returns the list.")
   return apropos_accumulate;
 }
 
+void
 syms_of_keymap ()
 {
   Lisp_Object tem;
@@ -1325,6 +1329,7 @@ an exact match of one of the completions is required.");
   defsubr (&Sapropos);
 }
 
+void
 keys_of_keymap ()
 {
   ndefkey (Vglobal_map, 033, "ESC-prefix");

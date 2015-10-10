@@ -205,6 +205,7 @@ COUNT is a repeat count, or nil for once, or 0 for infinite loop.")
   return Qnil;
 }
 
+void
 init_macros ()
 {
   Vlast_kbd_macro = Qnil;
@@ -213,6 +214,7 @@ init_macros ()
   Vexecuting_macro = Qnil;
 }
 
+void
 syms_of_macros ()
 {
   kbd_macro_bufsize = 100;
@@ -236,6 +238,7 @@ syms_of_macros ()
     "Last kbd macro defined, as a string; nil if none defined.");
 }
 
+void
 keys_of_macros ()
 {
   ndefkey (Vctl_x_map, ('e'), "call-last-kbd-macro");

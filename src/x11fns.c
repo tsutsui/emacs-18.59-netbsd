@@ -144,6 +144,7 @@ extern char *XXidentity;
 extern Display *XXdisplay;
 extern int bitblt, CursorExists, VisibleX, VisibleY;
 
+void
 check_xterm ()
 {
 	if (NULL (Vxterm))
@@ -924,6 +925,7 @@ See the documentation of x-rebind-key for more information.")
 
 #endif /* foobar */
 
+void
 XExitWithCoreDump ()
 {
 	XCleanUp ();
@@ -966,6 +968,7 @@ XCleanUp ()
 #endif				/* subprocesses */
 }
 
+void
 syms_of_xfns ()
 {
   /* If not dumping, init_display ran before us, so don't override it.  */

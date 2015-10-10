@@ -19,7 +19,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 
 extern Lisp_Object Qsyntax_table_p;
-extern Lisp_Object Fsyntax_table_p (), Fsyntax_table (), Fset_syntax_table ();
+extern Lisp_Object Fsyntax_table_p (Lisp_Object);
+extern Lisp_Object Fsyntax_table (void);
+extern Lisp_Object Fset_syntax_table (Lisp_Object);
 
 /* The standard syntax table is stored where it will automatically
    be used in all new buffers.  */

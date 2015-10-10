@@ -724,6 +724,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
   return v1;
 }
 
+void
 syms_of_bytecode ()
 {
   Qbytecode = intern ("byte-code");

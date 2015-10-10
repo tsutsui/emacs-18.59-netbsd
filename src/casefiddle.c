@@ -97,6 +97,7 @@ This means that each word's first character is upper case and the rest is lower 
 /* flag is CASE_UP, CASE_DOWN or CASE_CAPITALIZE or CASE_CAPITALIZE_UP.
    b and e specify range of buffer to operate on. */
 
+void
 casify_region (flag, b, e)
      enum case_action flag;
      Lisp_Object b, e;
@@ -228,6 +229,7 @@ With negative argument, capitalize previous words but do not move.")
   return Qnil;
 }
 
+void
 syms_of_casefiddle ()
 {
   defsubr (&Supcase);
@@ -241,6 +243,7 @@ syms_of_casefiddle ()
   defsubr (&Scapitalize_word);
 }
 
+void
 keys_of_casefiddle ()
 {
   ndefkey (Vctl_x_map, Ctl('U'), "upcase-region");

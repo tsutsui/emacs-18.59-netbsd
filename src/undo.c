@@ -286,6 +286,7 @@ Return what remains of the list.")
   return list;
 }
 
+void
 syms_of_undo ()
 {
   defsubr (&Sprimitive_undo);

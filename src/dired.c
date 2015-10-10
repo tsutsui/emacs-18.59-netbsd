@@ -41,8 +41,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define DIRENTRY struct direct
 #define NAMLEN(p) p->d_namlen
 
-extern DIR *opendir ();
-extern struct direct *readdir ();
+#ifdef POSIX
+#include <dirent.h>
+#else
+extern DIR *opendir (const choar *);
+extern struct direct *readdir (DIR *);
+#endif
 
 #endif
 
@@ -376,6 +380,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
   return Fsignal (Qquit, Qnil);
 }
 
+int
 file_name_completion_stat (dirname, dp, st_addr)
      Lisp_Object dirname;
      DIRENTRY *dp;
@@ -486,6 +491,7 @@ If file does not exists, returns nil.")
   return Flist (11, values);
 }
 
+void
 syms_of_dired ()
 {
   defsubr (&Sdirectory_files);

@@ -169,15 +169,17 @@ enum regexpcode
     notsyntaxspec /* Matches any character whose syntax differs from the specified. */
   };
 
-extern char *re_compile_pattern ();
+extern char *re_compile_pattern (char *, int, struct re_pattern_buffer *);
 /* Is this really advertised? */
-extern void re_compile_fastmap ();
-extern int re_search (), re_search_2 ();
-extern int re_match (), re_match_2 ();
+extern void re_compile_fastmap (struct re_pattern_buffer *);
+extern int re_search (struct re_pattern_buffer *, char *, int, int, int, struct re_registers *);
+extern int re_search_2 (struct re_pattern_buffer *, char *, int, char *, int, int, int, struct re_registers *, int);
+extern int re_match (struct re_pattern_buffer *, char *, int, int, struct re_registers *);
+extern int re_match_2 (struct re_pattern_buffer *, unsigned char *, int, unsigned char *, int, int, struct re_registers *, int);
 
 /* 4.2 bsd compatibility (yuck) */
-extern char *re_comp ();
-extern int re_exec ();
+extern char *re_comp (char *);
+extern int re_exec (char *);
 
 #ifdef SYNTAX_TABLE
 extern char *re_syntax_table;

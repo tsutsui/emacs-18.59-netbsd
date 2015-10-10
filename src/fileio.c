@@ -89,8 +89,6 @@ extern unsigned char vms_file_written[];	/* set in rename_sans_version */
 
 #include "filetypes.h"
 
-extern void make_gap (int);
-
 #ifndef O_WRONLY
 #define O_WRONLY 1
 #endif
@@ -111,6 +109,7 @@ int vms_stmlf_recfm;
 
 Lisp_Object Qfile_error, Qfile_already_exists;
 
+void close_file_unwind (Lisp_Object);
 int e_write (int, char *, int);
 
 void
@@ -291,6 +290,7 @@ On VMS, converts \"[X]FOO.DIR\" to \"[X.FOO]\", etc.")
  * Value is nonzero if the string output is different from the input.
  */
 
+int
 directory_file_name (src, dst)
      char *src, *dst;
 {
@@ -1023,6 +1023,7 @@ expand_and_dir_to_file (filename, defdir)
   return abspath;
 }
 
+void
 barf_or_query_if_file_exists (absname, querystring, interactive)
      Lisp_Object absname;
      unsigned char *querystring;
@@ -1572,6 +1573,7 @@ otherwise, if FILE2 does not exist, the answer is t.")
   return (mtime1 > st.st_mtime) ? Qt : Qnil;
 }
 
+void
 close_file_unwind (fd)
      Lisp_Object fd;
 {
@@ -2278,6 +2280,7 @@ DIR defaults to current buffer's directory default.")
   return Fsubstitute_in_file_name (val);
 }
 
+void
 syms_of_fileio ()
 {
   Qfile_error = intern ("file-error");

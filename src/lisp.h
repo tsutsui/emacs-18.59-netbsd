@@ -640,7 +640,7 @@ struct Lisp_Marker
 
 /* defsubr (Sname);
  is how we define the symbol for function `name' at start-up time. */
-extern void defsubr ();
+extern void defsubr (struct Lisp_Subr *);
 
 #define MANY -2
 #define UNEVALLED -1
@@ -666,7 +666,7 @@ extern void defsubr ();
 struct specbinding
   {
     Lisp_Object symbol, old_value;
-    Lisp_Object (*func) ();
+    Lisp_Object (*func) (Lisp_Object);
     Lisp_Object unused;		/* Dividing by 16 is faster than by 12 */
   };
 
@@ -778,7 +778,7 @@ struct gcpro
 
 /* Call staticpro (&var) to protect static variable `var'. */
 
-void staticpro();
+void staticpro(Lisp_Object *);
   
 #define UNGCPRO (gcprolist = gcpro1.next)
 
@@ -964,7 +964,7 @@ extern Lisp_Object make_pure_string (char *, int);
 extern Lisp_Object pure_cons (Lisp_Object, Lisp_Object);
 extern Lisp_Object make_pure_vector (int);
 extern Lisp_Object Fgarbage_collect (void);
-extern int free_cons (struct Lisp_Cons *);
+extern void free_cons (struct Lisp_Cons *);
 
 /* Defined in print.c */
 extern Lisp_Object Vprin1_to_string_buffer;
@@ -995,7 +995,7 @@ extern Lisp_Object Feval_current_buffer (Lisp_Object);
 extern Lisp_Object Feval_region (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object intern (char *);
 extern Lisp_Object oblookup (Lisp_Object, char *, int);
-extern void map_obarray (Lisp_Object, int (*)(Lisp_Object, Lisp_Object), Lisp_Object);
+extern void map_obarray (Lisp_Object, void (*)(Lisp_Object, Lisp_Object), Lisp_Object);
 extern int openp (Lisp_Object, Lisp_Object, char *, Lisp_Object *, int);
 
 /* Defined in eval.c */
@@ -1333,8 +1333,8 @@ extern Lisp_Object get_keymap (Lisp_Object);
 extern void ndefkey (Lisp_Object, int, char *);
 extern void describe_map_tree (Lisp_Object, int, Lisp_Object);
 extern void describe_map (Lisp_Object, Lisp_Object, int, Lisp_Object);
-extern void describe_alist (Lisp_Object, Lisp_Object, int (*)(Lisp_Object), int, Lisp_Object);
-extern void describe_vector (Lisp_Object, Lisp_Object, int (*)(Lisp_Object), int, Lisp_Object);
+extern void describe_alist (Lisp_Object, Lisp_Object, void (*)(Lisp_Object), int, Lisp_Object);
+extern void describe_vector (Lisp_Object, Lisp_Object, void (*)(Lisp_Object), int, Lisp_Object);
 extern Lisp_Object get_keymap_1 (Lisp_Object, int);
 
 /* defined in indent.c */
@@ -1498,10 +1498,7 @@ extern Lisp_Object Fmodify_syntax_entry (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object Fparse_partial_sexp (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object Fscan_lists (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object Fscan_sexps (Lisp_Object, Lisp_Object);
-extern Lisp_Object Fset_syntax_table (Lisp_Object);
 extern Lisp_Object Fstandard_syntax_table (void);
-extern Lisp_Object Fsyntax_table (void);
-extern Lisp_Object Fsyntax_table_p (Lisp_Object);
 
 /* defined in undo.c */
 extern Lisp_Object Fprimitive_undo (Lisp_Object, Lisp_Object);
@@ -1542,8 +1539,6 @@ extern Lisp_Object Fx_store_cut_buffer (Lisp_Object);
 extern int initialized;
 
 extern int immediate_quit;	    /* Nonzero means ^G can quit instantly */
-
-extern void debugger ();
 
 extern void *xmalloc (int), *xrealloc (void *, int);
 

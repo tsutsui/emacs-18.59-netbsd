@@ -420,6 +420,7 @@ thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ int
   return tem;
 }
 
+void
 syms_of_doc ()
 {
   staticpro (&Vdoc_file_name);

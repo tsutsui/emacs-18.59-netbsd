@@ -247,6 +247,7 @@ In Auto Fill mode, can break the preceding line if no numeric arg.")
   return Qnil;
 }
 
+int
 self_insert_internal (c1, noautofill)
      char c1;
      int noautofill;
@@ -301,6 +302,7 @@ self_insert_internal (c1, noautofill)
 
 /* module initialization */
 
+void
 syms_of_cmds ()
 {
   Qkill_backward_chars = intern ("kill-backward-chars");
@@ -326,6 +328,7 @@ syms_of_cmds ()
   defsubr (&Snewline);
 }
 
+void
 keys_of_cmds ()
 {
   int n;

@@ -290,6 +290,7 @@ at that position in the current buffer.")
     }
 }
 
+void
 syms_of_marker ()
 {
   defsubr (&Smarker_position);

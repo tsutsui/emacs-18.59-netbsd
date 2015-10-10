@@ -266,7 +266,7 @@ InsStr (s)
 void
 insert (string, length)
      register unsigned char *string;
-     register length;
+     register int length;
 {
   register Lisp_Object temp;
 

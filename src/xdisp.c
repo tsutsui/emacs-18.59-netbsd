@@ -533,6 +533,7 @@ update:
 /* Redisplay, but leave alone any recent echo area message
    unless another message has been requested in its place.  */
 
+void
 redisplay_preserve_echo_area ()
 {
   if (echo_area_contents == 0 && prev_echo_area_contents != 0)
@@ -907,6 +908,7 @@ static struct position debug_bp, debug_ep, debug_xp, debug_pp;
 static int debug_start_vpos, debug_stop_vpos, debug_scroll_amount;
 static int debug_dont_scroll;
 
+int
 try_window_id (window)
      Lisp_Object window;
 {
@@ -2080,6 +2082,7 @@ display_string (w, vpos, string, hpos, truncate, mincol, maxcol)
   }
 }
 
+void
 syms_of_xdisp ()
 {
   staticpro (&last_arrow_position);
@@ -2125,6 +2128,7 @@ If this is zero, point is always centered after it moves off screen.");
 }
 
 /* initialize the window system */
+void
 init_xdisp ()
 {
   Lisp_Object root_window;

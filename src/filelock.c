@@ -75,7 +75,6 @@ lock_file_owner_name (lfname)
 {
   struct stat s;
   struct passwd *the_pw;
-  extern struct passwd *getpwuid ();
 
   if (lstat (lfname, &s) == 0)
     the_pw = getpwuid (s.st_uid);
@@ -431,6 +430,7 @@ t if it is locked by you, else a string of the name of the locker.")
   return (lock_file_owner_name (lfname));
 }
 
+void
 syms_of_filelock ()
 {
   defsubr (&Sunlock_buffer);

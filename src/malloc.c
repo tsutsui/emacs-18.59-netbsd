@@ -69,6 +69,7 @@ what you give them.   Help stamp out software-hoarding!  */
 #include <sys/types.h>
 #include <signal.h>
 #include <stdint.h>
+#include <ulimit.h>
 #else
 
 /* Determine which kind of system this is.  */
@@ -205,7 +206,7 @@ static int warnlevel;
 
 /* Function to call to issue a warning;
    0 means don't issue them.  */
-static void (*warnfunction) ();
+static void (*warnfunction) (char *);
 
 /* nonzero once initial bunch of free blocks made */
 static int gotpool;
@@ -220,7 +221,7 @@ void get_lim_data (void);
 void
 malloc_init (start, warnfun)
      char *start;
-     void (*warnfun) ();
+     void (*warnfun) (char *);
 {
   if (start)
     data_space_start = start;
@@ -751,8 +752,6 @@ malloc_mem_free ()
 void
 get_lim_data ()
 {
-  extern long ulimit ();
-    
 #ifdef ULIMIT_BREAK_VALUE
   lim_data = ULIMIT_BREAK_VALUE;
 #else

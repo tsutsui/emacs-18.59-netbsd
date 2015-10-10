@@ -479,6 +479,7 @@ A raw prefix argument is what you get from (interactive \"P\").")
   return val;
 }
 
+void
 syms_of_callint ()
 {
   Qminus = intern ("-");

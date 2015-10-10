@@ -117,6 +117,15 @@ Lisp_Object Vdebugger;
 
 Lisp_Object funcall_lambda (Lisp_Object, int, Lisp_Object *);
 
+typedef Lisp_Object (*func0_t) (void);
+typedef Lisp_Object (*func1_t) (Lisp_Object);
+typedef Lisp_Object (*func2_t) (Lisp_Object, Lisp_Object);
+typedef Lisp_Object (*func3_t) (Lisp_Object, Lisp_Object, Lisp_Object);
+typedef Lisp_Object (*func4_t) (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object);
+typedef Lisp_Object (*func5_t) (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object);
+typedef Lisp_Object (*funcmany_t) (int, Lisp_Object *);
+
+void
 init_eval_once ()
 {
   specpdl_size = 50;
@@ -125,6 +134,7 @@ init_eval_once ()
   max_lisp_eval_depth = 200;
 }
 
+void
 init_eval ()
 {
   specpdl_ptr = specpdl;
@@ -148,6 +158,7 @@ call_debugger (arg)
   return apply1 (Vdebugger, arg);
 }
 
+void
 do_debug_on_call (code)
      Lisp_Object code;
 {
@@ -1277,6 +1288,13 @@ DEFUN ("eval", Feval, Seval, 1, 1, 0,
   Lisp_Object funcar;
   struct backtrace backtrace;
   struct gcpro gcpro1, gcpro2, gcpro3;
+  func0_t func0;
+  func1_t func1;
+  func2_t func2;
+  func3_t func3;
+  func4_t func4;
+  func5_t func5;
+  funcmany_t funcm;
 
   if (XTYPE (form) == Lisp_Symbol)
     {
@@ -1356,7 +1374,8 @@ DEFUN ("eval", Feval, Seval, 1, 1, 0,
       if (XSUBR (fun)->max_args == UNEVALLED)
 	{
 	  backtrace.evalargs = 0;
-	  val = (*XSUBR (fun)->function) (args_left);
+	  func1 = XSUBR (fun)->function;
+	  val = func1 (args_left);
 	  goto done;
 	}
 
@@ -1382,7 +1401,8 @@ DEFUN ("eval", Feval, Seval, 1, 1, 0,
 	  backtrace.args = vals;
 	  backtrace.nargs = XINT (numargs);
 
-	  val = (*XSUBR (fun)->function) (XINT (numargs), vals);
+	  funcm = XSUBR (fun)->function;
+	  val = funcm (XINT (numargs), vals);
 	  UNGCPRO;
 	  goto done;
 	}
@@ -1406,25 +1426,29 @@ DEFUN ("eval", Feval, Seval, 1, 1, 0,
       switch (i)
 	{
 	case 0:
-	  val = (*XSUBR (fun)->function) ();
+	  func0 = XSUBR (fun)->function;
+	  val = func0 ();
 	  goto done;
 	case 1:
-	  val = (*XSUBR (fun)->function) (argvals[0]);
+	  func1 = XSUBR (fun)->function;
+	  val = func1 (argvals[0]);
 	  goto done;
 	case 2:
-	  val = (*XSUBR (fun)->function) (argvals[0], argvals[1]);
+	  func2 = XSUBR (fun)->function;
+	  val = func2 (argvals[0], argvals[1]);
 	  goto done;
 	case 3:
-	  val = (*XSUBR (fun)->function) (argvals[0], argvals[1],
-					  argvals[2]);
+	  func3 = XSUBR (fun)->function;
+	  val = func3 (argvals[0], argvals[1], argvals[2]);
 	  goto done;
 	case 4:
-	  val = (*XSUBR (fun)->function) (argvals[0], argvals[1],
-					  argvals[2], argvals[3]);
+	  func4 = XSUBR (fun)->function;
+	  val = func4 (argvals[0], argvals[1], argvals[2], argvals[3]);
 	  goto done;
 	case 5:
-	  val = (*XSUBR (fun)->function) (argvals[0], argvals[1], argvals[2],
-					  argvals[3], argvals[4]);
+	  func5 = XSUBR (fun)->function;
+	  val = func5 (argvals[0], argvals[1], argvals[2],
+		       argvals[3], argvals[4]);
 	  goto done;
 	}
     }
@@ -1683,6 +1707,13 @@ Thus,  (funcall 'cons 'x 'y)  returns  (x . y).")
   struct backtrace backtrace;
   register Lisp_Object *internal_args;
   register int i;
+  func0_t func0;
+  func1_t func1;
+  func2_t func2;
+  func3_t func3;
+  func4_t func4;
+  func5_t func5;
+  funcmany_t funcm;
 
   QUIT;
   if (consing_since_gc > gc_cons_threshold)
@@ -1738,7 +1769,8 @@ Thus,  (funcall 'cons 'x 'y)  returns  (x . y).")
 
       if (XSUBR (fun)->max_args == MANY)
 	{
-	  val = (*XSUBR (fun)->function) (numargs, args + 1);
+	  funcm = XSUBR (fun)->function;
+	  val = funcm (numargs, args + 1);
 	  goto done;
 	}
 
@@ -1754,27 +1786,30 @@ Thus,  (funcall 'cons 'x 'y)  returns  (x . y).")
       switch (XSUBR (fun)->max_args)
 	{
 	case 0:
-	  val = (*XSUBR (fun)->function) ();
+	  func0 = XSUBR (fun)->function;
+	  val = func0 ();
 	  goto done;
 	case 1:
-	  val = (*XSUBR (fun)->function) (internal_args[0]);
+	  func1 = XSUBR (fun)->function;
+	  val = func1 (internal_args[0]);
 	  goto done;
 	case 2:
-	  val = (*XSUBR (fun)->function) (internal_args[0], internal_args[1]);
+	  func2 = XSUBR (fun)->function;
+	  val = func2 (internal_args[0], internal_args[1]);
 	  goto done;
 	case 3:
-	  val = (*XSUBR (fun)->function) (internal_args[0], internal_args[1],
-					  internal_args[2]);
+	  func3 = XSUBR (fun)->function;
+	  val = func3 (internal_args[0], internal_args[1], internal_args[2]);
 	  goto done;
 	case 4:
-	  val = (*XSUBR (fun)->function) (internal_args[0], internal_args[1],
-					  internal_args[2],
-					  internal_args[3]);
+	  func4 = XSUBR (fun)->function;
+	  val = func4 (internal_args[0], internal_args[1], internal_args[2],
+		       internal_args[3]);
 	  goto done;
 	case 5:
-	  val = (*XSUBR (fun)->function) (internal_args[0], internal_args[1],
-					  internal_args[2], internal_args[3],
-					  internal_args[4]);
+	  func5 = XSUBR (fun)->function;
+	  val = func5 (internal_args[0], internal_args[1], internal_args[2],
+		       internal_args[3], internal_args[4]);
 	  goto done;
 	}
     }
@@ -1930,7 +1965,6 @@ void
 specbind (symbol, value)
      Lisp_Object symbol, value;
 {
-  extern void store_symval_forwarding (); /* in eval.c */
   Lisp_Object ovalue;
 
   CHECK_SYMBOL (symbol, 0);
@@ -1950,7 +1984,7 @@ specbind (symbol, value)
 
 void
 record_unwind_protect (function, arg)
-     Lisp_Object (*function)();
+     Lisp_Object (*function)(Lisp_Object);
      Lisp_Object arg;
 {
   if (specpdl_ptr == specpdl + specpdl_size)
@@ -2100,6 +2134,7 @@ Output stream used is value of standard-output.")
   return Qnil;
 }
 
+void
 syms_of_eval ()
 {
   DEFVAR_INT ("max-specpdl-size", &max_specpdl_size,

@@ -187,7 +187,7 @@ extern int num_input_chars;
 
 /* Free and reallocate current_screen and new_screen.  */
 
-struct matrix *make_screen_structure ();
+struct matrix *make_screen_structure (int);
 
 void free_screen_structure (struct matrix *);
 int count_blanks (char *);
@@ -199,7 +199,8 @@ int count_match (char *, char *);
 void change_screen_size_1 (int, int, int, int);
 void bell (void);
 
-remake_screen_structures ()
+void
+remake_screen_structures (void)
 {
   int i;
 
@@ -684,6 +685,7 @@ direct_output_forward_char (n)
    Value is nonzero if redisplay stopped due to pending input.
    FORCE nonzero means do not stop for pending input.  */
 
+int
 update_screen (force, inhibit_hairy_id)
      int force;
      int inhibit_hairy_id;
@@ -693,7 +695,6 @@ update_screen (force, inhibit_hairy_id)
   register int i;
   int pause;
   int preempt_count = baud_rate / 2400 + 1;
-  extern input_pending;
 
   if (screen_height == 0) abort (); /* Some bug zeros some core */
 
@@ -821,6 +822,7 @@ quit_error_check ()
 
 /* Decide what insert/delete line to do, and do it */
 
+int
 scrolling ()
 {
   int unchanged_at_top, unchanged_at_bottom;
@@ -1196,6 +1198,7 @@ update_line (vpos)
   current_screen->contents[vpos] = temp;
 }
 
+int
 count_blanks (str)
      char *str;
 {
@@ -1204,6 +1207,7 @@ count_blanks (str)
   return str - p - 1;
 }
 
+int
 count_match (str1, str2)
      char *str1, *str2;
 {
@@ -1591,6 +1595,7 @@ char *terminal_type;
 /* Then invoke its decoding routine to set up variables
   in the terminal package */
 
+void
 init_display ()
 {
 #ifdef HAVE_X_WINDOWS
@@ -1658,6 +1663,7 @@ For types not defined in VMS, use  define emacs_term \"TYPE\".\n\
 #endif /* SIGWINCH */
 }
 
+void
 syms_of_display ()
 {
   defsubr (&Sopen_termscript);

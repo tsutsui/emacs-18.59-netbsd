@@ -102,4 +102,5 @@ extern int Wcm_init (void);
 extern void cmcostinit (void);
 extern void cmgoto (int, int);
 extern void cmputc (char);
+extern void evalcost (char);
 extern void losecursor (void);

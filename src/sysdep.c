@@ -706,6 +706,7 @@ struct save_signal
 
 /* Suspend the Emacs process; give terminal to its superior.  */
 
+int
 sys_suspend ()
 {
 #ifdef VMS
@@ -807,7 +808,7 @@ save_signal_handlers (saved_handlers)
   while (saved_handlers->code)
     {
       saved_handlers->handler
-	= (int (*) ()) signal (saved_handlers->code, SIG_IGN);
+	= signal (saved_handlers->code, SIG_IGN);
       saved_handlers++;
     }
 }
@@ -827,6 +828,7 @@ restore_signal_handlers (saved_handlers)
 
 int old_fcntl_flags;
 
+void
 init_sigio ()
 {
 #ifdef FASYNC
@@ -1805,7 +1807,6 @@ select (nfds, rfds, wfds, efds, timeout)
   int ravail = 0, orfds = 0, old_alarm;
   int timeoutval = timeout ? *timeout : 100000;
   int *local_timeout = &timeoutval;
-  extern int kbd_count;
   extern int proc_buffered_char[];
 #ifndef subprocesses
   int process_tick = 0, update_tick = 0;
@@ -1932,7 +1933,6 @@ select (nfds, rfds, wfds, efds, timeout)
 
 read_input_waiting ()
 {
-  extern int kbd_count;
   extern unsigned char kbd_buffer[];
   extern unsigned char *kbd_ptr;
   int val;
@@ -2062,6 +2062,7 @@ sigbit (i)
 sigset_t signal_empty_mask, signal_full_mask;
 static struct sigaction new_action, old_action;
 
+void
 init_signals ()
 {
   sigemptyset (&signal_empty_mask);

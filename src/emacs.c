@@ -191,7 +191,7 @@ fatal_error_signal (sig)
 
 /* Code for dealing with Lisp access to the Unix command line */
 
-static
+static void
 init_cmdargs (argc, argv, skip_args)
      int argc;
      char **argv;
@@ -241,7 +241,10 @@ __main ()
 #endif /* not ORDINARY_LINK */
 #endif /* __GNUC__ */
 
+void syms_of_emacs (void);
+
 /* ARGSUSED */
+int
 main (argc, argv, envp)
      int argc;
      char **argv;
@@ -249,7 +252,6 @@ main (argc, argv, envp)
 {
   int skip_args = 0;
   extern int errno;
-  extern void malloc_warning ();
 
 #ifdef HAVE_PERSONALITY_LINUX32
   /* See if there is a gap between the end of BSS and the heap.
@@ -677,7 +679,6 @@ This function exists on systems that use HAVE_SHM.")
 {
   extern int my_edata;
   Lisp_Object tem;
-  extern void malloc_warning ();
 
   CHECK_STRING (intoname, 0);
   intoname = Fexpand_file_name (intoname, Qnil);
@@ -708,7 +709,6 @@ Take symbols from SYMFILE (presumably the file you executed to run Emacs).")
 {
   extern int my_edata;
   Lisp_Object tem;
-  extern void malloc_warning ();
 
   CHECK_STRING (intoname, 0);
   intoname = Fexpand_file_name (intoname, Qnil);
@@ -779,6 +779,7 @@ decode_env_path (evarname, defalt)
   return Fnreverse (lpath);
 }
 
+void
 syms_of_emacs ()
 {
 #ifndef CANNOT_DUMP

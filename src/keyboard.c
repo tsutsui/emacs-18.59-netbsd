@@ -249,6 +249,11 @@ int kbd_buffer_read_command_char (void);
 void input_available_signal (int);
 void interrupt_signal (void);
 
+Lisp_Object command_loop_2 (void);
+Lisp_Object cmd_error (Lisp_Object);
+Lisp_Object top_level_1 (void);
+Lisp_Object top_level_2 (void);
+
 /* Non-zero tells input_available_signal to call read_socket_hook
    even if FIONREAD returns zero.  */
 static int force_input;
@@ -268,6 +273,7 @@ static char *echoptr;
    so that it serves as a prompt for the next character.
    Also start echoing.  */
 
+void
 echo_prompt (str)
      char *str;
 {
@@ -283,6 +289,7 @@ echo_prompt (str)
 /* Add the character C to the echo string,
    if echoing is going on.  */
 
+void
 echo_char (c)
      int c;
 {
@@ -313,6 +320,7 @@ echo_char (c)
 /* Temporarily add a dash to the end of the echo string,
    so that it serves as a mini-prompt for the very next character.  */
 
+void
 echo_dash ()
 {
   if (!immediate_echo && echoptr == echobuf)
@@ -352,6 +360,7 @@ echo ()
 
 /* Turn off echoing, for the start of a new command.  */
 
+void
 cancel_echoing ()
 {
   immediate_echo = 0;
@@ -498,9 +507,6 @@ cmd_error (data)
   return make_number (0);
 }
 
-Lisp_Object command_loop_2 (void);
-Lisp_Object cmd_error (Lisp_Object);
-Lisp_Object top_level_1 (void);
 
 /* Entry to editor-command-loop.
    This level has the catches for exiting/returning to editor command loop.
@@ -905,6 +911,7 @@ stop_polling ()
    -1 means do not do redisplay, but do do autosaving.
    1 means do both.  */
 
+int
 read_command_char (commandflag)
      int commandflag;
 {
@@ -1082,6 +1089,7 @@ print_help (object)
 int stop_character;
 
 /* Store a character obtained at interrupt level into kbd_buffer, fifo */
+void
 kbd_buffer_store_char (c)
      register int c;
 {
@@ -1112,6 +1120,7 @@ kbd_buffer_store_char (c)
     }
 }
 
+int
 kbd_buffer_read_command_char ()
 {
   register int c;
@@ -1175,6 +1184,7 @@ kbd_buffer_read_command_char ()
 
 /* Force an attempt to read input regardless of what FIONREAD says.  */
 
+void
 force_input_read ()
 {
   force_input = 1;
@@ -1344,6 +1354,7 @@ read_avail_input (nread)
 /* If using interrupt input and some input chars snuck into the
    buffer before we enabled interrupts, fake an interrupt for them.  */
 
+void
 gobble_input ()
 {
   int nread;
@@ -1766,6 +1777,7 @@ DEFUN ("execute-extended-command", Fexecute_extended_command, Sexecute_extended_
   return Fcommand_execute (function, Qt);
 }
 
+int
 detect_input_pending ()
 {
   if (!input_pending)
@@ -2137,6 +2149,7 @@ Note that the arguments will change incompatibly in version 19.")
   return Qnil;
 }
 
+void
 init_keyboard ()
 {
   this_command_keys_size = 40;
@@ -2187,6 +2200,7 @@ init_keyboard ()
 #endif
 }
 
+void
 syms_of_keyboard ()
 {
   Qself_insert_command = intern ("self-insert-command");
@@ -2290,6 +2304,7 @@ If string is of length N, character codes N and up are untranslated.");
   Vkeyboard_translate_table = Qnil;
 }
 
+void
 keys_of_keyboard ()
 {
   ndefkey (Vglobal_map, Ctl ('Z'), "suspend-emacs");

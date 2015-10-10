@@ -96,6 +96,7 @@ Lisp_Object QSFundamental;	/* A string "Fundamental" */
 
 void reset_buffer_local_variables (struct buffer *);
 
+void
 nsberror (spec)
      Lisp_Object spec;
 {
@@ -1046,6 +1047,7 @@ This buffer will then see the default values of all variables.")
 }
 
 extern Lisp_Object Vprin1_to_string_buffer;	/* in print.c */
+void
 init_buffer_once ()
 {
   register Lisp_Object tem;
@@ -1131,6 +1133,7 @@ init_buffer_once ()
   Fset_buffer (Fget_buffer_create (build_string ("*scratch*")));
 }
 
+void
 init_buffer ()
 {
   char buf[MAXPATHLEN+1];
@@ -1149,6 +1152,7 @@ init_buffer ()
 }
 
 /* initialize the buffer routines */
+void
 syms_of_buffer ()
 {
   staticpro (&Vbuffer_defaults);
@@ -1356,6 +1360,7 @@ Automatically becomes local when set in any fashion.");
   defsubr (&Skill_all_local_variables);
 }
 
+void
 keys_of_buffer ()
 {
   ndefkey (Vctl_x_map, 'b', "switch-to-buffer");

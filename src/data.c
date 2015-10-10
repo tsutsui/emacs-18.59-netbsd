@@ -67,6 +67,7 @@ wrong_type_argument (predicate, value)
   return value;
 }
 
+void
 pure_write_error ()
 {
   error ("Attempt to modify read-only object");
@@ -1619,6 +1620,7 @@ arith_error (signo)
     Fsignal (Qarith_error, Qnil);
 }
 
+void
 init_data ()
 {
   /* Don't do this if just dumping out.

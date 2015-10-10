@@ -380,6 +380,7 @@ scrolling_max_lines_saved (start, end, oldhash, newhash, cost)
    These are the same arguments that might be given to
    scroll_screen_lines to perform this scrolling.  */
 
+int
 scroll_cost (from, to, amount)
      int from, to, amount;
 {

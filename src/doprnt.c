@@ -25,6 +25,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "config.h"
 #include "lisp.h"
 
+int
 doprnt (buffer, bufsize, format, nargs, args)
      char *buffer;
      register int bufsize;

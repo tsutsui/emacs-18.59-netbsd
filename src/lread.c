@@ -1037,7 +1037,7 @@ hash_string (ptr, len)
 void
 map_obarray (obarray, fn, arg)
      Lisp_Object obarray;
-     int (*fn) (Lisp_Object, Lisp_Object);
+     void (*fn) (Lisp_Object, Lisp_Object);
      Lisp_Object arg;
 {
   register int i;
@@ -1057,6 +1057,7 @@ map_obarray (obarray, fn, arg)
     }
 }
 
+void
 mapatoms_1 (sym, function)
      Lisp_Object sym, function;
 {
@@ -1230,6 +1231,7 @@ defvar_per_buffer (namestring, address, doc)
 
 #endif /* standalone */
 
+void
 init_read ()
 {
   char *normal = PATH_LOADSEARCH;

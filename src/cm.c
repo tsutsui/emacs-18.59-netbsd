@@ -34,6 +34,7 @@ extern char *BC, *UP;
 int cost;		/* sums up costs */
 
 /* ARGSUSED */
+void
 evalcost (c)
      char c;
 {
@@ -144,7 +145,7 @@ cmcostinit ()
  * actually perform the motion.
  */
 
-static
+static int
 calccost (srcy, srcx, dsty, dstx, doit)
 {
     register int    deltay,
@@ -393,6 +394,7 @@ Wcm_clear ()
  * Return 0 if can do CM.
  */
 
+int
 Wcm_init ()
 {
   /* Check that we know the size of the screen.... */
