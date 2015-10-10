@@ -124,4 +124,4 @@
 #define C_SWITCH_SYSTEM
 #define C_SWITCH_X_SYSTEM -I/usr/X11R7/include
 #define C_DEBUG_SWITCH -O -g
-#define C_OPTIMIZE_SWITCH -Wall -g -O -fno-strict-aliasing
+#define C_OPTIMIZE_SWITCH -Wall -Wno-pointer-sign -g -O -fno-strict-aliasing
