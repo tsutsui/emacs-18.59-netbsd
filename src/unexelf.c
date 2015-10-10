@@ -692,6 +692,8 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   ElfW(Word) old_bss_size, new_data2_size;
   ElfW(Off)  new_data2_offset;
   ElfW(Addr) new_data2_addr;
+  ElfW(Off) old_bss_offset;
+  ElfW(Word) new_data2_incr;
 
   int n, nn;
   int old_bss_index, old_sbss_index;
@@ -760,6 +762,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
     {
       old_bss_addr = OLD_SECTION_H (old_bss_index).sh_addr;
       old_bss_size = OLD_SECTION_H (old_bss_index).sh_size;
+      old_bss_offset = OLD_SECTION_H (old_bss_index).sh_offset;
       new_data2_index = old_bss_index;
     }
   else
@@ -767,6 +770,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       old_bss_addr = OLD_SECTION_H (old_sbss_index).sh_addr;
       old_bss_size = OLD_SECTION_H (old_bss_index).sh_size
 	+ OLD_SECTION_H (old_sbss_index).sh_size;
+      old_bss_offset = OLD_SECTION_H (old_sbss_index).sh_offset;
       new_data2_index = old_sbss_index;
     }
 
@@ -783,17 +787,24 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 #endif
   new_data2_addr = old_bss_addr;
   new_data2_size = new_bss_addr - old_bss_addr;
-  new_data2_offset  = OLD_SECTION_H (old_data_index).sh_offset +
-    (new_data2_addr - OLD_SECTION_H (old_data_index).sh_addr);
+  new_data2_offset = OLD_SECTION_H (old_data_index).sh_offset
+    + (new_data2_addr - OLD_SECTION_H (old_data_index).sh_addr);
+  /* This is the amount by which the sections following the bss sections
+     must be shifted in the image.  It can differ from new_data2_size if
+     the end of the old .data section (and thus the offset of the .bss
+     section) was unaligned.  */
+  new_data2_incr = new_data2_size + (new_data2_offset - old_bss_offset);
 
 #ifdef DEBUG
   fprintf (stderr, "old_bss_index %d\n", old_bss_index);
   fprintf (stderr, "old_bss_addr %x\n", old_bss_addr);
   fprintf (stderr, "old_bss_size %x\n", old_bss_size);
+  fprintf (stderr, "old_bss_offset %x\n", old_bss_offset);
   fprintf (stderr, "new_bss_addr %x\n", new_bss_addr);
   fprintf (stderr, "new_data2_addr %x\n", new_data2_addr);
   fprintf (stderr, "new_data2_size %x\n", new_data2_size);
   fprintf (stderr, "new_data2_offset %x\n", new_data2_offset);
+  fprintf (stderr, "new_data2_incr %x\n", new_data2_incr);
 #endif
 
   if ((unsigned) new_bss_addr < (unsigned) old_bss_addr + old_bss_size)
@@ -808,7 +819,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (new_file < 0)
     fatal ("Can't creat (%s): errno %d\n", new_name, errno);
 
-  new_file_size = stat_buf.st_size + old_file_h->e_shentsize + new_data2_size;
+  new_file_size = stat_buf.st_size + old_file_h->e_shentsize + new_data2_incr;
 
   if (ftruncate (new_file, new_file_size))
     fatal ("Can't ftruncate (%s): errno %d\n", new_name, errno);
@@ -821,7 +832,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   new_file_h = (ElfW(Ehdr) *) new_base;
   new_program_h = (ElfW(Phdr) *) ((byte *) new_base + old_file_h->e_phoff);
   new_section_h = (ElfW(Shdr) *)
-    ((byte *) new_base + old_file_h->e_shoff + new_data2_size);
+    ((byte *) new_base + old_file_h->e_shoff + new_data2_incr);
 
   /* Make our new file, program and section headers as copies of the
    * originals.
@@ -838,7 +849,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
    * further away now.
    */
 
-  new_file_h->e_shoff += new_data2_size;
+  new_file_h->e_shoff += new_data2_incr;
   new_file_h->e_shnum += 1;
 
 #ifdef DEBUG
@@ -899,7 +910,7 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 	NEW_PROGRAM_H (n).p_vaddr += new_data2_size - old_bss_size;
 
       if (NEW_PROGRAM_H (n).p_offset >= new_data2_offset)
-	NEW_PROGRAM_H (n).p_offset += new_data2_size;
+	NEW_PROGRAM_H (n).p_offset += new_data2_incr;
     }
 #endif
 
@@ -956,10 +967,8 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 	  )
 	{
 	  /* NN should be `old_s?bss_index + 1' at this point. */
-	  NEW_SECTION_H (nn).sh_offset =
-	    NEW_SECTION_H (new_data2_index).sh_offset + new_data2_size;
-	  NEW_SECTION_H (nn).sh_addr =
-	    NEW_SECTION_H (new_data2_index).sh_addr + new_data2_size;
+	  NEW_SECTION_H (nn).sh_offset = new_data2_offset + new_data2_size;
+	  NEW_SECTION_H (nn).sh_addr = new_data2_addr + new_data2_size;
 	  /* Let the new bss section address alignment be the same as the
 	     section address alignment followed the old bss section, so
 	     this section will be placed in exactly the same place. */
@@ -969,7 +978,12 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       else
 	{
 	  /* Any section that was original placed AFTER the bss
-	     section should now be off by NEW_DATA2_SIZE. */
+	     section should now be off by NEW_DATA2_INCR.  If a
+	     section overlaps the .bss section, consider it to be
+	     placed after the .bss section.  Overlap can occur if the
+	     section just before .bss has less-strict alignment; this
+	     was observed between .symtab and .bss on Solaris 2.5.1
+	     (sparc) with GCC snapshot 960602.  */
 #ifdef SOLARIS_POWERPC
 	  /* On PPC Reference Platform running Solaris 2.5.1
 	     the plt section is also of type NOBI like the bss section.
@@ -981,12 +995,10 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 	     Erik Deumens, deumens@qtp.ufl.edu.  */
 	  if (NEW_SECTION_H (nn).sh_offset
 	      >= OLD_SECTION_H (old_bss_index-1).sh_offset)
-	    NEW_SECTION_H (nn).sh_offset += new_data2_size;
+	    NEW_SECTION_H (nn).sh_offset += new_data2_incr;
 #else
-	  if (round_up (NEW_SECTION_H (nn).sh_offset,
-			OLD_SECTION_H (old_bss_index).sh_addralign)
-	      >= new_data2_offset)
-	    NEW_SECTION_H (nn).sh_offset += new_data2_size;
+	  if (NEW_SECTION_H (nn).sh_offset >= old_bss_offset)
+	    NEW_SECTION_H (nn).sh_offset += new_data2_incr;
 #endif
 	  /* Any section that was originally placed after the section
 	     header table should now be off by the size of one section
