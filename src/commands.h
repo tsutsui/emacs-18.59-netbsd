@@ -56,7 +56,7 @@ extern int quit_char;
 extern Lisp_Object Vexecuting_macro;
 
 /* Nonzero if input is coming from the keyboard */
-#define FROM_KBD (NULL (Vexecuting_macro) && !noninteractive)
+#define FROM_KBD (NILP (Vexecuting_macro) && !noninteractive)
 
 /* Set this nonzero to force reconsideration of mode line. */
 

@@ -300,7 +300,7 @@ thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ int
   int length;
   struct gcpro gcpro1; 
 
-  if (NULL (str))
+  if (NILP (str))
     return Qnil;
 
   CHECK_STRING (str, 0);
@@ -339,7 +339,7 @@ thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ int
 	  tem = Fintern (make_string (start, length), Qnil);
 	  tem = Fwhere_is_internal (tem, keymap, Qt);
 
-	  if (NULL (tem))	/* but not on any keys */
+	  if (NILP (tem))	/* but not on any keys */
 	    {
 	      new = (unsigned char *) xrealloc (buf, bsize += 4);
 	      bufp += new - buf;
@@ -377,9 +377,9 @@ thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ int
 	  oldbuf = current_buffer;
 	  set_buffer_internal (XBUFFER (Vprin1_to_string_buffer));
 	  name = Fintern (make_string (start, length), Qnil);
-	  if ((tem = (Fboundp (name)), NULL (tem)) ||
-	      (tem = (Fsymbol_value (name)), NULL (tem)) ||
-	      (tem = (get_keymap_1 (tem, 0)), NULL (tem)))
+	  if ((tem = (Fboundp (name)), NILP (tem)) ||
+	      (tem = (Fsymbol_value (name)), NILP (tem)) ||
+	      (tem = (get_keymap_1 (tem, 0)), NILP (tem)))
 	    {
 	      name = Fsymbol_name (name);
 	      InsStr ("\nUses keymap \"");

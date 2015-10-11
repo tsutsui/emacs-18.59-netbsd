@@ -38,13 +38,13 @@ set_environment_alist (str, val)
   register Lisp_Object tem;
 
   tem = Fassoc (str, Venvironment_alist);
-  if (NULL (tem))
-    if (NULL (val))
+  if (NILP (tem))
+    if (NILP (val))
       ;
     else
       Venvironment_alist = Fcons (Fcons (str, val), Venvironment_alist);
   else
-    if (NULL (val))
+    if (NILP (val))
       Venvironment_alist = Fdelq (tem, Venvironment_alist);
     else
       XCONS (tem)->cdr = val;
@@ -153,7 +153,7 @@ size_of_current_environ ()
   size = (XINT (tem) + 1) * sizeof (unsigned char *);
   /* + 1 for environment-terminating 0 */
 
-  for (tem = Venvironment_alist; !NULL (tem); tem = XCONS (tem)->cdr)
+  for (tem = Venvironment_alist; !NILP (tem); tem = XCONS (tem)->cdr)
     {
       register Lisp_Object str, val;
 
@@ -182,7 +182,7 @@ get_current_environ (memory_block)
   s = (unsigned char *) memory_block
 		+ (XINT (tem) + 1) * sizeof (unsigned char *);
 
-  for (tem = Venvironment_alist; !NULL (tem); tem = XCONS (tem)->cdr)
+  for (tem = Venvironment_alist; !NILP (tem); tem = XCONS (tem)->cdr)
     {
       register Lisp_Object str, val;
 
@@ -219,7 +219,7 @@ current_environ ()
   /* + 1 for terminating 0 */
 
   len = 0;
-  for (tem = Venvironment_alist; !NULL (tem); tem = XCONS (tem)->cdr)
+  for (tem = Venvironment_alist; !NILP (tem); tem = XCONS (tem)->cdr)
     {
       str = XCONS (XCONS (tem)->car)->car;
       val = XCONS (XCONS (tem)->car)->cdr;
@@ -232,7 +232,7 @@ current_environ ()
   e = env = (unsigned char **) xmalloc (env_len + len);
   s = (unsigned char *) env + env_len;
 
-  for (tem = Venvironment_alist; !NULL (tem); tem = XCONS (tem)->cdr)
+  for (tem = Venvironment_alist; !NILP (tem); tem = XCONS (tem)->cdr)
     {
       str = XCONS (XCONS (tem)->car)->car;
       val = XCONS (XCONS (tem)->car)->cdr;
@@ -271,9 +271,9 @@ VAR is a string, the name of the variable,\n\
 
   CHECK_STRING (str, 0);
   val = Fcdr (Fassoc (str, Venvironment_alist));
-  if (!NULL (interactivep))
+  if (!NILP (interactivep))
     {
-      if (NULL (val))
+      if (NILP (val))
 	message ("%s not defined in environment", XSTRING (str)->data);
       else
 	message ("\"%s\"", XSTRING (val)->data);
@@ -293,7 +293,7 @@ VAR is a string, the name of the variable.")
   Lisp_Object tem;
 
   CHECK_STRING (str, 0);
-  if (!NULL (val))
+  if (!NILP (val))
     CHECK_STRING (val, 0);
 
   set_environment_alist (str, val);

@@ -248,7 +248,7 @@ DEFUN ("list", Flist, Slist, 0, MANY, 0,
   XFASTINT (len) = nargs;
   val = Fmake_list (len, Qnil);
   val_tail = val;
-  while (!NULL (val_tail))
+  while (!NILP (val_tail))
     {
       XCONS (val_tail)->car = *args++;
       val_tail = XCONS (val_tail)->cdr;
@@ -687,7 +687,7 @@ Does not copy symbols.")
   register Lisp_Object new, tem;
   register int i;
 
-  if (NULL (Vpurify_flag))
+  if (NILP (Vpurify_flag))
     return obj;
 
   if ((PNTR_COMPARISON_TYPE) XPNTR (obj) < (PNTR_COMPARISON_TYPE) ((char *) pure + PURESIZE)

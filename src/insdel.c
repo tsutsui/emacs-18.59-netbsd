@@ -181,7 +181,7 @@ adjust_markers (from, to, amount)
 
   marker = current_buffer->markers;
 
-  while (!NULL (marker))
+  while (!NILP (marker))
     {
       m = XMARKER (marker);
       mpos = m->bufpos;
@@ -434,19 +434,19 @@ modify_region (start, end)
 void
 prepare_to_modify_buffer ()
 {
-  if (!NULL (current_buffer->read_only))
+  if (!NILP (current_buffer->read_only))
     Fbarf_if_buffer_read_only();
 
 #ifdef CLASH_DETECTION
-  if (!NULL (current_buffer->filename)
+  if (!NILP (current_buffer->filename)
       && current_buffer->save_modified >= MODIFF)
     lock_file (current_buffer->filename);
 #else
   /* At least warn if this file has changed on disk since it was visited.  */
-  if (!NULL (current_buffer->filename)
+  if (!NILP (current_buffer->filename)
       && current_buffer->save_modified >= MODIFF
-      && NULL (Fverify_visited_file_modtime (Fcurrent_buffer ()))
-      && !NULL (Ffile_exists_p (current_buffer->filename)))
+      && NILP (Fverify_visited_file_modtime (Fcurrent_buffer ()))
+      && !NILP (Ffile_exists_p (current_buffer->filename)))
     call1 (intern ("ask-user-about-supersession-threat"),
 	   current_buffer->filename);
 #endif /* not CLASH_DETECTION */

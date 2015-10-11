@@ -79,7 +79,7 @@ current_column ()
   register int tab_seen;
   register int post_tab;
   register int tab_width = XINT (current_buffer->tab_width);
-  int ctl_arrow = !NULL (current_buffer->ctl_arrow);
+  int ctl_arrow = !NILP (current_buffer->ctl_arrow);
 
   if (point == last_known_column_point
       && MODIFF == last_known_column_modified)
@@ -198,7 +198,7 @@ by default, MIN is zero.")
   register int tab_width = XINT (current_buffer->tab_width);
 
   CHECK_NUMBER (col, 0);
-  if (NULL (minimum))
+  if (NILP (minimum))
     XFASTINT (minimum) = 0;
   CHECK_NUMBER (minimum, 1);
 
@@ -300,7 +300,7 @@ passed values greater than (screen-width)")
   register int goal;
   register int end = ZV;
   register int tab_width = XINT (current_buffer->tab_width);
-  register int ctl_arrow = !NULL (current_buffer->ctl_arrow);
+  register int ctl_arrow = !NILP (current_buffer->ctl_arrow);
 
   Lisp_Object val;
 
@@ -362,11 +362,11 @@ compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, ta
   register Lisp_Object_Int pos;
   register int c;
   register Lisp_Object_Int tab_width = XFASTINT (current_buffer->tab_width);
-  register int ctl_arrow = !NULL (current_buffer->ctl_arrow);
+  register int ctl_arrow = !NILP (current_buffer->ctl_arrow);
   int selective
     = XTYPE (current_buffer->selective_display) == Lisp_Int
       ? XINT (current_buffer->selective_display)
-	: !NULL (current_buffer->selective_display) ? -1 : 0;
+	: !NILP (current_buffer->selective_display) ? -1 : 0;
   int prev_vpos, prev_hpos;
 
   if (tab_width <= 0 || tab_width > 20) tab_width = 8;
@@ -404,7 +404,7 @@ compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, ta
 	      while (pos < to && position_indentation (pos + 1) >= selective);
 	      pos--;
 	      /* Allow for the " ..." that is displayed for them. */
-	      if (!NULL (current_buffer->selective_display_ellipses))
+	      if (!NILP (current_buffer->selective_display_ellipses))
 		{
 		  hpos += 4;
 		  if (hpos >= width)
@@ -431,7 +431,7 @@ compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, ta
 	  /* Stop *before* the real newline.  */
 	  pos--;
 	  /* Allow for the " ..." that is displayed for them. */
-	  if (!NULL (current_buffer->selective_display_ellipses))
+	  if (!NILP (current_buffer->selective_display_ellipses))
 	    {
 	      hpos += 4;
 	      if (hpos >= width)
@@ -453,7 +453,7 @@ compute_motion (from, fromvpos, fromhpos, to, tovpos, tohpos, width, hscroll, ta
 	  if (hscroll
 	      || (truncate_partial_width_windows
 		  && width + 1 < screen_width)
-	      || !NULL (current_buffer->truncate_lines))
+	      || !NILP (current_buffer->truncate_lines))
 	    {
 	      /* Truncating: skip to newline.  */
 	      while (pos < to && FETCH_CHAR (pos) != '\n') pos++;
@@ -525,7 +525,7 @@ vmotion (from, vtarget, width, hscroll, window)
   int selective
     = XTYPE (current_buffer->selective_display) == Lisp_Int
       ? XINT (current_buffer->selective_display)
-	: !NULL (current_buffer->selective_display) ? -1 : 0;
+	: !NILP (current_buffer->selective_display) ? -1 : 0;
   int start_hpos = (EQ (window, minibuf_window) ? minibuf_prompt_width : 0);
 
  retry:

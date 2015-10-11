@@ -25,9 +25,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define MAXPATHLEN 1024
 #endif /* not MAXPATHLEN */
 
-#ifdef NULL
-#undef NULL
-#endif
 #include "config.h"
 #include "lisp.h"
 #include "window.h"
@@ -143,7 +140,7 @@ If there is no such buffer, nil is returned.")
       if (XTYPE (buf) != Lisp_Buffer) continue;
       if (XTYPE (XBUFFER (buf)->filename) != Lisp_String) continue;
       tem = Fstring_equal (XBUFFER (buf)->filename, filename);
-      if (!NULL (tem))
+      if (!NILP (tem))
 	return buf;
     }
   return Qnil;
@@ -161,7 +158,7 @@ DEFUN ("get-buffer-create", Fget_buffer_create, Sget_buffer_create, 1, 1, 0,
   /* register struct buffer *bx; */
 
   buf = Fget_buffer (name);
-  if (!NULL (buf)) return buf;
+  if (!NILP (buf)) return buf;
 
   b = (struct buffer *) malloc (sizeof (struct buffer));
   if (!b) memory_full ();
@@ -207,14 +204,14 @@ DEFUN ("get-buffer-create", Fget_buffer_create, Sget_buffer_create, 1, 1, 0,
   reset_buffer (b);
 
   function = buffer_defaults.major_mode;
-  if (NULL (function))
+  if (NILP (function))
     {
       tem = Fget (current_buffer->major_mode, Qmode_class);
       if (EQ (tem, Qnil))
 	function = current_buffer->major_mode;
     }
 
-  if (NULL (function) || EQ (function, Qfundamental_mode))
+  if (NILP (function) || EQ (function, Qfundamental_mode))
     return buf;
 
   /* To select a nonfundamental mode,
@@ -294,7 +291,7 @@ formed, then creates and returns a new buffer with that new name.")
   CHECK_STRING (name, 0);
 
   tem = Fget_buffer (name);
-  if (NULL (tem))
+  if (NILP (tem))
     return Fget_buffer_create (name);
 
   count = 1;
@@ -303,7 +300,7 @@ formed, then creates and returns a new buffer with that new name.")
       sprintf (number, "<%d>", ++count);
       gentemp = concat2 (name, build_string (number));
       tem = Fget_buffer (gentemp);
-      if (NULL (tem))
+      if (NILP (tem))
 	return Fget_buffer_create (gentemp);
     }
 }
@@ -315,7 +312,7 @@ No arg means return name of current buffer.")
   (buffer)
      register Lisp_Object buffer;
 {
-  if (NULL (buffer))
+  if (NILP (buffer))
     return current_buffer->name;
   CHECK_BUFFER (buffer, 0);
   return XBUFFER (buffer)->name;
@@ -328,7 +325,7 @@ No arg means return name of current buffer.")
     (buffer)
        Lisp_Object buffer;
   {
-    if (NULL (buffer))
+    if (NILP (buffer))
       return current_buffer->number;
     CHECK_BUFFER (buffer, 0);
     return XBUFFER (buffer)->number;
@@ -342,7 +339,7 @@ No argument means use current buffer as BUFFER.")
   (buffer)
      register Lisp_Object buffer;
 {
-  if (NULL (buffer))
+  if (NILP (buffer))
     return current_buffer->filename;
   CHECK_BUFFER (buffer, 0);
   return XBUFFER (buffer)->filename;
@@ -361,7 +358,7 @@ does not change the local values.")
   register struct buffer *buf;
   register Lisp_Object val;
 
-  if (NULL (buffer))
+  if (NILP (buffer))
     buf = current_buffer;
   else
     {
@@ -416,7 +413,7 @@ No argument means use current buffer as BUFFER.")
      register Lisp_Object buffer;
 {
   register struct buffer *buf;
-  if (NULL (buffer))
+  if (NILP (buffer))
     buf = current_buffer;
   else
     {
@@ -441,17 +438,17 @@ DEFUN ("set-buffer-modified-p", Fset_buffer_modified_p, Sset_buffer_modified_p,
      If buffer becoming unmodified, unlock the file.  */
 
   fn = current_buffer->filename;
-  if (!NULL (fn))
+  if (!NILP (fn))
     {
       already = current_buffer->save_modified < MODIFF;
-      if (!already && !NULL (flag))
+      if (!already && !NILP (flag))
 	lock_file (fn);
-      else if (already && NULL (flag))
+      else if (already && NILP (flag))
 	unlock_file (fn);
     }
 #endif /* CLASH_DETECTION */
 
-  current_buffer->save_modified = NULL (flag) ? MODIFF : 0;
+  current_buffer->save_modified = NILP (flag) ? MODIFF : 0;
   update_mode_lines++;
   return flag;
 }
@@ -466,17 +463,17 @@ DEFUN ("rename-buffer", Frename_buffer, Srename_buffer, 1, 1,
 
   CHECK_STRING (name, 0);
   tem = Fget_buffer (name);
-  if (!NULL (tem))
+  if (!NILP (tem))
     error ("Buffer name \"%s\" is in use", XSTRING (name)->data);
 
   XSET (buf, Lisp_Buffer, current_buffer);
   tem = Fmemq (buf, Vminibuffer_list);
-  if (!NULL (tem))
+  if (!NILP (tem))
     error ("Cannot rename a minibuffer");
 
   current_buffer->name = name;
   Fsetcar (Frassq (buf, Vbuffer_alist), name);
-  if (NULL (current_buffer->filename) && !NULL (current_buffer->auto_save_file_name))
+  if (NILP (current_buffer->filename) && !NILP (current_buffer->auto_save_file_name))
     call0 (intern ("rename-auto-save-file"));
   return Qnil;
 }
@@ -492,7 +489,7 @@ If BUFFER is omitted or nil, some interesting buffer is returned.")
   register Lisp_Object tail, buf, notsogood, tem;
   notsogood = Qnil;
 
-  for (tail = Vbuffer_alist; !NULL (tail); tail = Fcdr (tail))
+  for (tail = Vbuffer_alist; !NILP (tail); tail = Fcdr (tail))
     {
       buf = Fcdr (Fcar (tail));
       if (EQ (buf, buffer))
@@ -500,12 +497,12 @@ If BUFFER is omitted or nil, some interesting buffer is returned.")
       if (XSTRING (XBUFFER (buf)->name)->data[0] == ' ')
 	continue;
       tem = Fget_buffer_window (buf);
-      if (NULL (tem))
+      if (NILP (tem))
 	return buf;
-      if (NULL (notsogood))
+      if (NILP (notsogood))
 	notsogood = buf;
     }
-  if (!NULL (notsogood))
+  if (!NILP (notsogood))
     return notsogood;
   return Fget_buffer_create (build_string ("*scratch*"));
 }
@@ -526,7 +523,7 @@ DEFUN ("buffer-enable-undo", Fbuffer_enable_undo, Sbuffer_enable_undo,
   (buf)
      register Lisp_Object buf;
 {
-  if (NULL (buf))
+  if (NILP (buf))
     {
       if (EQ (current_buffer->undo_list, Qt))
 	current_buffer->undo_list = Qnil;
@@ -553,23 +550,23 @@ with `delete-process'.")
   register struct Lisp_Marker *m;
   struct gcpro gcpro1, gcpro2;
 
-  if (NULL (bufname))
+  if (NILP (bufname))
     buf = Fcurrent_buffer ();
   else
     buf = Fget_buffer (bufname);
-  if (NULL (buf))
+  if (NILP (buf))
     nsberror (bufname);
 
   b = XBUFFER (buf);
 
-  if (FROM_KBD && !NULL (b->filename)
+  if (FROM_KBD && !NILP (b->filename)
       && BUF_MODIFF (b) > b->save_modified)
     {
       GCPRO2 (buf, bufname);
       tem = Fyes_or_no_p (format1 ("Buffer %s modified; kill anyway? ",
 				   XSTRING (b->name)->data));
       UNGCPRO;
-      if (NULL (tem))
+      if (NILP (tem))
 	return Qnil;
     }
 
@@ -581,7 +578,7 @@ with `delete-process'.")
   if (EQ (buf, XWINDOW (minibuf_window)->buffer))
     return Qnil;
 
-  if (NULL (b->name))
+  if (NILP (b->name))
     return Qnil;
 
   /* Make this buffer not be current.
@@ -652,7 +649,7 @@ record_buffer (buf)
   /* Effectively do Vbuffer_alist = Fdelq (link, Vbuffer_alist)
      but cannot use Fdelq here it that allows quitting.  */
 
-  if (NULL (prev))
+  if (NILP (prev))
     Vbuffer_alist = XCONS (Vbuffer_alist)->cdr;
   else
     XCONS (prev)->cdr = XCONS (XCONS (prev)->cdr)->cdr;
@@ -678,12 +675,12 @@ the window-buffer correspondances.")
   if (EQ (minibuf_window, selected_window))
     error ("Cannot switch buffers in minibuffer window");
 
-  if (NULL (bufname))
+  if (NILP (bufname))
     buf = Fother_buffer (Fcurrent_buffer ());
   else
     buf = Fget_buffer_create (bufname);
   Fset_buffer (buf);
-  if (NULL (norecord))
+  if (NILP (norecord))
     record_buffer (buf);
 
   Fset_window_buffer (EQ (selected_window, minibuf_window)
@@ -702,7 +699,7 @@ window even if BUFFER is already visible in the selected window.")
      Lisp_Object bufname, other;
 {
   register Lisp_Object buf;
-  if (NULL (bufname))
+  if (NILP (bufname))
     buf = Fother_buffer (Fcurrent_buffer ());
   else
     buf = Fget_buffer_create (bufname);
@@ -735,9 +732,9 @@ Use `switch-to-buffer' or `pop-to-buffer' for interactive buffer selection.")
 {
   register Lisp_Object buffer;
   buffer = Fget_buffer (bufname);
-  if (NULL (buffer))
+  if (NILP (buffer))
     nsberror (bufname);
-  if (NULL (XBUFFER (buffer)->name))
+  if (NILP (XBUFFER (buffer)->name))
     error ("Selecting deleted buffer");
   set_buffer_internal (XBUFFER (buffer));
   return buffer;
@@ -748,7 +745,7 @@ DEFUN ("barf-if-buffer-read-only", Fbarf_if_buffer_read_only,
   "Signal a  buffer-read-only  error if the current buffer is read-only.")
   ()
 {
-  while (!NULL (current_buffer->read_only))
+  while (!NILP (current_buffer->read_only))
     Fsignal (Qbuffer_read_only, (Fcons (Fcurrent_buffer (), Qnil)));
   return Qnil;
 }
@@ -763,7 +760,7 @@ BUFFER is also removed from the selected window if it was displayed there.")
 {
   register Lisp_Object aelt, link;
 
-  if (NULL (buf))
+  if (NILP (buf))
     {
       XSET (buf, Lisp_Buffer, current_buffer);
       Fswitch_to_buffer (Fother_buffer (buf), Qnil);
@@ -773,7 +770,7 @@ BUFFER is also removed from the selected window if it was displayed there.")
       Lisp_Object buf1;
 
       buf1 = Fget_buffer (buf);
-      if (NULL (buf1))
+      if (NILP (buf1))
 	nsberror (buf);
       buf = buf1;
     }	  
@@ -805,7 +802,7 @@ set_buffer_internal (b)
 
 #if 0
   if (XWINDOW (selected_window) != 0)
-    swb = NULL (selected_window) ? 0 : XBUFFER (XWINDOW (selected_window)->buffer);
+    swb = NILP (selected_window) ? 0 : XBUFFER (XWINDOW (selected_window)->buffer);
 #endif
 
   windows_or_buffers_changed = 1;
@@ -814,7 +811,7 @@ set_buffer_internal (b)
      in order to check for the bug that clobbers it.  */
 /* if (current_buffer && EQ (current_buffer->major_mode, Qlisp_mode)
       && XFASTINT (Vcheck_symbol) != 0
-      && !NULL (Vcheck_symbol))
+      && !NILP (Vcheck_symbol))
     {
       valcontents = XSYMBOL (Vcheck_symbol)->value;
       if (XTYPE (valcontents) != Lisp_Some_Buffer_Local_Value)
@@ -827,7 +824,7 @@ set_buffer_internal (b)
 */
 
 #if 0
-  if (current_buffer == swb && !NULL (selected_window))
+  if (current_buffer == swb && !NILP (selected_window))
     Fset_marker (XWINDOW (selected_window)->pointm, make_number (point),
 		 XWINDOW (selected_window)->buffer);
 #endif
@@ -848,7 +845,7 @@ set_buffer_internal (b)
   /* Look down buffer's list of local Lisp variables
      to find and update any that forward into C variables. */
 
-  for (tail = b->local_var_alist; !NULL (tail); tail = XCONS (tail)->cdr)
+  for (tail = b->local_var_alist; !NILP (tail); tail = XCONS (tail)->cdr)
     {
       valcontents = XSYMBOL (XCONS (XCONS (tail)->car)->car)->value;
       if ((XTYPE (valcontents) == Lisp_Buffer_Local_Value
@@ -864,7 +861,7 @@ set_buffer_internal (b)
   /* Do the same with any others that were local to the previous buffer */
 
   if (old_buf)
-    for (tail = old_buf->local_var_alist; !NULL (tail); tail = XCONS (tail)->cdr)
+    for (tail = old_buf->local_var_alist; !NILP (tail); tail = XCONS (tail)->cdr)
       {
 	valcontents = XSYMBOL (XCONS (XCONS (tail)->car)->car)->value;
 	if ((XTYPE (valcontents) == Lisp_Buffer_Local_Value
@@ -880,7 +877,7 @@ set_buffer_internal (b)
      in order to check for the bug that clobbers it.  */
 /*if (EQ (b->major_mode, Qlisp_mode)
       && Vcheck_symbol
-      && !NULL (Vcheck_symbol))
+      && !NILP (Vcheck_symbol))
     {
       valcontents = XSYMBOL (Vcheck_symbol)->value;
       if (XTYPE (valcontents) != Lisp_Some_Buffer_Local_Value)
@@ -952,7 +949,7 @@ list_buffers_1 (files)
 
   tail = intern ("Buffer-menu-mode");
   if (!EQ (tail, current_buffer->major_mode)
-      && (tem = Ffboundp (tail), !NULL (tem)))
+      && (tem = Ffboundp (tail), !NILP (tem)))
     call0 (tail);
   Fbuffer_flush_undo (Vstandard_output);
   current_buffer->read_only = Qnil;
@@ -961,7 +958,7 @@ list_buffers_1 (files)
  MR Buffer         Size  Mode           File\n\
  -- ------         ----  ----           ----\n", -1);
 
-  for (tail = Vbuffer_alist; !NULL (tail); tail = Fcdr (tail))
+  for (tail = Vbuffer_alist; !NILP (tail); tail = Fcdr (tail))
     {
       buf = Fcdr (Fcar (tail));
       b = XBUFFER (buf);
@@ -969,7 +966,7 @@ list_buffers_1 (files)
       if (XSTRING (b->name)->data[0] == ' ')
 	continue;
       /* Optionally don't mention buffers that lack files. */
-      if (!NULL (files) && NULL (b->filename))
+      if (!NILP (files) && NILP (b->filename))
 	continue;
       /* Identify the current buffer. */
       if (b == old)
@@ -977,7 +974,7 @@ list_buffers_1 (files)
       write_string (b == old ? "." : " ", -1);
       /* Identify modified buffers */
       write_string (BUF_MODIFF (b) > b->save_modified ? "*" : " ", -1);
-      write_string (NULL (b->read_only) ? "  " : "% ", -1);
+      write_string (NILP (b->read_only) ? "  " : "% ", -1);
       Fprinc (b->name, Qnil);
       Findent_to (col1, make_number (2));
       XFASTINT (tem) = BUF_Z (b) - BUF_BEG (b);
@@ -985,7 +982,7 @@ list_buffers_1 (files)
       Findent_to (col2, minspace);
       Fprinc (b->mode_name, Qnil);
       Findent_to (col3, minspace);
-      if (!NULL (b->filename))
+      if (!NILP (b->filename))
 	Fprinc (b->filename, Qnil);
       write_string ("\n", -1);
     }
@@ -1023,7 +1020,7 @@ This buffer will then see the default values of all variables.")
 {
   register Lisp_Object alist, sym, tem;
 
-  for (alist = current_buffer->local_var_alist; !NULL (alist); alist = XCONS (alist)->cdr)
+  for (alist = current_buffer->local_var_alist; !NILP (alist); alist = XCONS (alist)->cdr)
     {
       sym = XCONS (XCONS (alist)->car)->car;
 

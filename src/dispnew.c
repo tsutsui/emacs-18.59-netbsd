@@ -60,8 +60,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 #endif
 
-#undef NULL
-
 #include "termchar.h"
 #include "termopts.h"
 #include "cm.h"
@@ -1227,7 +1225,7 @@ FILE = nil means just close any termscript file currently open.")
   if (termscript != 0) fclose (termscript);
   termscript = 0;
 
-  if (! NULL (file))
+  if (! NILP (file))
     {
       file = Fexpand_file_name (file, Qnil);
       termscript = fopen (XSTRING (file)->data, "w");
@@ -1245,7 +1243,7 @@ but that the idea of the actual height of the screen should not be changed.")
      Lisp_Object n, pretend;
 {
   CHECK_NUMBER (n, 0);
-  change_screen_size (XINT (n), 0, !NULL (pretend), 0, 0);
+  change_screen_size (XINT (n), 0, !NILP (pretend), 0, 0);
   return Qnil;
 }
 
@@ -1257,7 +1255,7 @@ but that the idea of the actual width of the screen should not be changed.")
      Lisp_Object n, pretend;
 {
   CHECK_NUMBER (n, 0);
-  change_screen_size (0, XINT (n), !NULL (pretend), 0, 0);
+  change_screen_size (0, XINT (n), !NILP (pretend), 0, 0);
   return Qnil;
 }
 
@@ -1412,7 +1410,7 @@ is given.")
   (arg)
   Lisp_Object arg;
 {
-  if (!NULL (arg))
+  if (!NILP (arg))
     {
       if (noninteractive)
 	putchar (07);

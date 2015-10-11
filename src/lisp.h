@@ -514,16 +514,13 @@ struct Lisp_Marker
 
 /* Data type checking */
 
-#ifdef NULL
-#undef NULL
-#endif
-#define NULL(x)  (XFASTINT (x) == XFASTINT (Qnil))
+#define NILP(x)  (XFASTINT (x) == XFASTINT (Qnil))
 /* #define LISTP(x) (XTYPE ((x)) == Lisp_Cons)*/
 #define CONSP(x) (XTYPE ((x)) == Lisp_Cons)
 #define EQ(x, y) (XFASTINT (x) == XFASTINT (y))
 
 #define CHECK_LIST(x, i) \
-  { if ((XTYPE ((x)) != Lisp_Cons) && !NULL (x)) x = wrong_type_argument (Qlistp, (x)); }
+  { if ((XTYPE ((x)) != Lisp_Cons) && !NILP (x)) x = wrong_type_argument (Qlistp, (x)); }
 
 #define CHECK_STRING(x, i) \
   { if (XTYPE ((x)) != Lisp_String) x = wrong_type_argument (Qstringp, (x)); }
@@ -689,12 +686,12 @@ extern struct handler *handlerlist;
 /* Check quit-flag and quit if it is non-nil. */
 
 #define QUIT \
-  if (!NULL (Vquit_flag) && NULL (Vinhibit_quit)) \
+  if (!NILP (Vquit_flag) && NILP (Vinhibit_quit)) \
     { Vquit_flag = Qnil; Fsignal (Qquit, Qnil); }
 
 /* Nonzero if ought to quit now.  */
 
-#define QUITP (!NULL (Vquit_flag) && NULL (Vinhibit_quit))
+#define QUITP (!NILP (Vquit_flag) && NILP (Vinhibit_quit))
 
 /* 1 if CH is upper case.  */
 

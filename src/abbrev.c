@@ -20,7 +20,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "config.h"
 #include <stdio.h>
-#undef NULL
 #include "lisp.h"
 #include "commands.h"
 #include "buffer.h"
@@ -111,9 +110,9 @@ To undefine an abbrev, define it with EXPANSION = nil")
   Lisp_Object sym, oexp, ohook, tem;
   CHECK_VECTOR (table, 0);
   CHECK_STRING (name, 1);
-  if (! NULL (expansion))
+  if (! NILP (expansion))
     CHECK_STRING (expansion, 2);
-  if (NULL (count))
+  if (NILP (count))
     count = make_number (0);
   else
     CHECK_NUMBER (count, 0);
@@ -124,10 +123,10 @@ To undefine an abbrev, define it with EXPANSION = nil")
   ohook = XSYMBOL (sym)->function;
   if (!((EQ (oexp, expansion)
 	 || (XTYPE (oexp) == Lisp_String && XTYPE (expansion) == Lisp_String
-	     && (tem = Fstring_equal (oexp, expansion), !NULL (tem))))
+	     && (tem = Fstring_equal (oexp, expansion), !NILP (tem))))
 	&&
 	(EQ (ohook, hook)
-	 || (tem = Fequal (ohook, hook), !NULL (tem)))))
+	 || (tem = Fequal (ohook, hook), !NILP (tem)))))
     abbrevs_changed = 1;
 
   Fset (sym, expansion);
@@ -154,7 +153,7 @@ DEFUN ("define-mode-abbrev", Fdefine_mode_abbrev, Sdefine_mode_abbrev, 2, 2,
   (name, expansion)
      Lisp_Object name, expansion;
 {
-  if (NULL (current_buffer->abbrev_table))
+  if (NILP (current_buffer->abbrev_table))
     error ("Major mode has no abbrev table");
 
   Fdefine_abbrev (current_buffer->abbrev_table, Fdowncase (name),
@@ -172,19 +171,19 @@ Default is try buffer's mode-specific abbrev table, then global table.")
 {
   Lisp_Object sym;
   CHECK_STRING (abbrev, 0);
-  if (!NULL (table))
+  if (!NILP (table))
     sym = Fintern_soft (abbrev, table);
   else
     {
       sym = Qnil;
-      if (!NULL (current_buffer->abbrev_table))
+      if (!NILP (current_buffer->abbrev_table))
 	sym = Fintern_soft (abbrev, current_buffer->abbrev_table);
-      if (NULL (XSYMBOL (sym)->value))
+      if (NILP (XSYMBOL (sym)->value))
 	sym = Qnil;
-      if (NULL (sym))
+      if (NILP (sym))
 	sym = Fintern_soft (abbrev, Vglobal_abbrev_table);
     }
-  if (NULL (XSYMBOL (sym)->value)) return Qnil;
+  if (NILP (XSYMBOL (sym)->value)) return Qnil;
   return sym;
 }
 
@@ -196,7 +195,7 @@ Optionally specify an abbrev table; then ABBREV is looked up in that table only.
 {
   Lisp_Object sym;
   sym = Fabbrev_symbol (abbrev, table);
-  if (NULL (sym)) return sym;
+  if (NILP (sym)) return sym;
   return Fsymbol_value (sym);
 }
 
@@ -218,7 +217,7 @@ Returns t if expansion took place.")
 
   if (XBUFFER (Vabbrev_start_location_buffer) != current_buffer)
     Vabbrev_start_location = Qnil;
-  if (!NULL (Vabbrev_start_location))
+  if (!NILP (Vabbrev_start_location))
     {
       tem = Vabbrev_start_location;
       CHECK_NUMBER_COERCE_MARKER (tem, 0);
@@ -248,10 +247,10 @@ Returns t if expansion took place.")
   else
     XFASTINT (sym) = 0;
   if (XTYPE (sym) == Lisp_Int ||
-      NULL (XSYMBOL (sym)->value))
+      NILP (XSYMBOL (sym)->value))
     sym = oblookup (Vglobal_abbrev_table, buffer, p - buffer);
   if (XTYPE (sym) == Lisp_Int ||
-      NULL (XSYMBOL (sym)->value))
+      NILP (XSYMBOL (sym)->value))
     return Qnil;
 
   if (FROM_KBD && !EQ (minibuf_window, selected_window))
@@ -307,7 +306,7 @@ Returns t if expansion took place.")
     }
 
   hook = XSYMBOL (sym)->function;
-  if (!NULL (hook))
+  if (!NILP (hook))
     call0 (hook);
 
   return Qt;
@@ -345,7 +344,7 @@ write_abbrev (sym, stream)
      Lisp_Object sym, stream;
 {
   Lisp_Object name;
-  if (NULL (XSYMBOL (sym)->value))
+  if (NILP (XSYMBOL (sym)->value))
     return;
   insert ("    (", 5);
   XSET (name, Lisp_String, XSYMBOL (sym)->name);
@@ -365,7 +364,7 @@ describe_abbrev (sym, stream)
 {
   Lisp_Object one;
 
-  if (NULL (XSYMBOL (sym)->value))
+  if (NILP (XSYMBOL (sym)->value))
     return;
   one = make_number (1);
   Fprin1 (Fsymbol_name (sym), stream);
@@ -373,7 +372,7 @@ describe_abbrev (sym, stream)
   Fprin1 (XSYMBOL (sym)->plist, stream);
   Findent_to (make_number (20), one);
   Fprin1 (XSYMBOL (sym)->value, stream);
-  if (!NULL (XSYMBOL (sym)->function))
+  if (!NILP (XSYMBOL (sym)->function))
     {
       Findent_to (make_number (45), one);
       Fprin1 (XSYMBOL (sym)->function, stream);
@@ -402,7 +401,7 @@ define NAME exactly as it is currently defined.")
 
   XSET (stream, Lisp_Buffer, current_buffer);
 
-  if (!NULL (readable))
+  if (!NILP (readable))
     {
       InsStr ("(");
       Fprin1 (name, stream);
@@ -435,7 +434,7 @@ of the form (ABBREVNAME EXPANSION HOOK USECOUNT).")
 
   CHECK_SYMBOL (tabname, 0);
   table = Fboundp (tabname);
-  if (NULL (table) || (table = Fsymbol_value (tabname), NULL (table)))
+  if (NILP (table) || (table = Fsymbol_value (tabname), NILP (table)))
     {
       table = Fmake_abbrev_table ();
       Fset (tabname, table);
@@ -444,7 +443,7 @@ of the form (ABBREVNAME EXPANSION HOOK USECOUNT).")
     }
   CHECK_VECTOR (table, 0);
 
-  for (;!NULL (defns); defns = Fcdr (defns))
+  for (;!NILP (defns); defns = Fcdr (defns))
     {
       elt = Fcar (defns);
       name = Fcar (elt);

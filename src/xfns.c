@@ -147,7 +147,7 @@ int x_edges_specified;
 
 check_xterm ()
 {
-  if (NULL (Vxterm))
+  if (NILP (Vxterm))
     error ("Terminal does not understand X protocol.");
 }
 
@@ -170,7 +170,7 @@ With non-nil argument (prefix arg), use visible bell; otherwise, audible bell.")
 
   check_xterm ();
   BLOCK_INPUT ();
-  if (!NULL (arg))
+  if (!NILP (arg))
     XSetFlash ();
   else
     XSetFeep ();
@@ -500,7 +500,7 @@ nil means use generic window manager icon.")
      Lisp_Object arg;
 {
   check_xterm ();
-  if (NULL (arg))
+  if (NILP (arg))
     XTextIcon ();
   else
     XBitmapIcon ();
@@ -659,7 +659,7 @@ the appropriate function to act upon this event.")
       Vx_mouse_abs_pos = Fcons (tempx, Fcons (tempy, Qnil));
       Vx_mouse_item = make_number (com_letter);
       Mouse_Cmd = get_keyelt (access_keymap (MouseMap, com_letter));
-      if (NULL (Mouse_Cmd)) 
+      if (NILP (Mouse_Cmd)) 
 	{
 #ifndef HPUX
 	  if (xrep.type != ButtonReleased)
@@ -694,7 +694,7 @@ otherwise, wait for an event.")
 
   check_xterm ();
 
-  if (NULL (arg))
+  if (NILP (arg))
     while (Xxrepbuffer.windex == Xxrepbuffer.rindex);
 /*** ??? Surely you don't mean to busy wait??? */
   if (unloadxrepbuffer (&xrep, &Xxrepbuffer) == 0) 
@@ -735,7 +735,7 @@ Permit input if ARG is non-nil.")
 #ifndef HPUX
 		| ButtonReleased
 #endif
-		| ExposeRegion | ExposeCopy | (!NULL (arg) ? KeyPressed : 0));
+		| ExposeRegion | ExposeCopy | (!NILP (arg) ? KeyPressed : 0));
   UNBLOCK_INPUT ();
   return arg;
 }
@@ -746,7 +746,7 @@ DEFUN ("x-set-mouse-inform-flag", Fx_set_mouse_inform_flag,
   (arg)
      Lisp_Object arg;
 {
-  informflag = !NULL (arg);
+  informflag = !NILP (arg);
   return arg;
 }
 
@@ -1254,14 +1254,14 @@ This problem will be fixed in X version 11.")
   int strsize;
 
   CHECK_NUMBER (keycode, 1);
-  if (!NULL (shift_mask))
+  if (!NILP (shift_mask))
     CHECK_NUMBER (shift_mask, 2);
   CHECK_STRING (newstring, 3);
   strsize = XSTRING (newstring) ->size;
   rawstring = (char *) xmalloc (strsize);
   bcopy (XSTRING (newstring)->data, rawstring, strsize);
   rawkey = ((unsigned) (XINT (keycode))) & 255;
-  if (NULL (shift_mask))
+  if (NILP (shift_mask))
     for (i = 0; i <= 15; i++)
       XRebindCode (rawkey, i<<11, rawstring, strsize);
   else
@@ -1292,7 +1292,7 @@ See the documentation of x-rebind-key for more information.")
   for (i = 0; i <= 15; strings = Fcdr (strings), i++)
     {
       item = Fcar (strings);
-      if (!NULL (item))
+      if (!NILP (item))
 	{
 	  CHECK_STRING (item, 2);
 	  strsize = XSTRING (item)->size;
@@ -1317,7 +1317,7 @@ DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
   (arg)
      register Lisp_Object arg;
 {
-  if (!NULL (arg))
+  if (!NILP (arg))
     handler = XExitWithCoreDump;
   else
     {

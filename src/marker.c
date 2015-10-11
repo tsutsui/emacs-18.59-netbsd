@@ -36,7 +36,7 @@ Returns nil if MARKER points into a dead buffer.")
     {
       XSET (buf, Lisp_Buffer, XMARKER (marker)->buffer);
       /* Return marker's buffer only if it is not dead.  */
-      if (!NULL (XBUFFER (buf)->name))
+      if (!NILP (XBUFFER (buf)->name))
 	return buf;
     }
   return Qnil;
@@ -87,7 +87,7 @@ Returns MARKER.")
   CHECK_MARKER (marker, 0);
   /* If position is nil or a marker that points nowhere,
      make this marker point nowhere.  */
-  if (NULL (pos) ||
+  if (NILP (pos) ||
       (XTYPE (pos) == Lisp_Marker && !XMARKER (pos)->buffer))
     {
       if (XMARKER (marker)->buffer)
@@ -96,7 +96,7 @@ Returns MARKER.")
     }
 
   CHECK_NUMBER_COERCE_MARKER (pos, 1);
-  if (NULL (buffer))
+  if (NILP (buffer))
     b = current_buffer;
   else
     {
@@ -145,7 +145,7 @@ set_marker_restricted (marker, pos, buffer)
   CHECK_MARKER (marker, 0);
   /* If position is nil or a marker that points nowhere,
      make this marker point nowhere.  */
-  if (NULL (pos) ||
+  if (NILP (pos) ||
       (XTYPE (pos) == Lisp_Marker && !XMARKER (pos)->buffer))
     {
       if (XMARKER (marker)->buffer)
@@ -154,7 +154,7 @@ set_marker_restricted (marker, pos, buffer)
     }
 
   CHECK_NUMBER_COERCE_MARKER (pos, 1);
-  if (NULL (buffer))
+  if (NILP (buffer))
     b = current_buffer;
   else
     {
@@ -218,7 +218,7 @@ unchain_marker (marker)
 
       if (XMARKER (marker) == XMARKER (tail))
 	{
-	  if (NULL (prev))
+	  if (NILP (prev))
 	    {
 	      b->markers = next;
 	      /* Deleting first marker from the buffer's chain.

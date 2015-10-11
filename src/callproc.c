@@ -128,7 +128,7 @@ If you quit, the process is killed with SIGKILL.")
 
   CHECK_STRING (args[0], 0);
 
-  if (nargs <= 1 || NULL (args[1]))
+  if (nargs <= 1 || NILP (args[1]))
 #ifdef VMS
     args[1] = build_string ("NLA0:");
 #else
@@ -173,7 +173,7 @@ If you quit, the process is killed with SIGKILL.")
     }
   /* Search for program; barf if not found.  */
   openp (Vexec_path, args[0], "", &path, 1);
-  if (NULL (path))
+  if (NILP (path))
     {
       close (filefd);
       report_file_error ("Searching for program", Fcons (args[0], Qnil));
@@ -266,9 +266,9 @@ If you quit, the process is killed with SIGKILL.")
     while ((nread = read (fd[0], buf, sizeof buf)) > 0)
       {
 	immediate_quit = 0;
-	if (!NULL (buffer))
+	if (!NILP (buffer))
 	  insert (buf, nread);
-	if (!NULL (display) && FROM_KBD)
+	if (!NILP (display) && FROM_KBD)
 	  redisplay_preserve_echo_area ();
 	immediate_quit = 1;
 	QUIT;
@@ -315,7 +315,7 @@ If you quit, the process is killed with SIGKILL.")
   end = args[1];
   Fwrite_region (start, end, filename_string, Qnil, Qlambda);
 
-  if (!NULL (args[3]))
+  if (!NILP (args[3]))
     Fdelete_region (start, end);
 
   args[3] = filename_string;

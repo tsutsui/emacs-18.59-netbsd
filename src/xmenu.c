@@ -48,12 +48,6 @@ static char *rcsid_GXMenu_c = "$Header: xmenu.c,v 1.6 86/08/26 17:23:26 rlk Exp 
 #include "xterm.h"
 #endif
 
-/* Prepare for lisp.h definition of NULL.
-   Sometimes x11term.h includes stddef.h.  */
-#ifdef NULL
-#undef NULL
-#endif
-
 #include "lisp.h"
 #include "window.h"
 
@@ -365,7 +359,7 @@ list_of_panes (vector, panes, names, items, menu)
   *items = (int *) xmalloc(i * sizeof (int));
   *names = (char ***) xmalloc(i * sizeof (char **));
 
-  for (i=0,tail = menu; !NULL (tail); tail = Fcdr (tail), i++)
+  for (i=0,tail = menu; !NILP (tail); tail = Fcdr (tail), i++)
     {
        item = Fcdr(Fcar(tail));
        if (XTYPE (item) != Lisp_Cons) (void) wrong_type_argument(Qlistp, item);
@@ -403,7 +397,7 @@ list_of_items (vector,names,pane)  /* get list from emacs and put to vector */
   *vector = (Lisp_Object *) xmalloc(i * sizeof (Lisp_Object));
   *names = (char **) xmalloc(i * sizeof (char *));
 
-  for (i=0,tail = pane; !NULL (tail); tail = Fcdr (tail), i++)
+  for (i=0,tail = pane; !NILP (tail); tail = Fcdr (tail), i++)
     {
        item = Fcar(tail);
        if (XTYPE (item) != Lisp_Cons) (void) wrong_type_argument(Qlistp, item);

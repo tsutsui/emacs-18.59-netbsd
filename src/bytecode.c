@@ -305,21 +305,21 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	case Bgotoifnil:
 	  QUIT;
 	  op = FETCH2;
-	  if (NULL (POP))
+	  if (NILP (POP))
 	    pc = op;
 	  break;
 
 	case Bgotoifnonnil:
 	  QUIT;
 	  op = FETCH2;
-	  if (!NULL (POP))
+	  if (!NILP (POP))
 	    pc = op;
 	  break;
 
 	case Bgotoifnilelsepop:
 	  QUIT;
 	  op = FETCH2;
-	  if (NULL (TOP))
+	  if (NILP (TOP))
 	    pc = op;
 	  else DISCARD(1);
 	  break;
@@ -327,7 +327,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	case Bgotoifnonnilelsepop:
 	  QUIT;
 	  op = FETCH2;
-	  if (!NULL (TOP))
+	  if (!NILP (TOP))
 	    pc = op;
 	  else DISCARD(1);
 	  break;
@@ -400,7 +400,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	    {
 	      if (CONSP (v1))
 		v1 = XCONS (v1)->cdr;
-	      else if (!NULL (v1))
+	      else if (!NILP (v1))
 		{
 		  immediate_quit = 0;
 		  v1 = wrong_type_argument (Qlistp, v1);
@@ -424,7 +424,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	  break;
 
 	case Blistp:
-	  TOP = CONSP (TOP) || NULL (TOP) ? Qt : Qnil;
+	  TOP = CONSP (TOP) || NILP (TOP) ? Qt : Qnil;
 	  break;
 
 	case Beq:
@@ -438,21 +438,21 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	  break;
 
 	case Bnot:
-	  TOP = NULL (TOP) ? Qt : Qnil;
+	  TOP = NILP (TOP) ? Qt : Qnil;
 	  break;
 
 	case Bcar:
 	  v1 = TOP;
 	docar:
 	  if (CONSP (v1)) TOP = XCONS (v1)->car;
-	  else if (NULL (v1)) TOP = Qnil;
+	  else if (NILP (v1)) TOP = Qnil;
 	  else Fcar (wrong_type_argument (Qlistp, v1));
 	  break;
 
 	case Bcdr:
 	  v1 = TOP;
 	  if (CONSP (v1)) TOP = XCONS (v1)->cdr;
-	  else if (NULL (v1)) TOP = Qnil;
+	  else if (NILP (v1)) TOP = Qnil;
 	  else Fcdr (wrong_type_argument (Qlistp, v1));
 	  break;
 

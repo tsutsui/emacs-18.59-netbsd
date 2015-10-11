@@ -50,7 +50,6 @@ who first discovered the Menu_Base_Kludge.
 
 #include <sys/time.h>		/* for tv_sec, tv_usec */
 #include <fcntl.h>
-#undef NULL /* We don't need sunview's idea of NULL */
 #include "lisp.h"
 #include "window.h"
 #include "buffer.h"
@@ -128,7 +127,7 @@ Dummy version, compiled with NO_SUNWINDOW, returns -1."
   char *cp;
   static int already_initialized = 0;
 #ifndef NO_SUNVIEW 
-  if ((! already_initialized) || (!NULL(force))) {
+  if ((! already_initialized) || (!NILP(force))) {
     cp = getenv("WINDOW_GFX");
     if (cp != 0) win_fd = open(cp, 2);
     if (win_fd > 0)
@@ -237,7 +236,7 @@ expressed as a string.  If ICON is nil then the original arrow cursor is used")
   /*
    *	If the icon is null, we just restore the DefaultCursor
    */
-  if (NULL(Icon)) 
+  if (NILP(Icon)) 
     CurrentCursor = DefaultCursor;
   else {
     /*

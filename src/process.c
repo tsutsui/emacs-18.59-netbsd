@@ -103,7 +103,6 @@ static dummy () {}
 #undef O_NONBLOCK
 #endif
 
-#undef NULL
 #include "lisp.h"
 #include "window.h"
 #include "buffer.h"
@@ -353,7 +352,7 @@ decode_status (l, symbol, code, coredump)
       tem = XCONS (l)->cdr;
       *code = XFASTINT (XCONS (tem)->car);
       tem = XFASTINT (XCONS (tem)->cdr);
-      *coredump = !NULL (tem);
+      *coredump = !NILP (tem);
     }
 }
 
@@ -536,7 +535,7 @@ make_process (name)
   for (i = 1; ; i++)
     {
       tem = Fget_process (name1);
-      if (NULL (tem)) break;
+      if (NILP (tem)) break;
       sprintf (suffix, "<%d>", i);
       name1 = concat2 (name, build_string (suffix));
     }
@@ -586,11 +585,11 @@ BUFFER may be a buffer or the name of one.")
 {
   register Lisp_Object buf, tail, proc;
 
-  if (NULL (name)) return Qnil;
+  if (NILP (name)) return Qnil;
   buf = Fget_buffer (name);
-  if (NULL (buf)) return Qnil;
+  if (NILP (buf)) return Qnil;
 
-  for (tail = Vprocess_alist; !NULL (tail); tail = Fcdr (tail))
+  for (tail = Vprocess_alist; !NILP (tail); tail = Fcdr (tail))
     {
       proc = Fcdr (Fcar (tail));
       if (XTYPE (proc) == Lisp_Process && EQ (XPROCESS (proc)->buffer, buf))
@@ -606,19 +605,19 @@ get_process (name)
      register Lisp_Object name;
 {
   register Lisp_Object proc;
-  if (NULL (name))
+  if (NILP (name))
     proc = Fget_buffer_process (Fcurrent_buffer ());
   else
     {
       proc = Fget_process (name);
-      if (NULL (proc))
+      if (NILP (proc))
 	proc = Fget_buffer_process (Fget_buffer (name));
     }
 
-  if (!NULL (proc))
+  if (!NILP (proc))
     return proc;
 
-  if (NULL (name))
+  if (NILP (name))
     error ("Current buffer has no process");
   else
     error ("Process %s does not exist", XSTRING (name)->data);
@@ -669,10 +668,10 @@ nil -- if arg is a process name and no such process exists.")
   register struct Lisp_Process *p;
   register Lisp_Object status;
   proc = Fget_process (proc);
-  if (NULL (proc))
+  if (NILP (proc))
     return proc;
   p = XPROCESS (proc);
-  if (!NULL (p->raw_status_low))
+  if (!NILP (p->raw_status_low))
     update_status (p);
   status = p->status;
   if (XTYPE (status) == Lisp_Cons)
@@ -696,7 +695,7 @@ If PROCESS is a net connection that was closed remotely, return 256.")
      register Lisp_Object proc;
 {
   CHECK_PROCESS (proc, 0);
-  if (!NULL (XPROCESS (proc)->raw_status_low))
+  if (!NILP (XPROCESS (proc)->raw_status_low))
     update_status (XPROCESS (proc));
   if (XTYPE (XPROCESS (proc)->status) == Lisp_Cons)
     return XCONS (XCONS (XPROCESS (proc)->status)->cdr)->car;
@@ -744,7 +743,7 @@ DEFUN ("set-process-buffer", Fset_process_buffer, Sset_process_buffer,
      register Lisp_Object proc, buffer;
 {
   CHECK_PROCESS (proc, 0);
-  if (!NULL (buffer))
+  if (!NILP (buffer))
     CHECK_BUFFER (buffer, 1);
   XPROCESS (proc)->buffer = buffer;
   return buffer;
@@ -858,19 +857,19 @@ list_processes_1 ()
 Proc         Status   Buffer         Command\n\
 ----         ------   ------         -------\n", -1);
 
-  for (tail = Vprocess_alist; !NULL (tail); tail = Fcdr (tail))
+  for (tail = Vprocess_alist; !NILP (tail); tail = Fcdr (tail))
     {
       Lisp_Object symbol;
 
       proc = Fcdr (Fcar (tail));
       p = XPROCESS (proc);
-      if (NULL (p->childp))
+      if (NILP (p->childp))
 	continue;
 
       Finsert (1, &p->name);
       Findent_to (make_number (13), minspace);
 
-      if (!NULL (p->raw_status_low))
+      if (!NILP (p->raw_status_low))
 	update_status (p);
       symbol = p->status;
       if (XTYPE (p->status) == Lisp_Cons)
@@ -912,9 +911,9 @@ Proc         Status   Buffer         Command\n\
 	remove_process (proc);
 
       Findent_to (make_number (22), minspace);
-      if (NULL (p->buffer))
+      if (NILP (p->buffer))
 	InsStr ("(none)");
-      else if (NULL (XBUFFER (p->buffer)->name))
+      else if (NILP (XBUFFER (p->buffer)->name))
 	InsStr ("(Killed)");
       else
 	Finsert (1, &XBUFFER (p->buffer)->name);
@@ -935,7 +934,7 @@ Proc         Status   Buffer         Command\n\
 	      tem1 = Fcar (tem);
 	      Finsert (1, &tem1);
 	      tem = Fcdr (tem);
-	      if (NULL (tem))
+	      if (NILP (tem))
 		break;
 	      InsStr (" ");
 	    }
@@ -984,7 +983,7 @@ Remaining arguments are strings to give program as arguments.")
   register int i;
 
   buffer = args[1];
-  if (!NULL (buffer))
+  if (!NILP (buffer))
     buffer = Fget_buffer_create (buffer);
 
   name = args[0];
@@ -1010,7 +1009,7 @@ Remaining arguments are strings to give program as arguments.")
     {
       tem = Qnil;
       openp (Vexec_path, program, "", &tem, 1);
-      if (NULL (tem))
+      if (NILP (tem))
 	report_file_error ("Searching for program", Fcons (program, Qnil));
       new_argv[0] = XSTRING (tem)->data;
     }
@@ -1456,7 +1455,7 @@ Fourth arg SERVICE is name of the service desired, or an integer\n\
   if (outch < 0) 
     report_file_error ("error duplicating socket", Fcons (name, Qnil));
 
-  if (!NULL (buffer))
+  if (!NILP (buffer))
     buffer = Fget_buffer_create (buffer);
   proc = make_process (name);
 
@@ -1525,7 +1524,7 @@ close_process_descs ()
     {
       Lisp_Object process;
       process = chan_process[i];
-      if (!NULL (process))
+      if (!NILP (process))
 	{
 	  int in = XFASTINT (XPROCESS (process)->infd);
 	  int out = XFASTINT (XPROCESS (process)->outfd);
@@ -1534,7 +1533,7 @@ close_process_descs ()
 	    close (in);
 	  if (out != 0 && out != in)
 	    close (out);
-	  if (!NULL (XPROCESS (process)->subtty))
+	  if (!NILP (XPROCESS (process)->subtty))
 	    close (XFASTINT (XPROCESS (process)->subtty));
 	}
     }
@@ -1549,7 +1548,7 @@ from PROCESS.")
   (proc)
      register Lisp_Object proc;
 {
-  if (NULL (proc))
+  if (NILP (proc))
     wait_reading_process_input (-1, 0, 0);
   else
     {
@@ -1641,7 +1640,7 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
 #if 0
 	  /* This is the same condition tested by QUIT.
 	     We need to resume polling if we are going to quit.  */
-	  if (!NULL (Vquit_flag) && NULL (Vinhibit_quit))
+	  if (!NILP (Vquit_flag) && NILP (Vinhibit_quit))
 	    {
 	      start_polling ();
 	      QUIT;
@@ -1665,7 +1664,7 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
 	}
 
       /* Don't wait for output from a non-running process.  */
-      if (wait_proc != 0 && !NULL (wait_proc->raw_status_low))
+      if (wait_proc != 0 && !NILP (wait_proc->raw_status_low))
 	update_status (wait_proc);
       if (wait_proc != 0
 	  && ! EQ (wait_proc->status, Qrun))
@@ -1839,15 +1838,15 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
 		  time_limit = -1;
 		}
 	      proc = chan_process[channel];
-	      if (NULL (proc))
+	      if (NILP (proc))
 		continue;
 
 #ifdef vipc
 	      /* It's a command channel */
-	      if (!NULL (XPROCESS (proc)->command_channel_p))
+	      if (!NILP (XPROCESS (proc)->command_channel_p))
 		{
 		  ProcessCommChan (channel, proc);
-		  if (NULL (XPROCESS (proc)->command_channel_p))
+		  if (NILP (XPROCESS (proc)->command_channel_p))
 		    {
 		      /* It has ceased to be a command channel! */
 		      int bytes_available;
@@ -1917,7 +1916,7 @@ wait_reading_process_input (time_limit, read_kbd, do_display)
 		  /* Preserve status of processes already terminated.  */
 		  XSETINT (XPROCESS (proc)->tick, ++process_tick);
 		  deactivate_process (proc);
-		  if (!NULL (XPROCESS (proc)->raw_status_low))
+		  if (!NILP (XPROCESS (proc)->raw_status_low))
 		    update_status (XPROCESS (proc));
 		  if (EQ (XPROCESS (proc)->status, Qrun))
 		    XPROCESS (proc)->status
@@ -1983,7 +1982,7 @@ read_process_output (proc, channel)
   if (nchars <= 0) return nchars;
 
   outstream = p->filter;
-  if (!NULL (outstream))
+  if (!NILP (outstream))
     {
       int count = specpdl_ptr - specpdl;
       specbind (Qinhibit_quit, Qt);
@@ -1997,7 +1996,7 @@ read_process_output (proc, channel)
     }
 
   /* If no filter, write into buffer if it isn't dead.  */
-  if (!NULL (p->buffer) && !NULL (XBUFFER (p->buffer)->name))
+  if (!NILP (p->buffer) && !NILP (XBUFFER (p->buffer)->name))
     {
       Lisp_Object tem;
 
@@ -2060,7 +2059,7 @@ send_process (proc, buf, len)
   int rv;
   unsigned char *procname = XSTRING (XPROCESS (proc)->name)->data;
 
-  if (!NULL (XPROCESS (proc)->raw_status_low))
+  if (!NILP (XPROCESS (proc)->raw_status_low))
     update_status (XPROCESS (proc));
   if (! EQ (XPROCESS (proc)->status, Qrun))
     error ("Process %s not running", procname);
@@ -2173,12 +2172,12 @@ process_send_signal (process, signo, current_group, nomsg)
     error ("Process %s is not active",
 	   XSTRING (p->name)->data);
 
-  if (NULL (p->pty_flag))
+  if (NILP (p->pty_flag))
     current_group = Qnil;
 
 #ifdef TIOCGPGRP		/* Not sure about this! (fnf) */
   /* If we are using pgrps, get a pgrp number and make it negative.  */
-  if (!NULL (current_group))
+  if (!NILP (current_group))
     {
       /* If possible, send signals to the entire pgrp
 	 by sending an input character to it.  */
@@ -2268,7 +2267,7 @@ process_send_signal (process, signo, current_group, nomsg)
 	 (saka@pfu.fujitsu.co.JP.)  */
       gid = -1;
 #endif
-      if (!NULL (p->subtty))
+      if (!NILP (p->subtty))
 	ioctl (XFASTINT (p->subtty), TIOCGPGRP, &gid);
       else
 	ioctl (XFASTINT (p->infd), TIOCGPGRP, &gid);
@@ -2314,7 +2313,7 @@ process_send_signal (process, signo, current_group, nomsg)
 
   /* gid may be a pid, or minus a pgrp's number */
 #ifdef TIOCSIGSEND
-  if (!NULL (current_group))
+  if (!NILP (current_group))
     ioctl (XFASTINT (p->infd), TIOCSIGSEND, signo);
   else
     {
@@ -2413,7 +2412,7 @@ nil or no arg means current buffer's process.")
     write (XFASTINT (XPROCESS (proc)->outfd), buf, 0);
   }
 #else /* did not do TOICREMOTE */
-  if (!NULL (XPROCESS (proc)->pty_flag))
+  if (!NILP (XPROCESS (proc)->pty_flag))
     send_process (proc, "\004", 1);
   else
     {
@@ -2439,7 +2438,7 @@ kill_buffer_processes (buffer)
     {
       proc = XCONS (XCONS (tail)->car)->cdr;
       if (XGCTYPE (proc) == Lisp_Process
-	  && (NULL (buffer) || EQ (XPROCESS (proc)->buffer, buffer)))
+	  && (NILP (buffer) || EQ (XPROCESS (proc)->buffer, buffer)))
 	{
 	  if (NETCONN_P (proc))
 	    deactivate_process (proc);
@@ -2609,7 +2608,7 @@ status_notify ()
      from Vprocess_alist, tail becomes an unprotected reference.  */
   GCPRO2 (tail, msg);
 
-  for (tail = Vprocess_alist; !NULL (tail); tail = Fcdr (tail))
+  for (tail = Vprocess_alist; !NILP (tail); tail = Fcdr (tail))
     {
       Lisp_Object symbol;
       register struct Lisp_Process *p;
@@ -2628,7 +2627,7 @@ status_notify ()
 	  buffer = p->buffer;
 
 	  /* Get the text to use for the message.  */
-	  if (!NULL (p->raw_status_low))
+	  if (!NILP (p->raw_status_low))
 	    update_status (p);
 	  msg = status_message (p->status);
 
@@ -2647,11 +2646,11 @@ status_notify ()
 	    }
 
 	  /* Now output the message suitably.  */
-	  if (!NULL (p->sentinel))
+	  if (!NILP (p->sentinel))
 	    exec_sentinel (proc, msg);
 	  /* Don't bother with a message in the buffer
 	     when a process becomes runnable.  */
-	  else if (!EQ (symbol, Qrun) && !NULL (buffer))
+	  else if (!EQ (symbol, Qrun) && !NILP (buffer))
 	    {
 	      Lisp_Object ro = XBUFFER (buffer)->read_only;
 	      Lisp_Object tem;
@@ -2660,7 +2659,7 @@ status_notify ()
 
 	      /* Avoid error if buffer is deleted
 		 (probably that's why the process is dead, too) */
-	      if (NULL (XBUFFER (buffer)->name))
+	      if (NILP (XBUFFER (buffer)->name))
 		continue;
 	      Fset_buffer (buffer);
 	      opoint = point;
@@ -2706,7 +2705,7 @@ exec_sentinel (proc, reason)
   int count = specpdl_ptr - specpdl;
 
   sentinel = p->sentinel;
-  if (NULL (sentinel))
+  if (NILP (sentinel))
     return;
 
   p->sentinel = Qnil;

@@ -142,7 +142,7 @@ POS defaults to point; WINDOW, to the selected window.")
   register struct buffer *buf;
   struct position posval;
 
-  if (NULL (pos))
+  if (NILP (pos))
     posint = point;
   else
     {
@@ -150,7 +150,7 @@ POS defaults to point; WINDOW, to the selected window.")
       posint = XINT (pos);
     }
 
-  if (NULL (window))
+  if (NILP (window))
     window = selected_window;
   else
     CHECK_WINDOW (window, 1);
@@ -191,7 +191,7 @@ static struct window *
 decode_window (window)
      register Lisp_Object window;
 {
-  if (NULL (window))
+  if (NILP (window))
     return XWINDOW (selected_window);
 
   CHECK_WINDOW (window, 0);
@@ -329,7 +329,7 @@ from overriding motion of point in order to display at this exact start.")
   set_marker_restricted (w->start, pos, w->buffer);
   /* this is not right, but much easier than doing what is right.  */
   w->start_at_line_beg = Qnil;
-  if (NULL (noforce))
+  if (NILP (noforce))
     w->force_start = Qt;
   w->update_mode_line = Qt;
   XFASTINT (w->last_modified) = 0;
@@ -346,14 +346,14 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
   register struct window *p;
   register struct window *par;
 
-  if (NULL (window))
+  if (NILP (window))
     window = selected_window;
   else
     CHECK_WINDOW (window, 0);
 
   p = XWINDOW (window);
   parent = p->parent;
-  if (NULL (parent))
+  if (NILP (parent))
     error ("Attempt to delete minibuffer or sole ordinary window");
   par=XWINDOW (parent);
 
@@ -365,7 +365,7 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
   tem = p->buffer;
   /* tem is null for dummy parent windows
      (which have inferiors but not any contents themselves) */
-  if (!NULL (tem))
+  if (!NILP (tem))
     {
       unshow_buffer (p);
       unchain_marker (p->pointm);
@@ -373,11 +373,11 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
     }
 
   tem = p->next;
-  if (!NULL (tem))
+  if (!NILP (tem))
     XWINDOW (tem)->prev = p->prev;
 
   tem = p->prev;
-  if (!NULL (tem))
+  if (!NILP (tem))
     XWINDOW (tem)->next = p->next;
 
   if (EQ (window, par->hchild))
@@ -386,7 +386,7 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
     par->vchild = p->next;
 
   /* Stretch the siblings to use all the available space */
-  if (!NULL (par->vchild))
+  if (!NILP (par->vchild))
     {
       /* It's a vertical combination */
       osize = XFASTINT (par->height);
@@ -394,7 +394,7 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
 	-= XFASTINT (p->height);
       set_window_height (parent, osize, 1);
     }
-  if (!NULL (par->hchild))
+  if (!NILP (par->hchild))
     {
       /* It's a horizontal combination */
       osize = XFASTINT (par->width);
@@ -407,9 +407,9 @@ DEFUN ("delete-window", Fdelete_window, Sdelete_window, 0, 1, "",
      put the child into the parent's place.  */
 
   tem = par->hchild;
-  if (NULL (tem))
+  if (NILP (tem))
     tem = par->vchild;
-  if (NULL (XWINDOW (tem)->next))
+  if (NILP (XWINDOW (tem)->next))
     replace_window (parent, tem);
   return Qnil;
 }
@@ -428,15 +428,15 @@ replace_window (old, replacement)
   p->height = o->height;
 
   p->next = tem = o->next;
-  if (!NULL (tem))
+  if (!NILP (tem))
     XWINDOW (tem)->prev = replacement;
 
   p->prev = tem = o->prev;
-  if (!NULL (tem))
+  if (!NILP (tem))
     XWINDOW (tem)->next = replacement;
 
   p->parent = tem = o->parent;
-  if (!NULL (tem))
+  if (!NILP (tem))
     {
       if (EQ (XWINDOW (tem)->vchild, old))
 	XWINDOW (tem)->vchild = replacement;
@@ -458,14 +458,14 @@ not to count the minibuffer even if it is active.")
      register Lisp_Object window, mini;
 {
   register Lisp_Object tem;
-  if (NULL (window))
+  if (NILP (window))
     window = selected_window;
   else
     CHECK_WINDOW (window, 0);
   do
     {
-      while (tem = XWINDOW (window)->next, NULL (tem))
-	if (tem = XWINDOW (window)->parent, !NULL (tem))
+      while (tem = XWINDOW (window)->next, NILP (tem))
+	if (tem = XWINDOW (window)->parent, !NILP (tem))
 	  window = tem;
         else  /* window must be minibuf_window now */
 	  {
@@ -475,15 +475,15 @@ not to count the minibuffer even if it is active.")
       window = tem;
       while (1)
 	{
-	  if (!NULL (XWINDOW (window)->hchild))
+	  if (!NILP (XWINDOW (window)->hchild))
 	    window = XWINDOW (window)->hchild;
-	  else if (!NULL (XWINDOW (window)->vchild))
+	  else if (!NILP (XWINDOW (window)->vchild))
 	    window = XWINDOW (window)->vchild;
 	  else break;
 	}
     }
   while (EQ (window, minibuf_window) && !EQ (mini, Qt)
-	 && (!NULL (mini) || minibuf_level == 0));
+	 && (!NILP (mini) || minibuf_level == 0));
   return window;
 }
 
@@ -493,14 +493,14 @@ DEFUN ("previous-window", Fprevious_window, Sprevious_window, 0, 1, 0,
      register Lisp_Object window;
 {
   register Lisp_Object tem;
-  if (NULL (window))
+  if (NILP (window))
     window = selected_window;
   else
     CHECK_WINDOW (window, 0);
   do  /* at least once, and until not the minibuffer */
     {
-      while (tem = XWINDOW (window)->prev, NULL (tem))
-	if (tem = XWINDOW (window)->parent, !NULL (tem))
+      while (tem = XWINDOW (window)->prev, NILP (tem))
+	if (tem = XWINDOW (window)->parent, !NILP (tem))
 	  window = tem;
         else  /* window must be the root window now */
 	  {
@@ -510,12 +510,12 @@ DEFUN ("previous-window", Fprevious_window, Sprevious_window, 0, 1, 0,
       window = tem;
       while (1)
 	{
-	  if (!NULL (XWINDOW (window)->hchild))
+	  if (!NILP (XWINDOW (window)->hchild))
 	    window = XWINDOW (window)->hchild;
-	  else if (!NULL (XWINDOW (window)->vchild))
+	  else if (!NILP (XWINDOW (window)->vchild))
 	    window = XWINDOW (window)->vchild;
 	  else break;
-	  while (tem = XWINDOW (window)->next, !NULL (tem))
+	  while (tem = XWINDOW (window)->next, !NILP (tem))
 	    window = tem;
 	}
     }
@@ -574,9 +574,9 @@ window_loop (type, obj)
 
 	  case 2:
 	    /* t as arg means consider only full-width windows */
-	    if (!NULL (obj) && XFASTINT (p->width) != screen_width)
+	    if (!NILP (obj) && XFASTINT (p->width) != screen_width)
 	      break;
-	    if (NULL (ret_w) ||
+	    if (NILP (ret_w) ||
 		XFASTINT (XWINDOW (ret_w)->use_time) > XFASTINT (p->use_time))
 	      ret_w = w;
 	    break;
@@ -589,10 +589,10 @@ window_loop (type, obj)
 	  case 4:
 	    if (EQ (p->buffer, obj))
 	      {
-		if (NULL (p->parent))
+		if (NILP (p->parent))
 		  {
 		    tem = Fother_buffer (obj);
-		    if (NULL (tem))
+		    if (NILP (tem))
 		      tem = Fget_buffer_create (build_string ("*scratch*"));
 		    Fset_window_buffer (w, tem);
 		    Fset_buffer (p->buffer);
@@ -604,7 +604,7 @@ window_loop (type, obj)
 
 	  case 5:
 	    q = XWINDOW (ret_w);
-	    if (NULL (ret_w) ||
+	    if (NILP (ret_w) ||
 		(XFASTINT (p->height) * XFASTINT (p->width))
 		>
 		(XFASTINT (q->height) * XFASTINT (q->width)))
@@ -615,7 +615,7 @@ window_loop (type, obj)
 	    if (EQ (p->buffer, obj))
 	      {
 		tem = Fother_buffer (obj);
-		if (NULL (tem))
+		if (NILP (tem))
 		  tem = Fget_buffer_create (build_string ("*scratch*"));
 		Fset_window_buffer (w, tem);
 	      }
@@ -634,7 +634,7 @@ DEFUN ("get-lru-window", Fget_lru_window, Sget_lru_window, 0, 0, 0,
   register Lisp_Object w;
   /* First try for a window that is full-width */
   w = window_loop (2, Qt);
-  if (!NULL (w) && !EQ (w, selected_window))
+  if (!NILP (w) && !EQ (w, selected_window))
     return w;
   /* If none of them, try the rest */
   return window_loop (2, Qnil);
@@ -664,7 +664,7 @@ DEFUN ("delete-other-windows", Fdelete_other_windows, Sdelete_other_windows,
   (w)
      Lisp_Object w;
 {
-  window_loop (3, !NULL (w) ? w : selected_window);
+  window_loop (3, !NILP (w) ? w : selected_window);
   return Qnil;
 }
 
@@ -674,7 +674,7 @@ DEFUN ("delete-windows-on", Fdelete_windows_on, Sdelete_windows_on,
   (buffer)
      Lisp_Object buffer;
 {
-  if (!NULL (buffer))
+  if (!NILP (buffer))
     {
       buffer = Fget_buffer (buffer);
       CHECK_BUFFER (buffer, 0);
@@ -690,7 +690,7 @@ DEFUN ("replace-buffer-in-windows", Freplace_buffer_in_windows,
   (buffer)
      Lisp_Object buffer;
 {
-  if (!NULL (buffer))
+  if (!NILP (buffer))
     {
       buffer = Fget_buffer (buffer);
       CHECK_BUFFER (buffer, 0);
@@ -720,7 +720,7 @@ set_window_height (window, height, nodelete)
     window_min_height = 2;
 
   if (!nodelete
-      && ! NULL (w->parent)
+      && ! NILP (w->parent)
       && height < (EQ(window, minibuf_window) ? 1 : window_min_height))
     {
       Fdelete_window (window);
@@ -730,19 +730,19 @@ set_window_height (window, height, nodelete)
   XFASTINT (w->last_modified) = 0;
   windows_or_buffers_changed++;
   XFASTINT (w->height) = height;
-  if (!NULL (w->hchild))
+  if (!NILP (w->hchild))
     {
-      for (child = w->hchild; !NULL (child); child = XWINDOW (child)->next)
+      for (child = w->hchild; !NILP (child); child = XWINDOW (child)->next)
 	{
 	  XWINDOW (child)->top = w->top;
 	  set_window_height (child, height, nodelete);
 	}
     }
-  else if (!NULL (w->vchild))
+  else if (!NILP (w->vchild))
     {
       lastbot = top = XFASTINT (w->top);
       lastobot = 0;
-      for (child = w->vchild; !NULL (child); child = c->next)
+      for (child = w->vchild; !NILP (child); child = c->next)
 	{
 	  c = XWINDOW (child);
 
@@ -761,7 +761,7 @@ set_window_height (window, height, nodelete)
 	}
       /* Now delete any children that became too small.  */
       if (!nodelete)
-	for (child = w->vchild; !NULL (child); child = XWINDOW (child)->next)
+	for (child = w->vchild; !NILP (child); child = XWINDOW (child)->next)
 	  {
 	    set_window_height (child, XINT (XWINDOW (child)->height), 0);
 	  }
@@ -783,7 +783,7 @@ set_window_width (window, width, nodelete)
   Lisp_Object child;
 
   if (!nodelete
-      && ! NULL (w->parent)
+      && ! NILP (w->parent)
       && width < window_min_width)
     {
       Fdelete_window (window);
@@ -793,19 +793,19 @@ set_window_width (window, width, nodelete)
   XFASTINT (w->last_modified) = 0;
   windows_or_buffers_changed++;
   XFASTINT (w->width) = width;
-  if (!NULL (w->vchild))
+  if (!NILP (w->vchild))
     {
-      for (child = w->vchild; !NULL (child); child = XWINDOW (child)->next)
+      for (child = w->vchild; !NILP (child); child = XWINDOW (child)->next)
 	{
 	  XWINDOW (child)->left = w->left;
 	  set_window_width (child, width, nodelete);
 	}
     }
-  else if (!NULL (w->hchild))
+  else if (!NILP (w->hchild))
     {
       lastright = left = XFASTINT (w->left);
       lastoright = 0;
-      for (child = w->hchild; !NULL (child); child = c->next)
+      for (child = w->hchild; !NILP (child); child = c->next)
 	{
 	  c = XWINDOW (child);
 
@@ -824,7 +824,7 @@ set_window_width (window, width, nodelete)
 	}
       /* Delete children that became too small */
       if (!nodelete)
-	for (child = w->hchild; !NULL (child); child = XWINDOW (child)->next)
+	for (child = w->hchild; !NILP (child); child = XWINDOW (child)->next)
 	  {
 	    set_window_width (child, XINT (XWINDOW (child)->width), 0);
 	  }
@@ -845,11 +845,11 @@ BUFFER can be a buffer or buffer name.")
   buffer = Fget_buffer (buffer);
   CHECK_BUFFER (buffer, 1);
 
-  if (NULL (XBUFFER (buffer)->name))
+  if (NILP (XBUFFER (buffer)->name))
     error ("Attempt to display deleted buffer");
 
   tem = w->buffer;
-  if (!NULL (tem))
+  if (!NILP (tem))
     unshow_buffer (w);
 
   w->buffer = buffer;
@@ -911,7 +911,7 @@ selects the buffer of the selected window.")
 
   w = XWINDOW (window);
 
-  if (NULL (w->buffer))
+  if (NILP (w->buffer))
     error ("Trying to select window with no buffer");
 
   XFASTINT (w->use_time) = ++window_select_count;
@@ -956,13 +956,13 @@ Returns the window displaying BUFFER.")
   buffer = Fget_buffer (buffer);
   CHECK_BUFFER (buffer, 0);
 
-  if (NULL (notthiswindow)
+  if (NILP (notthiswindow)
       && XBUFFER (XWINDOW (selected_window)->buffer) == XBUFFER (buffer))
     return selected_window;
 
   window = Fget_buffer_window (buffer);
-  if (!NULL (window)
-      && (NULL (notthiswindow) || !EQ (window, selected_window)))
+  if (!NILP (window)
+      && (NILP (notthiswindow) || !EQ (window, selected_window)))
     return window;
 
   if (pop_up_windows)
@@ -1066,16 +1066,16 @@ and put SIZE columns in the first of the pair.")
   register struct window *o, *p;
   register Lisp_Object_Int size;
 
-  if (NULL (window))
+  if (NILP (window))
     window = selected_window;
   else
     CHECK_WINDOW (window, 0);
 
   o = XWINDOW (window);
 
-  if (NULL (chsize))
+  if (NILP (chsize))
     {
-      if (!NULL (horflag))
+      if (!NILP (horflag))
 	/* Add 1 so we round up rather than down.
 	   This puts an excess column into the left-hand window,
 	   which is the one that certainly contains a border line.  */
@@ -1092,7 +1092,7 @@ and put SIZE columns in the first of the pair.")
   if (EQ (window, minibuf_window))
     error ("Attempt to split minibuffer window");
 
-  if (NULL (horflag))
+  if (NILP (horflag))
     {
       if (window_min_height < 2)
 	window_min_height = 2;
@@ -1100,8 +1100,8 @@ and put SIZE columns in the first of the pair.")
       if (size < window_min_height ||
 	  size + window_min_height > XFASTINT (o->height))
 	args_out_of_range_3 (window, chsize, horflag);
-      if (NULL (o->parent) ||
-	  NULL (XWINDOW (o->parent)->vchild))
+      if (NILP (o->parent) ||
+	  NILP (XWINDOW (o->parent)->vchild))
 	{
 	  make_dummy_parent (window);
 	  new = o->parent;
@@ -1113,8 +1113,8 @@ and put SIZE columns in the first of the pair.")
       if (size < window_min_width ||
 	  size + window_min_width > XFASTINT (o->width))
 	args_out_of_range_3 (window, chsize, horflag);
-      if (NULL (o->parent) ||
-	  NULL (XWINDOW (o->parent)->hchild))
+      if (NILP (o->parent) ||
+	  NILP (XWINDOW (o->parent)->hchild))
 	{
 	  make_dummy_parent (window);
 	  new = o->parent;
@@ -1131,7 +1131,7 @@ and put SIZE columns in the first of the pair.")
   p = XWINDOW (new);
 
   p->next = o->next;
-  if (!NULL (p->next))
+  if (!NILP (p->next))
     XWINDOW (p->next)->prev = new;
   p->prev = window;
   o->next = new;
@@ -1141,7 +1141,7 @@ and put SIZE columns in the first of the pair.")
 
   /* Apportion the available screen space among the two new windows */
 
-  if (!NULL (horflag))
+  if (!NILP (horflag))
     {
       p->height = o->height;
       p->top = o->top;
@@ -1168,7 +1168,7 @@ From program, optional second arg non-nil means grow sideways ARG columns.")
      register Lisp_Object n, side;
 {
   CHECK_NUMBER (n, 0);
-  change_window_height (XINT (n), !NULL (side));
+  change_window_height (XINT (n), !NILP (side));
   return Qnil;
 }
 
@@ -1179,7 +1179,7 @@ From program, optional second arg non-nil means shrink sideways ARG columns.")
      register Lisp_Object n, side;
 {
   CHECK_NUMBER (n, 0);
-  change_window_height (-XINT (n), !NULL (side));
+  change_window_height (-XINT (n), !NILP (side));
   return Qnil;
 }
 
@@ -1233,14 +1233,14 @@ change_window_height (delta, widthflag)
     {
       p = XWINDOW (window);
       parent = p->parent;
-      if (NULL (parent))
+      if (NILP (parent))
 	{
 	  if (widthflag)
 	    error ("No other window to side of this one");
 	  break;
 	}
-      if (widthflag ? !NULL (XWINDOW (parent)->hchild)
-	  : !NULL (XWINDOW (parent)->vchild))
+      if (widthflag ? !NILP (XWINDOW (parent)->hchild)
+	  : !NILP (XWINDOW (parent)->vchild))
 	break;
       window = parent;
     }
@@ -1257,8 +1257,8 @@ change_window_height (delta, widthflag)
     register int maxdelta;
     register Lisp_Object tem;
 
-    maxdelta = (!NULL (parent) ? (*sizefun) (parent) - *sizep
-		: (tem = (!NULL (p->next) ? p->next : p->prev),
+    maxdelta = (!NILP (parent) ? (*sizefun) (parent) - *sizep
+		: (tem = (!NILP (p->next) ? p->next : p->prev),
 		   (*sizefun) (tem) - MINSIZE (tem)));
 
     if (delta > maxdelta)
@@ -1268,7 +1268,7 @@ change_window_height (delta, widthflag)
       delta = maxdelta;
   }
 
-  if (!NULL (p->next) &&
+  if (!NILP (p->next) &&
       (*sizefun) (p->next) - delta >= MINSIZE (p->next))
     {
       (*setsizefun) (p->next, (*sizefun) (p->next) - delta, 0);
@@ -1278,7 +1278,7 @@ change_window_height (delta, widthflag)
 	 but it propagates the new top edge to its children */
       (*setsizefun) (p->next, (*sizefun) (p->next), 0);
     }
-  else if (!NULL (p->prev) &&
+  else if (!NILP (p->prev) &&
 	   (*sizefun) (p->prev) - delta >= MINSIZE (p->prev))
     {
       (*setsizefun) (p->prev, (*sizefun) (p->prev) - delta, 0);
@@ -1345,7 +1345,7 @@ window_scroll (window, n, noerror)
   XFASTINT (tem) = point;
   tem = Fpos_visible_in_window_p (tem, window);
 
-  if (NULL (tem))
+  if (NILP (tem))
     {
       Fvertical_motion (make_number (- ht / 2));
       XFASTINT (tem) = point;
@@ -1406,7 +1406,7 @@ scroll_command (n, direction)
     defalt = 1;
   defalt *= direction;
 
-  if (NULL (n))
+  if (NILP (n))
     window_scroll (selected_window, defalt, 0);
   else if (EQ (n, Qminus))
     window_scroll (selected_window, - defalt, 0);
@@ -1443,7 +1443,7 @@ Default for ARG is window width minus 2.")
   (arg)
      register Lisp_Object arg;
 {
-  if (NULL (arg))
+  if (NILP (arg))
     XFASTINT (arg) = XFASTINT (XWINDOW (selected_window)->width) - 2;
   else
     arg = Fprefix_numeric_value (arg);
@@ -1459,7 +1459,7 @@ Default for ARG is window width minus 2.")
   (arg)
      register Lisp_Object arg;
 {
-  if (NULL (arg))
+  if (NILP (arg))
     XFASTINT (arg) = XFASTINT (XWINDOW (selected_window)->width) - 2;
   else
     arg = Fprefix_numeric_value (arg);
@@ -1485,7 +1485,7 @@ When calling from a program, supply a number as argument or nil.")
   Lisp_Object result;
 
   if (EQ (selected_window, minibuf_window)
-      && !NULL (Vminibuf_scroll_window))
+      && !NILP (Vminibuf_scroll_window))
     window = Vminibuf_scroll_window;
   else
     window = Fnext_window (selected_window, Qnil);
@@ -1499,7 +1499,7 @@ When calling from a program, supply a number as argument or nil.")
   Fset_buffer (w->buffer);
   SET_PT (marker_position (w->pointm));
 
-  if (NULL (n))
+  if (NILP (n))
     result = window_scroll (window, ht - next_screen_context_lines, 1);
   else if (EQ (n, Qminus))
     result = window_scroll (window, next_screen_context_lines - ht, 1);
@@ -1533,7 +1533,7 @@ redraws with point in the center.")
   register struct window *w = XWINDOW (selected_window);
   register int opoint = point;
 
-  if (NULL (n))
+  if (NILP (n))
     {
       extern int screen_garbaged;
       screen_garbaged++;
@@ -1579,7 +1579,7 @@ negative means relative to bottom of window.")
 
   if (!EQ (selected_window, minibuf_window)) height--;
 
-  if (NULL (arg))
+  if (NILP (arg))
     XFASTINT (arg) = height / 2;
   else
     {
@@ -1676,7 +1676,7 @@ function for more information.")
 
   windows_or_buffers_changed++;
   new_current_buffer = data->current_buffer;
-  if (NULL (XBUFFER (new_current_buffer)->name))
+  if (NILP (XBUFFER (new_current_buffer)->name))
     new_current_buffer = Qnil;
 
   for (k = 0; k < saved_windows->size; k++)
@@ -1685,12 +1685,12 @@ function for more information.")
       w = XWINDOW (p->window);
       w->next = Qnil;
 
-      if (!NULL (p->parent))
+      if (!NILP (p->parent))
 	w->parent = SAVED_WINDOW_N (saved_windows, XFASTINT (p->parent))->window;
       else
 	w->parent = Qnil;
 
-      if (!NULL (p->prev))
+      if (!NILP (p->prev))
 	{
 	  w->prev = SAVED_WINDOW_N (saved_windows, XFASTINT (p->prev))->window;
 	  XWINDOW (w->prev)->next = p->window;
@@ -1698,7 +1698,7 @@ function for more information.")
       else
 	{
 	  w->prev = Qnil;
-	  if (!NULL (w->parent))
+	  if (!NILP (w->parent))
 	    {
 	      if (EQ (p->width, XWINDOW (w->parent)->width))
 		{
@@ -1720,11 +1720,11 @@ function for more information.")
       XFASTINT (w->last_modified) = 0;
 
       /* Reinstall the saved buffer and pointers into it.  */
-      if (NULL (p->buffer))
+      if (NILP (p->buffer))
 	w->buffer = p->buffer;
       else
 	{
-	  if (!NULL (XBUFFER (p->buffer)->name))
+	  if (!NILP (XBUFFER (p->buffer)->name))
 	    /* If saved buffer is alive, install it.  */
 	    {
 	      w->buffer = p->buffer;
@@ -1740,7 +1740,7 @@ function for more information.")
 		  XBUFFER (p->buffer) == current_buffer)
 		Fgoto_char (w->pointm);
 	    }
-	  else if (NULL (XBUFFER (w->buffer)->name))
+	  else if (NILP (XBUFFER (w->buffer)->name))
 	    /* Else if window's old buffer is dead too, get a live one.  */
 	    {
 	      w->buffer = Fcdr (Fcar (Vbuffer_alist));
@@ -1773,7 +1773,7 @@ function for more information.")
     change_screen_size (previous_screen_height, previous_screen_width, 0, 0, 0);
 
   Fselect_window (data->current_window);
-  if (!NULL (new_current_buffer))
+  if (!NILP (new_current_buffer))
     Fset_buffer (new_current_buffer);
   else
     Fset_buffer (XWINDOW (selected_window)->buffer);
@@ -1787,11 +1787,11 @@ count_windows (window)
      register struct window *window;
 {
   register int count = 1;
-  if (!NULL (window->next))
+  if (!NILP (window->next))
     count += count_windows (XWINDOW (window->next));
-  if (!NULL (window->vchild))
+  if (!NILP (window->vchild))
     count += count_windows (XWINDOW (window->vchild));
-  if (!NULL (window->hchild))
+  if (!NILP (window->hchild))
     count += count_windows (XWINDOW (window->hchild));
   return count;
 }
@@ -1842,7 +1842,7 @@ save_window_save (window, vector, i, maxwindow)
   register struct window *w;
   register Lisp_Object tem;
 
-  for (;!NULL (window); window = w->next)
+  for (;!NILP (window); window = w->next)
     {
       /* If you get a crash here, you may be seeing a very weird bug.
 	 When it happened to me, it seems that count_windows returned
@@ -1867,7 +1867,7 @@ save_window_save (window, vector, i, maxwindow)
       p->width = w->width;
       p->height = w->height;
       p->hscroll = w->hscroll;
-      if (!NULL (w->buffer))
+      if (!NILP (w->buffer))
 	{
 	  /* Save w's value of point in the window configuration.
 	     If w is the selected window, then get the value of point
@@ -1895,19 +1895,19 @@ save_window_save (window, vector, i, maxwindow)
 	  p->start_at_line_beg = Qnil;
 	}
 
-      if (NULL (w->parent))
+      if (NILP (w->parent))
 	p->parent = Qnil;
       else
 	p->parent = XWINDOW (w->parent)->temslot;
 
-      if (NULL (w->prev))
+      if (NILP (w->prev))
 	p->prev = Qnil;
       else
 	p->prev = XWINDOW (w->prev)->temslot;
 
-      if (!NULL (w->vchild))
+      if (!NILP (w->vchild))
 	i = save_window_save (w->vchild, vector, i, maxwindow);
-      if (!NULL (w->hchild))
+      if (!NILP (w->hchild))
 	i = save_window_save (w->hchild, vector, i, maxwindow);
     }
 

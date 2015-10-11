@@ -50,8 +50,6 @@ extern struct direct *readdir (DIR *);
 
 #endif
 
-#undef NULL
-
 #include "lisp.h"
 #include "buffer.h"
 #include "commands.h"
@@ -93,7 +91,7 @@ If MATCH is non-NIL, only pathnames containing that regexp are returned.")
   /* In search.c */
   extern struct re_pattern_buffer searchbuf;
 
-  if (!NULL (match))
+  if (!NILP (match))
     {
       CHECK_STRING (match, 3);
       /* Compile it now so we don't get an error after opendir */
@@ -127,10 +125,10 @@ If MATCH is non-NIL, only pathnames containing that regexp are returned.")
 	{
 	  strncpy (filename, dp->d_name, len);
 	  filename[len] = 0;
-	  if (NULL (match) ||
+	  if (NILP (match) ||
 	      (0 <= re_search (&searchbuf, filename, len, 0, len, 0)))
 	    {
-	      if (!NULL (full))
+	      if (!NILP (full))
 		name = concat2 (dirname, build_string (slashfilename));
 	      else
 		name = build_string (filename);
@@ -223,7 +221,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
      If nothing found then try again with passcount = 1, don't ignore them.
      If looking for all completions, start with passcount = 1,
      so always take even the ignored ones.  */
-  for (passcount = !!all_flag; NULL (bestmatch) && passcount < 2; passcount++)
+  for (passcount = !!all_flag; NILP (bestmatch) && passcount < 2; passcount++)
     {
       if (!(d = opendir (XSTRING (Fdirectory_file_name (dirname))->data)))
 	report_file_error ("Opening directory", Fcons (dirname, Qnil));
@@ -244,7 +242,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
 
 	  len = NAMLEN (dp);
 
-	  if (!NULL (Vquit_flag) && NULL (Vinhibit_quit))
+	  if (!NILP (Vquit_flag) && NILP (Vinhibit_quit))
 	    goto quit;
 	  if (!dp->d_ino
 	      || len < XSTRING (file)->size
@@ -287,7 +285,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
 
 	      matchcount++;
 
-	      if (all_flag || NULL (bestmatch))
+	      if (all_flag || NILP (bestmatch))
 		{
 		  /* This is a possible completion */
 		  if (directoryp)
@@ -357,7 +355,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
 
   unbind_to (count);
 
-  if (all_flag || NULL (bestmatch))
+  if (all_flag || NILP (bestmatch))
     return bestmatch;
 
   /* If we are ignoring case, and there is no exact match,

@@ -20,7 +20,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "config.h"
 #include <stdio.h>
-#undef NULL
 #include "lisp.h"
 
 #ifndef standalone
@@ -69,7 +68,7 @@ static int max_print;
 
 #define PRINTPREPARE \
    original = printcharfun; \
-   if (NULL (printcharfun)) printcharfun = Qt; \
+   if (NILP (printcharfun)) printcharfun = Qt; \
    if (XTYPE (printcharfun) == Lisp_Buffer) \
      { if (XBUFFER (printcharfun) != current_buffer) Fset_buffer (printcharfun); \
        printcharfun = Qnil;}\
@@ -199,7 +198,7 @@ STREAM defaults to the value of `standard-output' (which see).")
   int start_point;
   Lisp_Object original;
 
-  if (NULL (printcharfun))
+  if (NILP (printcharfun))
     printcharfun = Vstandard_output;
   CHECK_NUMBER (ch, 0);
   PRINTPREPARE;
@@ -330,7 +329,7 @@ DEFUN ("terpri", Fterpri, Sterpri, 0, 1, 0,
   int start_point;
   Lisp_Object original;
 
-  if (NULL (printcharfun))
+  if (NILP (printcharfun))
     printcharfun = Vstandard_output;
   PRINTPREPARE;
   PRINTCHAR ('\n');
@@ -354,7 +353,7 @@ Output stream is STREAM, or value of `standard-output' (which see).")
 #ifdef MAX_PRINT_CHARS
   max_print = 0;
 #endif /* MAX_PRINT_CHARS */
-  if (NULL (printcharfun))
+  if (NILP (printcharfun))
     printcharfun = Vstandard_output;
   PRINTPREPARE;
   print_depth = 0;
@@ -407,7 +406,7 @@ Output stream is STREAM, or value of standard-output (which see).")
   int start_point;
   Lisp_Object original;
 
-  if (NULL (printcharfun))
+  if (NILP (printcharfun))
     printcharfun = Vstandard_output;
   PRINTPREPARE;
   print_depth = 0;
@@ -434,7 +433,7 @@ Output stream is STREAM, or value of `standard-output' (which see).")
   print_chars = 0;
   max_print = MAX_PRINT_CHARS;
 #endif /* MAX_PRINT_CHARS */
-  if (NULL (printcharfun))
+  if (NILP (printcharfun))
     printcharfun = Vstandard_output;
   GCPRO1 (obj);
   PRINTPREPARE;
@@ -582,7 +581,7 @@ print (obj, printcharfun, escapeflag)
 	    obj = Fcdr (obj);
 	  }
       }
-      if (!NULL (obj) && !CONSP (obj))
+      if (!NILP (obj) && !CONSP (obj))
 	{
 	  strout (" . ", 3, printcharfun);
 	  print (obj, printcharfun, escapeflag);
@@ -607,7 +606,7 @@ print (obj, printcharfun, escapeflag)
 
 #ifndef standalone
     case Lisp_Buffer:
-      if (NULL (XBUFFER (obj)->name))
+      if (NILP (XBUFFER (obj)->name))
 	strout ("#<killed buffer>", -1, printcharfun);
       else if (escapeflag)
 	{
@@ -634,7 +633,7 @@ print (obj, printcharfun, escapeflag)
       strout ("#<window ", -1, printcharfun);
       sprintf (buf, "%d", XFASTINT (XWINDOW (obj)->sequence_number));
       strout (buf, -1, printcharfun);
-      if (!NULL (XWINDOW (obj)->buffer))
+      if (!NILP (XWINDOW (obj)->buffer))
 	{
 	  unsigned char *p = XSTRING (XBUFFER (XWINDOW (obj)->buffer)->name)->data;
 	  strout (" on ", -1, printcharfun);

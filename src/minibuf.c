@@ -125,7 +125,7 @@ read_minibuf (map, initial, prompt, expflag)
   record_unwind_protect (read_minibuf_unwind, Qnil);
   Vminibuf_scroll_window = Qnil;
 
-  if (!NULL (initial))
+  if (!NILP (initial))
     Finsert (1, &initial);
 
   minibuf_prompt = (char *) alloca (XSTRING (prompt)->size + 1);
@@ -175,13 +175,13 @@ get_minibuffer (depth)
 
   XFASTINT (num) = depth;
   tail = Fnthcdr (num, Vminibuffer_list);
-  if (NULL (tail))
+  if (NILP (tail))
     {
       tail = Fcons (Qnil, Qnil);
       Vminibuffer_list = nconc2 (Vminibuffer_list, tail);
     }
   buf = Fcar (tail);
-  if (NULL (buf) || NULL (XBUFFER (buf)->name))
+  if (NILP (buf) || NILP (XBUFFER (buf)->name))
     {
       sprintf (name, " *Minibuf-%d*", depth);
       buf = Fget_buffer_create (build_string (name));
@@ -230,13 +230,13 @@ If fourth arg READ is non-nil, then interpret the result as a lisp object\n\
      Lisp_Object prompt, initial_input, keymap, read;
 {
   CHECK_STRING (prompt, 0);
-  if (!NULL (initial_input))
+  if (!NILP (initial_input))
     CHECK_STRING (initial_input, 1);
-  if (NULL (keymap))
+  if (NILP (keymap))
     keymap = Vminibuffer_local_map;
   else
     keymap = get_keymap (keymap);
-  return read_minibuf (keymap, initial_input, prompt, !NULL(read));
+  return read_minibuf (keymap, initial_input, prompt, !NILP(read));
 }
 
 DEFUN ("read-minibuffer", Fread_minibuffer, Sread_minibuffer, 1, 2, 0,
@@ -247,7 +247,7 @@ is a string to insert in the minibuffer before reading.")
      Lisp_Object prompt, initial_contents;
 {
   CHECK_STRING (prompt, 0);
-  if (!NULL (initial_contents))
+  if (!NILP (initial_contents))
     CHECK_STRING (initial_contents, 1)
   return read_minibuf (Vminibuffer_local_map, initial_contents, prompt, 1);
 }
@@ -333,7 +333,7 @@ If optional third arg REQUIRE-MATCH is non-nil, only existing buffer names are a
 
   if (XTYPE (def) == Lisp_Buffer)
     def = XBUFFER (def)->name;
-  if (!NULL (def))
+  if (!NILP (def))
     {
       args[0] = build_string ("%s(default %s) ");
       args[1] = prompt;
@@ -369,7 +369,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
   Lisp_Object bestmatch, tail, elt, eltstring;
   int bestmatchsize;
   int compare, matchsize;
-  int list = CONSP (alist) || NULL (alist);
+  int list = CONSP (alist) || NILP (alist);
   int index, obsize;
   int matchcount = 0;
   Lisp_Object bucket, zero, end, tem;
@@ -399,7 +399,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 
       if (list)
 	{
-	  if (NULL (tail))
+	  if (NILP (tail))
 	    break;
 	  elt = Fcar (tail);
 	  eltstring = Fcar (elt);
@@ -436,7 +436,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 	  /* Ignore this element if there is a predicate
 	     and the predicate doesn't like it. */
 
-	  if (!NULL (pred))
+	  if (!NILP (pred))
 	    {
 	      if (EQ (pred, Qcommandp))
 		tem = Fcommandp (elt);
@@ -446,13 +446,13 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 		  tem = call1 (pred, elt);
 		  UNGCPRO;
 		}
-	      if (NULL (tem)) continue;
+	      if (NILP (tem)) continue;
 	    }
 
 	  /* Update computation of how much all possible completions match */
 
 	  matchcount++;
-	  if (NULL (bestmatch))
+	  if (NILP (bestmatch))
 	    bestmatch = eltstring, bestmatchsize = XSTRING (eltstring)->size;
 	  else
 	    {
@@ -493,7 +493,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 	}
     }
 
-  if (NULL (bestmatch))
+  if (NILP (bestmatch))
     return Qnil;		/* No completions found */
   /* If we are ignoring case, and there is no exact match,
      and no additional text was supplied,
@@ -557,7 +557,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 {
   Lisp_Object tail, elt, eltstring;
   Lisp_Object allmatches;
-  int list = CONSP (alist) || NULL (alist);
+  int list = CONSP (alist) || NILP (alist);
   int index, obsize;
   Lisp_Object bucket, tem;
   struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
@@ -587,7 +587,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 
       if (list)
 	{
-	  if (NULL (tail))
+	  if (NILP (tail))
 	    break;
 	  elt = Fcar (tail);
 	  eltstring = Fcar (elt);
@@ -625,7 +625,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 	  /* Ignore this element if there is a predicate
 	     and the predicate doesn't like it. */
 
-	  if (!NULL (pred))
+	  if (!NILP (pred))
 	    {
 	      if (EQ (pred, Qcommandp))
 		tem = Fcommandp (elt);
@@ -635,7 +635,7 @@ The argument given to PREDICATE is the alist element or the symbol from the obar
 		  tem = call1 (pred, elt);
 		  UNGCPRO;
 		}
-	      if (NULL (tem)) continue;
+	      if (NILP (tem)) continue;
 	    }
 	  /* Ok => put it on the list. */
 	  allmatches = Fcons (eltstring, allmatches);
@@ -669,7 +669,7 @@ Case is ignored if ambient value of  completion-ignore-case  is non-nil.")
   specbind (Qminibuffer_completion_predicate, pred);
   specbind (Qminibuffer_completion_confirm,
 	    EQ (require_match, Qt) ? Qnil : Qt);
-  val = read_minibuf (NULL (require_match)
+  val = read_minibuf (NILP (require_match)
 		      ? Vminibuffer_local_completion_map
 		      : Vminibuffer_local_must_match_map,
 		      init, prompt, 0);
@@ -691,7 +691,7 @@ temp_echo_area_contents (m)
   Vinhibit_quit = Qt;
   Fsit_for (make_number (2), Qnil);
   del_range (point, ZV);
-  if (!NULL (Vquit_flag))
+  if (!NILP (Vquit_flag))
     {
       Vquit_flag = Qnil;
       unread_command_char = quit_char;
@@ -717,7 +717,7 @@ do_completion ()
 
   completion = Ftry_completion (Fbuffer_string (), Vminibuffer_completion_table,
 				Vminibuffer_completion_predicate);
-  if (NULL (completion))
+  if (NILP (completion))
     {
       bell ();
       /* Clearing this prevents sit-for from leaving the message up.  */
@@ -731,7 +731,7 @@ do_completion ()
 
   /* compiler bug */
   tem = Fstring_equal (completion, Fbuffer_string());
-  if (completedp = NULL (tem))
+  if (completedp = NILP (tem))
     {
       Ferase_buffer ();		/* Some completion happened */
       Finsert (1, &completion);
@@ -739,7 +739,7 @@ do_completion ()
 
   /* It did find a match.  Do we match some possibility exactly now? */
   if (CONSP (Vminibuffer_completion_table)
-      || NULL (Vminibuffer_completion_table))
+      || NILP (Vminibuffer_completion_table))
     tem = assoc_for_completion (Fbuffer_string (), Vminibuffer_completion_table);
   else if (XTYPE (Vminibuffer_completion_table) == Lisp_Vector)
     {
@@ -751,7 +751,7 @@ do_completion ()
 		      XSTRING (tem)->data, XSTRING (tem)->size);
       if (XTYPE (tem) != Lisp_Symbol)
 	tem = Qnil;
-      else if (!NULL (Vminibuffer_completion_predicate))
+      else if (!NILP (Vminibuffer_completion_predicate))
 	tem = call1 (Vminibuffer_completion_predicate, tem);
       else
 	tem = Qt;
@@ -762,7 +762,7 @@ do_completion ()
 		 Vminibuffer_completion_predicate,
 		 Qlambda);
 
-  if (NULL (tem))
+  if (NILP (tem))
     { /* not an exact match */
       if (completedp)
 	return 5;
@@ -788,7 +788,7 @@ assoc_for_completion (key, list)
   if (completion_ignore_case)
     key = Fupcase (key);
 
-  for (tail = list; !NULL (tail); tail = Fcdr (tail))
+  for (tail = list; !NILP (tail); tail = Fcdr (tail))
     {
       register Lisp_Object elt, tem, thiscar;
       elt = Fcar (tail);
@@ -799,7 +799,7 @@ assoc_for_completion (key, list)
       if (completion_ignore_case)
 	thiscar = Fupcase (thiscar);
       tem = Fequal (thiscar, key);
-      if (!NULL (tem)) return elt;
+      if (!NILP (tem)) return elt;
       QUIT;
     }
   return Qnil;
@@ -848,7 +848,7 @@ a repetition of this command will exit.")
       goto exit;
 
     case 4:
-      if (!NULL (Vminibuffer_completion_confirm))
+      if (!NILP (Vminibuffer_completion_confirm))
 	{
 	  temp_echo_area_contents(" [Confirm]");
 	  return Qnil;
@@ -879,7 +879,7 @@ DEFUN ("minibuffer-complete-word", Fminibuffer_complete_word, Sminibuffer_comple
   completion = Ftry_completion (Fbuffer_string (),
 				Vminibuffer_completion_table,
 				Vminibuffer_completion_predicate);
-  if (NULL (completion))
+  if (NILP (completion))
     {
       bell ();
       temp_echo_area_contents (" [No match]");
@@ -991,12 +991,12 @@ or may be a list of two strings to be printed as if concatenated.")
 
   set_buffer_internal (XBUFFER (Vstandard_output));
 
-  if (NULL (completions))
+  if (NILP (completions))
     InsStr ("There are no possible completions of what you have typed.");
   else
     {
       InsStr ("Possible completions are:");
-      for (tail = completions, i = 0; !NULL (tail); tail = Fcdr (tail), i++)
+      for (tail = completions, i = 0; !NILP (tail); tail = Fcdr (tail), i++)
 	{
 	  /* this needs fixing for the case of long completions
 	     and/or narrow windows */
@@ -1030,7 +1030,7 @@ DEFUN ("minibuffer-completion-help", Fminibuffer_completion_help, Sminibuffer_co
   completions = Fall_completions (Fbuffer_string (), Vminibuffer_completion_table,
 				  Vminibuffer_completion_predicate);
   echo_area_contents = 0;
-  if (NULL (completions))
+  if (NILP (completions))
     {
       bell ();
       temp_echo_area_contents (" [No completions]");

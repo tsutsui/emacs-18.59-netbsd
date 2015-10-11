@@ -121,7 +121,7 @@ DEFUN ("looking-at", Flooking_at, Slooking_at, 1, 1, 0,
 
   CHECK_STRING (string, 0);
   compile_pattern (string, &searchbuf,
-		   !NULL (current_buffer->case_fold_search) ? (char *) downcase_table : 0);
+		   !NILP (current_buffer->case_fold_search) ? (char *) downcase_table : 0);
 
   immediate_quit = 1;
   QUIT;			/* Do a pending quit right away, to avoid paradoxical behavior */
@@ -173,7 +173,7 @@ matched by parenthesis constructs in the pattern.")
   CHECK_STRING (regexp, 0);
   CHECK_STRING (string, 1);
 
-  if (NULL (start))
+  if (NILP (start))
     s = 0;
   else
     {
@@ -188,7 +188,7 @@ matched by parenthesis constructs in the pattern.")
     }
 
   compile_pattern (regexp, &searchbuf,
-		   !NULL (current_buffer->case_fold_search) ? (char *) downcase_table : 0);
+		   !NILP (current_buffer->case_fold_search) ? (char *) downcase_table : 0);
   immediate_quit = 1;
   val = re_search (&searchbuf, XSTRING (string)->data, XSTRING (string)->size,
 			       s, XSTRING (string)->size - s, &search_regs);
@@ -319,7 +319,7 @@ skip_chars (forwardp, string, lim)
 
   CHECK_STRING (string, 0);
 
-  if (NULL (lim))
+  if (NILP (lim))
     XFASTINT (lim) = forwardp ? ZV : BEGV;
   else
     CHECK_NUMBER_COERCE_MARKER (lim, 1);
@@ -396,14 +396,14 @@ search_command (string, bound, noerror, count, direction, RE)
   int lim;
   int n = direction;
 
-  if (!NULL (count))
+  if (!NILP (count))
     {
       CHECK_NUMBER (count, 3);
       n *= XINT (count);
     }
 
   CHECK_STRING (string, 0);
-  if (NULL (bound))
+  if (NILP (bound))
     lim = n > 0 ? ZV : BEGV;
   else
     {
@@ -418,10 +418,10 @@ search_command (string, bound, noerror, count, direction, RE)
     }
 
   np = search_buffer (string, point, lim, n, RE,
-		      !NULL (current_buffer->case_fold_search) ? downcase_table : 0);
+		      !NILP (current_buffer->case_fold_search) ? downcase_table : 0);
   if (np <= 0)
     {
-      if (NULL (noerror))
+      if (NILP (noerror))
 	return signal_failure (string);
       if (!EQ (noerror, Qt))
 	{
@@ -996,7 +996,7 @@ Leaves point at end of replacement text.")
     args_out_of_range(make_number (search_regs.start[0]),
 		      make_number (search_regs.end[0]));
 
-  if (NULL (fixedcase))
+  if (NILP (fixedcase))
     {
       /* Decide how to casify by examining the matched text. */
 
@@ -1045,7 +1045,7 @@ Leaves point at end of replacement text.")
     }
 
   SET_PT (search_regs.end[0]);
-  if (!NULL (literal))
+  if (!NILP (literal))
     Finsert (1, &string);
   else
     {
@@ -1179,13 +1179,13 @@ LIST should have been created by calling match-data previously.")
   register int i;
   register Lisp_Object marker;
 
-  if (!CONSP (list) && !NULL (list))
+  if (!CONSP (list) && !NILP (list))
     list = wrong_type_argument (Qconsp, list);
 
   for (i = 0; i < RE_NREGS; i++)
     {
       marker = Fcar (list);
-      if (NULL (marker))
+      if (NILP (marker))
 	{
 	  search_regs.start[i] = -1;
 	  list = Fcdr (list);

@@ -24,11 +24,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <errno.h>
 
 #include "config.h"
-#ifdef NULL
-#undef NULL
-#endif
 #include "lisp.h"
-#undef NULL
 #include "commands.h"
 #include "process.h"
 

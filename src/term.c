@@ -25,7 +25,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "termchar.h"
 #include "termopts.h"
 #include "cm.h"
-#undef NULL
 #include "lisp.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))

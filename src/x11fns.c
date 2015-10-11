@@ -59,12 +59,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "gettime.h"
 #include <setjmp.h>
 
-/* Prepare for lisp.h definition of NULL.
-   Sometimes x11term.h includes stddef.h.  */
-#ifdef NULL
-#undef NULL
-#endif
-
 #include "lisp.h"
 #include "process.h"
 #include "window.h"
@@ -147,7 +141,7 @@ extern int bitblt, CursorExists, VisibleX, VisibleY;
 void
 check_xterm ()
 {
-	if (NULL (Vxterm))
+	if (NILP (Vxterm))
 		error ("Terminal does not understand X protocol.");
 }
 
@@ -161,7 +155,7 @@ With non-nil argument (prefix arg), use visible bell; otherwise, audible bell.")
 
 	check_xterm ();
 	BLOCK_INPUT ();
-	if (!NULL (arg))
+	if (!NILP (arg))
 		XSetFlash ();
 	else
 		XSetFeep ();
@@ -688,7 +682,7 @@ the appropriate function to act upon this event.")
 		Vx_mouse_item = make_number (com_letter);
 		mouse_cmd
 		  = get_keyelt (access_keymap (MouseMap, com_letter));
-		if (NULL (mouse_cmd)) {
+		if (NILP (mouse_cmd)) {
 			if (event.type != ButtonRelease)
 				bell ();
 			Vx_mouse_pos = Qnil;
@@ -716,7 +710,7 @@ otherwise, wait for an event.")
 	
 	check_xterm ();
 
-	if (NULL (arg))
+	if (NILP (arg))
 		while (!XXm_queue_num)
 		  {
 		    consume_available_input ();
@@ -870,14 +864,14 @@ in that file are in octal!)\n")
 	int strsize;
 
 	CHECK_NUMBER (keycode, 1);
-	if (!NULL (shift_mask))
+	if (!NILP (shift_mask))
 		CHECK_NUMBER (shift_mask, 2);
 	CHECK_STRING (newstring, 3);
 	strsize = XSTRING (newstring) ->size;
 	rawstring = (char *) xmalloc (strsize);
 	bcopy (XSTRING (newstring)->data, rawstring, strsize);
 	rawkey = ((unsigned) (XINT (keycode))) & 255;
-	if (NULL (shift_mask))
+	if (NILP (shift_mask))
 		for (i = 0; i <= 15; i++)
 			XRebindCode (rawkey, i<<11, rawstring, strsize);
 	else
@@ -910,7 +904,7 @@ See the documentation of x-rebind-key for more information.")
 	for (i = 0; i <= 15; strings = Fcdr (strings), i++)
 	{
 		item = Fcar (strings);
-		if (!NULL (item))
+		if (!NILP (item))
 		{
 			CHECK_STRING (item, 2);
 			strsize = XSTRING (item)->size;
@@ -940,7 +934,7 @@ DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
 	int (*handler)();
 
 	check_xterm ();
-	if (!NULL (arg))
+	if (!NILP (arg))
 		handler = XExitWithCoreDump;
 	else
 	{

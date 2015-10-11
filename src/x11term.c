@@ -56,7 +56,6 @@ static char *rcsid_xterm_c = "$Header: x11term.c,v 1.12 88/02/29 14:11:07 rfrenc
 #include <fcntl.h>
 
 #include "lisp.h"
-#undef NULL
 
 /* Allow m- file to inhibit use of interrupt-driven input.  */
 #ifdef BROKEN_FIONREAD
@@ -107,12 +106,6 @@ static KeySym XMOD_CtrlShift[] = { XK_Control_L, XK_Shift_L };
 static KeySym XMOD_ShiftCtrlAlt[] = { XK_Control_L, XK_Alt_L, XK_Shift_L };
 #endif
 
-#if 0 /* On some machines, stdio.h doesn't define NULL
-	 if stddef.h has been included already!  */
-#ifdef NULL  /* Sometimes various definitions conflict here.  */
-#undef NULL
-#endif
-#endif
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>

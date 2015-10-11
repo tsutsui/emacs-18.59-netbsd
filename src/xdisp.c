@@ -21,7 +21,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "config.h"
 #include <stdio.h>
 /*#include <ctype.h>*/
-#undef NULL
 #include "lisp.h"
 #include "window.h"
 #include "termchar.h"
@@ -365,11 +364,11 @@ redisplay ()
 
   tlbufpos = this_line_bufpos;
   tlendpos = this_line_endpos;
-  if (!all_windows && tlbufpos > 0 && NULL (w->update_mode_line)
+  if (!all_windows && tlbufpos > 0 && NILP (w->update_mode_line)
       /* Make sure recorded data applies to current buffer, etc */
       && this_line_buffer == current_buffer
       && current_buffer == XBUFFER (w->buffer)
-      && NULL (w->force_start)
+      && NILP (w->force_start)
       /* Point must be on the line that we have info recorded about */
       && point >= tlbufpos
       && point <= Z - tlendpos
@@ -470,7 +469,7 @@ update:
   if (pause)
     {
       this_line_bufpos = 0;
-      if (!NULL (last_arrow_position))
+      if (!NILP (last_arrow_position))
 	{
 	  last_arrow_position = Qt;
 	  last_arrow_string = Qt;
@@ -553,19 +552,19 @@ mark_window_display_accurate (window, flag)
 {
   register struct window *w;
 
-  for (;!NULL (window); window = w->next)
+  for (;!NILP (window); window = w->next)
     {
       w = XWINDOW (window);
 
-      if (!NULL (w->buffer))
+      if (!NILP (w->buffer))
 	XFASTINT (w->last_modified)
 	  = !flag ? 0 : BUF_MODIFF (XBUFFER (w->buffer));
       w->window_end_valid = Qt;
       w->update_mode_line = Qnil;
 
-      if (!NULL (w->vchild))
+      if (!NILP (w->vchild))
 	mark_window_display_accurate (w->vchild, flag);
-      if (!NULL (w->hchild))
+      if (!NILP (w->hchild))
 	mark_window_display_accurate (w->hchild, flag);
     }
 
@@ -602,7 +601,7 @@ void
 redisplay_windows (window)
      Lisp_Object window;
 {
-  for (; !NULL (window); window = XWINDOW (window)->next)
+  for (; !NILP (window); window = XWINDOW (window)->next)
     redisplay_window (window, 0);
 }
 
@@ -626,17 +625,17 @@ redisplay_window (window, just_this_one)
 
   /* If this is a combination window, do its children; that's all.  */
 
-  if (!NULL (w->vchild))
+  if (!NILP (w->vchild))
     {
       redisplay_windows (w->vchild);
       return;
     }
-  if (!NULL (w->hchild))
+  if (!NILP (w->hchild))
     {
       redisplay_windows (w->hchild);
       return;
     }
-  if (NULL (w->buffer))
+  if (NILP (w->buffer))
     abort ();
 
   if (update_mode_lines)
@@ -677,7 +676,7 @@ redisplay_window (window, just_this_one)
 
   /* Handle case where place to start displaying has been specified */
 
-  if (!NULL (w->force_start))
+  if (!NILP (w->force_start))
     {
       w->update_mode_line = Qt;
       w->force_start = Qnil;
@@ -757,7 +756,7 @@ redisplay_window (window, just_this_one)
     }
   /* If current starting point was originally the beginning of a line
      but no longer is, find a new starting point.  */
-  else if (!NULL (w->start_at_line_beg)
+  else if (!NILP (w->start_at_line_beg)
 	   && !(startp == BEGV
 		|| FETCH_CHAR (startp - 1) == '\n'))
     {
@@ -840,7 +839,7 @@ recenter:
 done:
   /* If window not full width, must redo its mode line
      if the window to its side is being redone */
-  if ((!NULL (w->update_mode_line)
+  if ((!NILP (w->update_mode_line)
        || (!just_this_one && width < screen_width - 1))
       && !EQ (window, minibuf_window))
     display_mode_line (w);
@@ -1313,7 +1312,7 @@ display_text_line (w, start, vpos, hpos, taboffset)
   register unsigned char *startp;
   register unsigned char *p1prev = 0;
   int tab_width = XINT (current_buffer->tab_width);
-  int ctl_arrow = !NULL (current_buffer->ctl_arrow);
+  int ctl_arrow = !NILP (current_buffer->ctl_arrow);
   int width = XFASTINT (w->width) - 1
     - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
   struct position val;
@@ -1323,12 +1322,12 @@ display_text_line (w, start, vpos, hpos, taboffset)
   int truncate = hscroll
     || (truncate_partial_width_windows
 	&& XFASTINT (w->width) < screen_width)
-    || !NULL (current_buffer->truncate_lines);
+    || !NILP (current_buffer->truncate_lines);
   int selective
     = XTYPE (current_buffer->selective_display) == Lisp_Int
       ? XINT (current_buffer->selective_display)
-	: !NULL (current_buffer->selective_display) ? -1 : 0;
-  int selective_e = selective && !NULL (current_buffer->selective_display_ellipses);
+	: !NILP (current_buffer->selective_display) ? -1 : 0;
+  int selective_e = selective && !NILP (current_buffer->selective_display_ellipses);
 
   hpos += XFASTINT (w->left);
   get_display_line (vpos, XFASTINT (w->left));
@@ -1723,7 +1722,7 @@ display_mode_element (w, vpos, hpos, depth, minendcol, maxendcol, elt)
       {
 	register Lisp_Object tem;
 	tem = Fboundp (elt);
-	if (!NULL (tem))
+	if (!NILP (tem))
 	  {
 	    tem = Fsymbol_value (elt);
 	    /* If value is a string, output that string literally:
@@ -1759,17 +1758,17 @@ display_mode_element (w, vpos, hpos, depth, minendcol, maxendcol, elt)
 	      goto invalid;
 	    /* elt is now the cdr, and we know it is a cons cell.
 	       Use its car if CAR has a non-nil value.  */
-	    if (!NULL (tem))
+	    if (!NILP (tem))
 	      {
 		tem = Fsymbol_value (car);
-		if (!NULL (tem))
+		if (!NILP (tem))
 		  { elt = XCONS (elt)->car; goto tail_recurse; }
 	      }
 	    /* Symbol's value is nil (or symbol is unbound)
 	       Get the cddr of the original list
 	       and if possible find the caddr and use that.  */
 	    elt = XCONS (elt)->cdr;
-	    if (NULL (elt))
+	    if (NILP (elt))
 	      break;
 	    else if (XTYPE (elt) != Lisp_Cons)
 	      goto invalid;
@@ -1879,7 +1878,7 @@ decode_mode_spec (w, c, maxwidth)
       break;
 
     case '*':
-      if (!NULL (current_buffer->read_only))
+      if (!NILP (current_buffer->read_only))
 	return "%";
       if (MODIFF > current_buffer->save_modified)
 	return "*";
@@ -1889,7 +1888,7 @@ decode_mode_spec (w, c, maxwidth)
       /* status of process */
 #ifdef subprocesses
       obj = Fget_buffer_process (Fcurrent_buffer ());
-      if (NULL (obj))
+      if (NILP (obj))
 	return "no process";
       obj = Fsymbol_name (Fprocess_status (obj));
       break;

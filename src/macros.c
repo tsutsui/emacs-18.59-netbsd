@@ -51,7 +51,7 @@ Non-nil arg (prefix arg) means append to last macro defined;\n\
     error ("Already defining kbd macro");
 
   update_mode_lines++;
-  if (NULL (append))
+  if (NILP (append))
     {
       kbd_macro_ptr = kbd_macro_buffer;
       kbd_macro_end = kbd_macro_buffer;
@@ -82,7 +82,7 @@ counting the definition just completed as the first repetition.")
   if (!defining_kbd_macro)
       error ("Not defining kbd macro.");
 
-  if (NULL (arg))
+  if (NILP (arg))
     XFASTINT (arg) = 1;
   else
     CHECK_NUMBER (arg, 0);
@@ -145,7 +145,7 @@ defining others, use \\[name-last-kbd-macro].")
 {
   if (defining_kbd_macro)
     error ("Can't execute anonymous macro while defining one");
-  else if (NULL (Vlast_kbd_macro))
+  else if (NILP (Vlast_kbd_macro))
     error ("No kbd macro has been defined");
   else
     Fexecute_kbd_macro (Vlast_kbd_macro, prefix);
@@ -176,7 +176,7 @@ COUNT is a repeat count, or nil for once, or 0 for infinite loop.")
   int repeat = 1;
   struct gcpro gcpro1;
 
-  if (!NULL (prefixarg))
+  if (!NILP (prefixarg))
     prefixarg = Fprefix_numeric_value (prefixarg),
     repeat = XINT (prefixarg);
 

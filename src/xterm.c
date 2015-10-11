@@ -37,7 +37,6 @@ static char *rcsid_TrmXTERM_c = "$Header: xterm.c,v 1.28 86/08/27 13:30:57 rlk E
 #ifdef HAVE_X_WINDOWS
 
 #include "lisp.h"
-#undef NULL
 
 /* This may include sys/types.h, and that somehow loses
    if this is not done before the other system files.  */
