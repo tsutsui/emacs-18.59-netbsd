@@ -32,7 +32,6 @@
 /* NetBSD is nominally a POSIX.1 OS and has setsid.  */
 
 #define HAVE_SETSID
-#define HAVE_CLOCK
 
 #define HAVE_PTYS
 #define UNIX98_PTYS
@@ -67,7 +66,6 @@
 
 #define NEED_TERMIOS
 #define HAVE_TERMIOS
-//#define HAVE_TCATTR
 
 #define HAVE_TIMEVAL
 #define HAVE_SELECT
@@ -93,9 +91,7 @@
 #define BSTRING
 
 #define UNEXEC unexelf.o
-#define UNEXEC_USE_MAP_PRIVATE
 
-#define HAVE_TEXT_START
 #define ORDINARY_LINK
 
 #define LIB_X11_LIB -L/usr/X11R7/lib -Wl,-R/usr/X11R7/lib -lX11
