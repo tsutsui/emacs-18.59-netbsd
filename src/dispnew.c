@@ -189,8 +189,8 @@ struct matrix *make_screen_structure (int);
 
 void free_screen_structure (struct matrix *);
 int count_blanks (char *);
-void rotate_vector (char *, int, int);
-void safe_bcopy (char *, char *, int);
+void rotate_vector (void *, int, int);
+void safe_bcopy (void *, void *, int);
 int scrolling (void);
 void update_line (int);
 int count_match (char *, char *);
@@ -487,11 +487,12 @@ scroll_screen_lines (from, end, amount)
    DISTANCE may be negative.  */
 
 void
-rotate_vector (vector, size, distance)
-     char *vector;
+rotate_vector (v, size, distance)
+     void *v;
      int size;
      int distance;
 {
+  char *vector = v;
   char *temp = (char *) alloca (size);
 
   if (distance < 0)
@@ -505,10 +506,12 @@ rotate_vector (vector, size, distance)
 /* Like bcopy except never gets confused by overlap.  */
 
 void
-safe_bcopy (from, to, size)
-     char *from, *to;
+safe_bcopy (src, dst, size)
+     void *src, *dst;
      int size;
 {
+  char *from = src;
+  char *to = dst;
   register char *endf;
   register char *endt;
 
