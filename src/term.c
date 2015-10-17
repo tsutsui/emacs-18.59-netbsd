@@ -21,6 +21,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 #include <ctype.h>
 #include "config.h"
+#ifdef HAVE_TERMCAP_H
+#include <termcap.h>
+#endif
 #include "termhooks.h"
 #include "termchar.h"
 #include "termopts.h"
@@ -69,33 +72,33 @@ int *DC_ICcost;
 /* Hook functions that you can set to snap out the functions in this file.
    These are all extern'd in termhooks.h  */
 
-int (*move_cursor_hook) ();
-int (*raw_move_cursor_hook) ();
+void (*move_cursor_hook) (int, int);
+void (*raw_move_cursor_hook) (int, int);
 
-int (*clear_to_end_hook) ();
-int (*clear_screen_hook) ();
-int (*clear_end_of_line_hook) ();
+void (*clear_to_end_hook) (void);
+void (*clear_screen_hook) (void);
+void (*clear_end_of_line_hook) (int);
 
-int (*ins_del_lines_hook) ();
+void (*ins_del_lines_hook) (int, int);
 
-int (*change_line_highlight_hook) ();
-int (*reassert_line_highlight_hook) ();
+void (*change_line_highlight_hook) (int, int, int);
+void (*reassert_line_highlight_hook) (int, int);
 
-int (*insert_chars_hook) ();
-int (*output_chars_hook) ();
-int (*delete_chars_hook) ();
+void (*insert_chars_hook) (char *, int);
+void (*output_chars_hook) (char *, int);
+void (*delete_chars_hook) (int);
 
-int (*ring_bell_hook) ();
+void (*ring_bell_hook) (void);
 
-int (*reset_terminal_modes_hook) ();
-int (*set_terminal_modes_hook) ();
-int (*update_begin_hook) ();
-int (*update_end_hook) ();
-int (*set_terminal_window_hook) ();
+void (*reset_terminal_modes_hook) (void);
+void (*set_terminal_modes_hook) (void);
+void (*update_begin_hook) (void);
+void (*update_end_hook) (void);
+void (*set_terminal_window_hook) (int);
 
-int (*read_socket_hook) ();
-int (*fix_screen_hook) ();
-int (*calculate_costs_hook) ();
+int (*read_socket_hook) (int, char *, int);
+void (*fix_screen_hook) (void);
+void (*calculate_costs_hook) (int, int *, int *);
 
 /* Strings, numbers and flags taken from the termcap entry.  */
 
@@ -190,7 +193,7 @@ void clear_end_of_line_raw (int);
 
 
 void
-ring_bell ()
+ring_bell (void)
 {
   if (ring_bell_hook)
     {
@@ -201,7 +204,7 @@ ring_bell ()
 }
 
 void
-set_terminal_modes ()
+set_terminal_modes (void)
 {
   if (set_terminal_modes_hook)
     {
@@ -215,7 +218,7 @@ set_terminal_modes ()
 }
 
 void
-reset_terminal_modes ()
+reset_terminal_modes (void)
 {
   if (reset_terminal_modes_hook)
     {
@@ -231,14 +234,14 @@ reset_terminal_modes ()
 }
 
 void
-update_begin ()
+update_begin (void)
 {
   if (update_begin_hook)
     (*update_begin_hook) ();
 }
 
 void
-update_end ()
+update_end (void)
 {
   if (update_end_hook)
     {
@@ -289,7 +292,7 @@ set_scroll_region (start, stop)
 }
 
 void
-turn_on_insert ()
+turn_on_insert (void)
 {
   if (!insert_mode)
     OUTPUT (TS_insert_mode);
@@ -297,7 +300,7 @@ turn_on_insert ()
 }
 
 void
-turn_off_insert ()
+turn_off_insert (void)
 {
   if (insert_mode)
     OUTPUT (TS_end_insert_mode);
@@ -312,7 +315,7 @@ turn_off_insert ()
    on terminals whose standout mode does not work that way.  */
 
 void
-turn_off_highlight ()
+turn_off_highlight (void)
 {
   if (TN_standout_width < 0)
     {
@@ -323,7 +326,7 @@ turn_off_highlight ()
 }
 
 void
-turn_on_highlight ()
+turn_on_highlight (void)
 {
   if (TN_standout_width < 0)
     {
@@ -338,7 +341,7 @@ turn_on_highlight ()
    depends on the user option inverse-video.  */
 
 void
-background_highlight ()
+background_highlight (void)
 {
   if (TN_standout_width >= 0)
     return;
@@ -351,7 +354,7 @@ background_highlight ()
 /* Set standout mode to the mode specified for the text to be output.  */
 
 static void
-highlight_if_desired ()
+highlight_if_desired (void)
 {
   if (TN_standout_width >= 0)
     return;
@@ -449,7 +452,7 @@ change_line_highlight (new_highlight, vpos, first_unused_hpos)
 /* Move to absolute position, specified origin 0 */
 
 void
-move_cursor (row, col)
+move_cursor (int row, int col)
 {
   col += chars_wasted[row] & 077;
   if (move_cursor_hook)
@@ -469,7 +472,7 @@ move_cursor (row, col)
 /* Similar but don't take any account of the wasted characters.  */
 
 void
-raw_move_cursor (row, col)
+raw_move_cursor (int row, int col)
 {
   if (raw_move_cursor_hook)
     {
@@ -489,7 +492,7 @@ raw_move_cursor (row, col)
 
 /* clear from cursor to end of screen */
 void
-clear_to_end ()
+clear_to_end (void)
 {
   register int i;
 
@@ -517,7 +520,7 @@ clear_to_end ()
 /* Clear entire screen */
 
 void
-clear_screen ()
+clear_screen (void)
 {
   if (clear_screen_hook)
     {
@@ -832,7 +835,7 @@ ins_del_lines (vpos, n)
 
   if (TN_standout_width >= 0)
     {
-      register lower_limit
+      register int lower_limit
 	= scroll_region_ok ? specified_window : screen_height;
       if (n < 0)
 	{
@@ -855,7 +858,6 @@ ins_del_lines (vpos, n)
     }
 }
 
-extern int cost;		/* In cm.c */
 
 /* Compute cost of sending "str", in characters,
    not counting any line-dependent padding.  */
@@ -898,7 +900,7 @@ per_line_cost (str)
 
 /* ARGSUSED */
 void
-calculate_ins_del_char_costs ()
+calculate_ins_del_char_costs (void)
 {
   int ins_startup_cost, del_startup_cost;
   int ins_cost_per_char, del_cost_per_char;
@@ -957,7 +959,7 @@ calculate_ins_del_char_costs ()
 }
 
 void
-calculate_costs ()
+calculate_costs (void)
 {
   register char *s
     = TS_set_scroll_region ? TS_set_scroll_region : TS_set_scroll_region_1;

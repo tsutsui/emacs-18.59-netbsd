@@ -66,6 +66,7 @@
 
 #define NEED_TERMIOS
 #define HAVE_TERMIOS
+#define HAVE_TERMCAP_H
 
 #define HAVE_TIMEVAL
 #define HAVE_SELECT

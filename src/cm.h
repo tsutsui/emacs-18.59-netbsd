@@ -66,6 +66,7 @@ extern struct cm {
 
 extern char PC;			/* Pad character */
 extern short ospeed;		/* Output speed (from sg_ospeed) */
+extern int cost;
 
 /* Shorthand */
 #ifndef NoCMShortHand
@@ -101,6 +102,6 @@ extern void Wcm_clear (void);
 extern int Wcm_init (void);
 extern void cmcostinit (void);
 extern void cmgoto (int, int);
-extern void cmputc (char);
-extern void evalcost (char);
+extern int cmputc (int);
+extern int evalcost (int);
 extern void losecursor (void);

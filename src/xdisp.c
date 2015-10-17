@@ -205,14 +205,14 @@ message (m, a1, a2, a3)
   else if (FROM_KBD)
     {
 #ifdef NO_ARG_ARRAY
-      Lisp_Object_Int a[3];
-      a[0] = a1;
-      a[1] = a2;
-      a[2] = a3;
+      char *a[3];
+      a[0] = (char *) a1;
+      a[1] = (char *) a2;
+      a[2] = (char *) a3;
 
       doprnt (message_buf, screen_width, m, 3, a);
 #else
-      doprnt (message_buf, screen_width, m, 3, &a1);
+      doprnt (message_buf, screen_width, m, 3, (char **) &a1);
 #endif /* NO_ARG_ARRAY */
       echo_area_contents = message_buf;
       message_buf_print = 0;

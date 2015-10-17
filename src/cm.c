@@ -21,6 +21,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "config.h"
 #include <stdio.h>
+#ifdef HAVE_TERMCAP_H
+#include <termcap.h>
+#endif
 #include "cm.h"
 #include "termhooks.h"
 
@@ -34,20 +37,22 @@ extern char *BC, *UP;
 int cost;		/* sums up costs */
 
 /* ARGSUSED */
-void
+int
 evalcost (c)
-     char c;
+     int c;
 {
   cost++;
+  return c;
 }
 
-void
+int
 cmputc (c)
-     char c;
+     int c;
 {
   if (termscript)
     fputc (c & 0177, termscript);
   putchar (c & 0177);
+  return c;
 }
 
 /* NEXT TWO ARE DONE WITH MACROS */

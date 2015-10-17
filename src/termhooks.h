@@ -19,33 +19,33 @@ along with GNU Emacs; see the file COPYING.  If not, write to
 the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 
-extern int (*move_cursor_hook) ();
-extern int (*raw_move_cursor_hook) ();
+extern void (*move_cursor_hook) (int, int);
+extern void (*raw_move_cursor_hook) (int, int);
 
-extern int (*clear_to_end_hook) ();
-extern int (*clear_screen_hook) ();
-extern int (*clear_end_of_line_hook) ();
+extern void (*clear_to_end_hook) (void);
+extern void (*clear_screen_hook) (void);
+extern void (*clear_end_of_line_hook) (int);
 
-extern int (*ins_del_lines_hook) ();
+extern void (*ins_del_lines_hook) (int, int);
 
-extern int (*change_line_highlight_hook) ();
-extern int (*reassert_line_highlight_hook) ();
+extern void (*change_line_highlight_hook) (int, int, int);
+extern void (*reassert_line_highlight_hook) (int, int);
 
-extern int (*insert_chars_hook) ();
-extern int (*output_chars_hook) ();
-extern int (*delete_chars_hook) ();
+extern void (*insert_chars_hook) (char *, int);
+extern void (*output_chars_hook) (char *, int);
+extern void (*delete_chars_hook) (int);
 
-extern int (*ring_bell_hook) ();
+extern void (*ring_bell_hook) (void);
 
-extern int (*reset_terminal_modes_hook) ();
-extern int (*set_terminal_modes_hook) ();
-extern int (*update_begin_hook) ();
-extern int (*update_end_hook) ();
-extern int (*set_terminal_window_hook) ();
+extern void (*reset_terminal_modes_hook) (void);
+extern void (*set_terminal_modes_hook) (void);
+extern void (*update_begin_hook) (void);
+extern void (*update_end_hook) (void);
+extern void (*set_terminal_window_hook) (int);
 
-extern int (*read_socket_hook) ();
-extern int (*fix_screen_hook) ();
-extern int (*calculate_costs_hook) ();
+extern int (*read_socket_hook) (int, char *, int);
+extern void (*fix_screen_hook) (void);
+extern void (*calculate_costs_hook) (int, int *, int *);
 
 /* If nonzero, send all terminal output characters to this stream also.  */
 

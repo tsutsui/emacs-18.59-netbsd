@@ -69,7 +69,8 @@ extern struct matrix *temp_screen;
 /* Get ready to display on screen line VPOS at column HPOS
    and return the string where the text of that line is stored.  */
 
-unsigned char *get_display_line ();
+unsigned char *get_display_line (int, int);
+int timeval_subtract (struct timeval *, struct timeval, struct timeval);
 
 /* Buffer used by `message' for formatting a message, and by print.c.  */
 extern char *message_buf;
