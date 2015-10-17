@@ -610,10 +610,10 @@ child_setup_tty (out)
   s.c_lflag |= ISIG;		/* Enable signals */
   s.c_iflag &= ~IUCLC;		/* Disable map of upper case to lower on input */
   s.c_oflag &= ~OLCUC;		/* Disable map of lower case to upper on output */
-/* said to be unnecesary
-  s.c_cc[VMIN] = 1;		/* minimum number of characters to accept
-  s.c_cc[VTIME] = 0;		/* wait forever for at least 1 character
-*/
+#if 0 /* said to be unnecesary */
+  s.c_cc[VMIN] = 1;		/* minimum number of characters to accept */
+  s.c_cc[VTIME] = 0;		/* wait forever for at least 1 character */
+#endif
   s.c_lflag |= ICANON;		/* Enable erase/kill and eof processing */
   s.c_cc[VEOF] = 04;		/* insure that EOF is Control-D */
   s.c_cc[VERASE] = 0377;	/* disable erase processing */

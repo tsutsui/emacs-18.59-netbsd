@@ -754,7 +754,7 @@ struct catchtag
     Lisp_Object tag;
     Lisp_Object val;
     struct catchtag *next;
-/*    jmp_buf jmp;  /* We don't need this for GC purposes */
+/*    jmp_buf jmp; */ /* We don't need this for GC purposes */
   };
 
 extern struct catchtag *catchlist;

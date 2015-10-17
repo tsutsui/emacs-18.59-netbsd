@@ -87,6 +87,7 @@ DEFUN ("ml-if", Fml_if, Sml_if, 0, UNEVALLED, 0, "if  for mocklisp programs")
 *   UNGCPRO;
 *   return Qnil;
 *}
+*/
 
 /* This is the main entry point to mocklisp execution.
  When eval sees a mocklisp function being called, it calls here
