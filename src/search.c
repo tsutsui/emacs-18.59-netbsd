@@ -499,7 +499,7 @@ search_buffer (string, pos, lim, n, RE, trt)
       pat = (unsigned char *) alloca (len);
 
       for (i = len; i--;)		/* Copy the pattern; apply trt */
-	*pat++ = (((int) trt) ? trt [*base_pat++] : *base_pat++);
+	*pat++ = ((trt != (char *)0) ? trt [*base_pat++] : *base_pat++);
       pat -= len; base_pat = pat;
     }
 
@@ -641,7 +641,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 	{
 	  j = pat[i]; i += direction;
 	  if (i == dirlen) i = infinity;
-	  if ((int) trt)
+	  if (trt != (char *)0)
 	    {
 	      k = (j = trt[j]);
 	      if (i == infinity)
@@ -701,20 +701,20 @@ search_buffer (string, pos, lim, n, RE, trt)
 			 either kind of comparison will work as long
 			 as we don't step by infinity.  So pick the kind
 			 that works when we do step by infinity.  */
-		      if ((int) (p_limit + infinity) > (int) p_limit)
-			while ((int) cursor <= (int) p_limit)
+		      if ((p_limit + infinity) > p_limit)
+			while (cursor <= p_limit)
 			  cursor += BM_tab[*cursor];
 		      else
-			while ((unsigned int) cursor <= (unsigned int) p_limit)
+			while (cursor <= p_limit)
 			  cursor += BM_tab[*cursor];
 		    }
 		  else
 		    {
-		      if ((int) (p_limit + infinity) < (int) p_limit)
-			while ((int) cursor >= (int) p_limit)
+		      if ((p_limit + infinity) < p_limit)
+			while (cursor >= p_limit)
 			  cursor += BM_tab[*cursor];
 		      else
-			while ((unsigned int) cursor >= (unsigned int) p_limit)
+			while (cursor >= p_limit)
 			  cursor += BM_tab[*cursor];
 		    }
 /* If you are here, cursor is beyond the end of the searched region. */
@@ -727,7 +727,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 		    break;	/* a small overrun is genuine */
 		  cursor -= infinity; /* large overrun = hit */
 		  i = dirlen - direction;
-		  if ((int) trt)
+		  if (trt != (char *)0)
 		    {
 		      while ((i -= direction) + direction != 0)
 			if (pat[i] != trt[*(cursor -= direction)])
@@ -789,7 +789,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 		  while ((i -= direction) + direction != 0)
 		    {
 		      pos -= direction;
-		      if (pat[i] != (((int) trt)
+		      if (pat[i] != ((trt != (char *)0)
 				     ? trt[FETCH_CHAR(pos)]
 				     : FETCH_CHAR (pos)))
 			break;

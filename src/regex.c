@@ -1204,7 +1204,7 @@ re_match_2 (pbufp, string1, size1, string2, size2, pos, regs, mstop)
 	    /* Don't allow matching a register that hasn't been used.
 	       This isn't fully reliable in the current version,
 	       but it is better than crashing.  */
-	    if ((int) regend[regno] == -1)
+	    if (regend[regno] == (unsigned char *) -1)
 	      goto fail;
 
 	    d2 = regstart[regno];

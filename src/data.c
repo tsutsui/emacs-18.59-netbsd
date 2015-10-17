@@ -107,7 +107,7 @@ int sign_extend_temp;
 
 int
 sign_extend_lisp_int (num)
-     int num;
+     Lisp_Object_Int num;
 {
   if (num & (1 << (VALBITS - 1)))
     return num | ((-1) << VALBITS);
