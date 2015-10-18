@@ -22,11 +22,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* Define these variables that serve as global parameters to termcap,
    so that we do not need to conditionalize the places in Emacs
    that set them.  */
-
-char *UP, *BC, PC;
-short ospeed;
-
-static buffer[512];
+#include <term.h>
 
 /* Interface to curses/terminfo library.
    Turns out that all of the terminfo-level routines look
@@ -42,7 +38,6 @@ tparam (string, outstring, len, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, 
      int arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9;
 {
   char *temp;
-  extern char *tparm();
 
   temp = tparm (string, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
   if (outstring == 0)

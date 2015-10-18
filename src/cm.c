@@ -24,6 +24,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef HAVE_TERMCAP_H
 #include <termcap.h>
 #endif
+#ifdef TERMINFO
+#include <term.h>
+#endif
 #include "cm.h"
 #include "termhooks.h"
 

@@ -22,13 +22,6 @@
 
 #define C_COMPILER gcc
 
-/* NetBSD stores the termcap database in /usr/share/misc rather than
-   /etc. We use the system termcap library to avoid putting a #ifdef
-   in termcap.c or forcing the user to use the TERMCAP environment
-   variable.  */
-
-#define LIBS_TERMCAP -ltermcap
-
 /* NetBSD is nominally a POSIX.1 OS and has setsid.  */
 
 #define HAVE_SETSID
@@ -66,7 +59,6 @@
 
 #define NEED_TERMIOS
 #define HAVE_TERMIOS
-#define HAVE_TERMCAP_H
 
 #define HAVE_TIMEVAL
 #define HAVE_SELECT
@@ -88,8 +80,10 @@
 
 #define POSIX
 #define POSIX_SIGNALS
-#define TERMINFO
 #define BSTRING
+
+#define TERMINFO
+#define LIBS_TERMCAP -ltermcap
 
 #define UNEXEC unexelf.o
 

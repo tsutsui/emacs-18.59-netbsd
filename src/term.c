@@ -24,6 +24,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef HAVE_TERMCAP_H
 #include <termcap.h>
 #endif
+#ifdef TERMINFO
+#include <term.h>
+#ifdef clear_screen
+#undef clear_screen /* XXX */
+#endif
+#endif
 #ifdef __STDC__
 #include <stdarg.h>
 #endif
