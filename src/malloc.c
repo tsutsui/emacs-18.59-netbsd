@@ -220,7 +220,7 @@ void get_lim_data (void);
   also declare where the end of pure storage is. */
 void
 malloc_init (start, warnfun)
-     char *start;
+     void *start;
      void (*warnfun) (char *);
 {
   if (start)

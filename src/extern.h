@@ -94,6 +94,9 @@ extern void stop_polling (void);
 /* keymap.c */
 extern char *push_key_description (unsigned int, char *);
 
+/* malloc.c */
+extern void malloc_init (void *, void (*)(char *));
+
 /* minibuf.c */
 extern int scmp (char *, char *, int);
 
@@ -175,3 +178,66 @@ extern void unexec (char *, char *, unsigned int, unsigned int, unsigned int);
 extern void message ();
 extern void message1 (char *);
 extern void redisplay_preserve_echo_area (void);
+
+/* init functions */
+extern void init_signals (void);
+extern void init_alloc_once (void);
+extern void init_obarray (void);
+extern void init_eval_once (void);
+extern void init_syntax_once (void);
+extern void init_buffer_once (void);
+extern void init_minibuf_once (void);
+extern void init_window_once (void);
+extern void init_alloc (void);
+extern void init_eval (void);
+extern void init_data (void);
+extern void init_read (void);
+extern void init_buffer (void);
+extern void init_display (void);
+extern void init_keyboard (void);
+extern void init_callproc (void);
+extern void init_xdisp (void);
+extern void init_macros (void);
+extern void init_editfns (void);
+extern void init_process (void);
+extern void syms_of_data (void);
+extern void syms_of_alloc (void);
+extern void syms_of_read (void);
+extern void syms_of_print (void);
+extern void syms_of_eval (void);
+extern void syms_of_fns (void);
+extern void syms_of_abbrev (void);
+extern void syms_of_buffer (void);
+extern void syms_of_bytecode (void);
+extern void syms_of_callint (void);
+extern void syms_of_casefiddle (void);
+extern void syms_of_callproc (void);
+extern void syms_of_cmds (void);
+extern void syms_of_dired (void);
+extern void syms_of_display (void);
+extern void syms_of_doc (void);
+extern void syms_of_editfns (void);
+extern void syms_of_fileio (void);
+extern void syms_of_filelock (void);
+extern void syms_of_indent (void);
+extern void syms_of_keyboard (void);
+extern void syms_of_keymap (void);
+extern void syms_of_macros (void);
+extern void syms_of_marker (void);
+extern void syms_of_minibuf (void);
+extern void syms_of_mocklisp (void);
+extern void syms_of_process (void);
+extern void syms_of_search (void);
+extern void syms_of_syntax (void);
+extern void syms_of_undo (void);
+extern void syms_of_window (void);
+extern void syms_of_xdisp (void);
+extern void syms_of_xfns (void);
+extern void keys_of_casefiddle (void);
+extern void keys_of_cmds (void);
+extern void keys_of_buffer (void);
+extern void keys_of_keyboard (void);
+extern void keys_of_keymap (void);
+extern void keys_of_macros (void);
+extern void keys_of_minibuf (void);
+extern void keys_of_window (void);
