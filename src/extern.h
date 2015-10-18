@@ -152,6 +152,11 @@ extern void clear_screen (void);
 extern void change_line_highlight (int, int, int);
 extern void clear_end_of_line (int);
 extern void delete_chars (int);
+#ifdef __STDC__
+extern void fatal (const char *, ...);
+#else
+extern void fatal ();
+#endif
 extern void insert_chars (char *, int);
 extern void ins_del_lines (int, int);
 extern void move_cursor (int, int);

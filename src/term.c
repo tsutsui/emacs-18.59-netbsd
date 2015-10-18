@@ -24,6 +24,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef HAVE_TERMCAP_H
 #include <termcap.h>
 #endif
+#ifdef __STDC__
+#include <stdarg.h>
+#endif
 #include "termhooks.h"
 #include "termchar.h"
 #include "termopts.h"
@@ -1271,6 +1274,20 @@ It may be necessary to do `unsetenv TERMCAP' as well.\n",
 }
 
 /* VARARGS 1 */
+#ifdef __STDC__
+void
+fatal (const char *fmt, ...)
+{
+  va_list va;
+
+  fprintf (stderr, "emacs: ");
+  va_start(va, fmt);
+  fprintf (stderr, fmt, va);
+  va_end(va);
+  fflush (stderr);
+  exit (1);
+}
+#else /* __STDC__ */
 void
 fatal (str, arg1, arg2)
      char *str;
@@ -1281,3 +1298,4 @@ fatal (str, arg1, arg2)
   fflush (stderr);
   exit (1);
 }
+#endif /* __STDC__ */

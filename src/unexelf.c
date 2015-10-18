@@ -426,7 +426,6 @@ Filesz      Memsz       Flags       Align
 #include <string.h>
 #else
 #include "config.h"
-extern void fatal (char *, ...);
 #endif
 
 #include <sys/types.h>
