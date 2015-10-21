@@ -722,7 +722,7 @@ sys_suspend ()
   return -1;
 #else
 #ifdef SIGTSTP
-#ifdef BSD
+#if defined(BSD) || defined(linux)
   killpg (getpgrp (), SIGTSTP);
 #else
   kill (-getpgrp (0), SIGTSTP);

@@ -127,8 +127,15 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* Special hacks needed to make Emacs run on this system.  */
 
 #ifdef emacs
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include "extern.h"
 #endif
 
 /* On USG systems the system calls are interruptable by signals
@@ -255,7 +262,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #ifdef __ELF__
 #define UNEXEC unexelf.o
-#define UNEXEC_USE_MAP_PRIVATE
+#define ORDINARY_LINK
 #define DATA_SEG_BITS 0x08000000
 #endif
 
@@ -263,9 +270,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define C_DEBUG_SWITCH -g
 #define C_OPTIMIZE_SWITCH -O2 -falign-loops=2 -falign-jumps=2 -falign-functions=2
 #define OLDXMENU_OPTIONS CFLAGS=-O2 EXTRA=insque.o
-#define START_FILES pre-crt0.o /usr/lib/crt1.o /usr/lib/crti.o
 #define LIBS_DEBUG		/* override in config.h to include -lg */
 #define LIBS_TERMCAP -lncurses
-#define LIBS_SYSTEM -lc /usr/lib/crtn.o
+#define LIB_X11_LIB -lX11
 
 /* s-linux.h ends here */
