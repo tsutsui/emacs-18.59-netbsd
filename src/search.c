@@ -499,7 +499,7 @@ search_buffer (string, pos, lim, n, RE, trt)
       pat = (unsigned char *) alloca (len);
 
       for (i = len; i--;)		/* Copy the pattern; apply trt */
-	*pat++ = ((trt != (char *)0) ? trt [*base_pat++] : *base_pat++);
+	*pat++ = ((trt != NULL) ? trt [*base_pat++] : *base_pat++);
       pat -= len; base_pat = pat;
     }
 
@@ -641,7 +641,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 	{
 	  j = pat[i]; i += direction;
 	  if (i == dirlen) i = infinity;
-	  if (trt != (char *)0)
+	  if (trt != NULL)
 	    {
 	      k = (j = trt[j]);
 	      if (i == infinity)
@@ -727,7 +727,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 		    break;	/* a small overrun is genuine */
 		  cursor -= infinity; /* large overrun = hit */
 		  i = dirlen - direction;
-		  if (trt != (char *)0)
+		  if (trt != NULL)
 		    {
 		      while ((i -= direction) + direction != 0)
 			if (pat[i] != trt[*(cursor -= direction)])
@@ -789,7 +789,7 @@ search_buffer (string, pos, lim, n, RE, trt)
 		  while ((i -= direction) + direction != 0)
 		    {
 		      pos -= direction;
-		      if (pat[i] != ((trt != (char *)0)
+		      if (pat[i] != ((trt != NULL)
 				     ? trt[FETCH_CHAR(pos)]
 				     : FETCH_CHAR (pos)))
 			break;
