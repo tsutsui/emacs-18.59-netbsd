@@ -264,13 +264,15 @@ static struct _xdeftab xDefaultsValueTable[]
 int (*handler)();
 
 static void x_init_1 (void);
-static int XInitWindow (void);
+static void XInitWindow (void);
 void XTmove_cursor (int, int);
 void x_clear_end_of_line (int);
 void XTclear_screen (void);
 void stufflines (int);
 void scraplines (int);
 int internal_socket_read(unsigned char *, int);
+int x_error_handler (Display *disp, XErrorEvent *event);
+void x_io_error_handler (void);
 
 /* HLmode -- Changes the GX function for output strings.  Could be used to
  * change font.  Check an XText library function call.
@@ -1713,7 +1715,7 @@ XT_GetDefaults (class)
   return 0;
 }
 
-void
+int
 x_error_handler (disp, event)
      Display *disp;
      XErrorEvent *event;
@@ -1722,6 +1724,7 @@ x_error_handler (disp, event)
   XGetErrorText (disp, event->error_code, msg, 200);
   fprintf (stderr, "Fatal X-windows error: %s\n", msg);
   Fkill_emacs (make_number (70));
+  return 0;
 }
 
 void
@@ -1746,7 +1749,6 @@ x_term_init ()
 	XColor cdef;
 
 	extern Lisp_Object Vxterm, Vxterm1, Qt;
-	extern int XIgnoreError();
 	int  ix;
 	
 
@@ -2627,7 +2629,7 @@ XSetWindowSize(rows, cols)
 
 /* ------------------------------------------------------------
  */
-static int
+static void
 XInitWindow ()
 {
   extern int xargc;

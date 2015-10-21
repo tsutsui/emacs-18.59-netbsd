@@ -209,7 +209,7 @@ STREAM defaults to the value of `standard-output' (which see).")
 
 void
 write_string (data, size)
-     char *data;
+     const char *data;
      int size;
 {
   struct buffer *old = current_buffer;
@@ -227,7 +227,7 @@ write_string (data, size)
 
 void
 write_string_1 (data, size, printcharfun)
-     char *data;
+     const char *data;
      int size;
      Lisp_Object printcharfun;
 {

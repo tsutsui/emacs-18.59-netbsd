@@ -764,6 +764,7 @@ get_lim_data ()
 #else /* not USG */
 #if defined (BSD4_1) || defined (VMS)
 
+void
 get_lim_data ()
 {
   lim_data = vlimit (LIM_DATA, -1);
@@ -771,6 +772,7 @@ get_lim_data ()
 
 #else /* not BSD4_1 and not VMS */
 
+void
 get_lim_data ()
 {
   struct rlimit XXrlimit;

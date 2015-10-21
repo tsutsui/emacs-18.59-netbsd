@@ -221,10 +221,6 @@ extern int comm_server;
 extern int net_listen_address;
 #endif /* vipc */
 
-/* Communicate exit status of synch process to callproc.c.  */
-extern int synch_process_retcode;
-extern char *synch_process_death;
-
 /* t means use pty, nil means use a pipe,
    maybe other values to come.  */
 Lisp_Object Vprocess_connection_type;

@@ -553,7 +553,7 @@ Both LENGTH and INIT must be numbers.")
 
 Lisp_Object
 make_string (contents, length)
-     char *contents;
+     const char *contents;
      int length;
 {
   register Lisp_Object val;
@@ -564,7 +564,7 @@ make_string (contents, length)
 
 Lisp_Object
 build_string (str)
-     char *str;
+     const char *str;
 {
   return make_string (str, strlen (str));
 }

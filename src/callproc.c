@@ -73,7 +73,7 @@ int synch_process_pid;
 int synch_process_alive;
 
 /* Nonzero => this is a string explaining death of synchronous subprocess.  */
-char *synch_process_death;
+const char *synch_process_death;
 
 /* Exit code of synchronous subprocess if positive,
    minus the signal number if negative.  */

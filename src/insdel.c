@@ -245,7 +245,7 @@ make_gap (increment)
 
 void
 insert_char (c)
-     unsigned char c;
+     const unsigned char c;
 {
   insert (&c, 1);
 }
@@ -265,7 +265,7 @@ InsStr (s)
 
 void
 insert (string, length)
-     register unsigned char *string;
+     register const unsigned char *string;
      register int length;
 {
   register Lisp_Object temp;
@@ -346,7 +346,7 @@ insert_from_string (string, pos, length)
 
 void
 insert_before_markers (string, length)
-     unsigned char *string;
+     const unsigned char *string;
      register int length;
 {
   register int opoint = point;

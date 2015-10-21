@@ -954,8 +954,8 @@ extern Lisp_Object Fvector (int, Lisp_Object *);
 extern Lisp_Object Fmake_symbol (Lisp_Object);
 extern Lisp_Object Fmake_marker (void);
 extern Lisp_Object Fmake_string (Lisp_Object, Lisp_Object);
-extern Lisp_Object build_string (char *);
-extern Lisp_Object make_string(char *, int);
+extern Lisp_Object build_string (const char *);
+extern Lisp_Object make_string(const char *, int);
 extern Lisp_Object Fpurecopy (Lisp_Object);
 extern Lisp_Object make_pure_string (char *, int);
 extern Lisp_Object pure_cons (Lisp_Object, Lisp_Object);
@@ -973,7 +973,7 @@ extern Lisp_Object Fprint (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fwrite_char (Lisp_Object, Lisp_Object);
 extern Lisp_Object Vstandard_output, Qstandard_output;
 extern void temp_output_buffer_setup (char *);
-extern void write_string_1 (char *, int, Lisp_Object);
+extern void write_string_1 (const char *, int, Lisp_Object);
 extern Lisp_Object internal_with_output_to_temp_buffer (char *, Lisp_Object (*)(Lisp_Object), Lisp_Object);
 
 

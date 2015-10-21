@@ -29,6 +29,8 @@ extern void memory_full (void);
 
 /* callproc.c */
 extern void child_setup (int, int, int, char **, char **);
+extern const char *synch_process_death;
+extern int synch_process_retcode;
 
 /* cmds.c */
 extern int forward_point (int);
@@ -67,9 +69,9 @@ int current_column (void);
 /* insdel.c */
 extern void InsStr (char *);
 extern void del_range (int, int);
-extern void insert (unsigned char *, int);
-extern void insert_before_markers (unsigned char *, int);
-extern void insert_char (unsigned char);
+extern void insert (const unsigned char *, int);
+extern void insert_before_markers (const unsigned char *, int);
+extern void insert_char (const unsigned char);
 extern void make_gap (int);
 extern void modify_region (int, int);
 extern void move_gap (int);
@@ -101,7 +103,7 @@ extern void malloc_init (void *, void (*)(char *));
 extern int scmp (char *, char *, int);
 
 /* print.c */
-extern void write_string (char *, int);
+extern void write_string (const char *, int);
 
 /* process.c */
 extern void close_process_descs (void);
