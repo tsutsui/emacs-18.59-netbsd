@@ -83,7 +83,7 @@
 #define BSTRING
 
 #define TERMINFO
-#define LIBS_TERMCAP -ltermcap
+#define LIBS_TERMCAP -lterminfo
 
 #define UNEXEC unexelf.o
 
