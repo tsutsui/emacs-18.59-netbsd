@@ -30,7 +30,33 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    the names of the m- files to use for them.
    See m-template.h for info on what m- files should define.
    */
+#if 0 /* defined(__alpha__) */
+#include "m-netbsd_alpha.h"
+#elif defined(__arm__)
+#include "m-netbsd_arm.h"
+#elif 0 /* defined(__hppa__) */
+#include "m-netbsd_hppa.h"
+#elif defined(__i386__)
 #include "m-netbsd_i386.h"
+#elif defined(__m68k__)
+#include "m-netbsd_m68k.h"
+#elif 0 /* defined(__mips__) */
+#include "m-netbsd_mips.h"
+#elif 0 /* defined(__powerpc__) */
+#include "m-netbsd_powerpc.h"
+#elif 0 /* defined(__sh__) */
+#include "m-netbsd_sh3.h"
+#elif defined(__sparc__) && !defined(_LP64)
+#include "m-netbsd_sparc.h"
+#elif defined(__sparc__) && defined(__sparc_v9__)
+#include "m-netbsd_sparc64.h"
+#elif 0 /* defined(__vax__) */
+#include "m-netbsd_vax.h"
+#elif defined(__x86_64__)
+#include "m-netbsd_x86_64.h"
+#else
+#error "m- file for this MACHINE_ARCH is not available (yet)."
+#endif
 
 /* Load in the conversion definitions if this system
    needs them and the source file being compiled has not
