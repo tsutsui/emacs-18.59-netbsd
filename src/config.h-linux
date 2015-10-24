@@ -31,7 +31,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    See m-template.h for info on what m- files should define.
    */
 #define DONT_DEFINE_SIGNAL
+#if defined(__i386__)
 #include "m-intel386.h"
+#elif defined(__x86_64__)
+#include "m-x86-x64.h"
+#endif
 
 /* Load in the conversion definitions if this system
    needs them and the source file being compiled has not
