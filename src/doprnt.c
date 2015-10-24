@@ -22,6 +22,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include <stdio.h>
 #include <ctype.h>
+#include <stdint.h>
 #include "config.h"
 #include "lisp.h"
 
@@ -115,7 +116,7 @@ doprnt (buffer, bufsize, format, nargs, args)
 	    case 'c':
 	      if (cnt == nargs)
 		error ("Format string wants too many arguments");
-	      *bufptr++ = (int) args[cnt++];
+	      *bufptr++ = (intptr_t) args[cnt++];
 	      bufsize--;
 	      continue;
 

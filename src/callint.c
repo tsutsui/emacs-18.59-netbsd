@@ -182,7 +182,7 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
 	  function = wrong_type_argument (Qcommandp, function);
 	  goto retry;
 	}
-      else if ((int) string == 1)
+      else if ((PNTR_COMPARISON_TYPE) string == 1)
 	return call0 (function);
     }
   else if (!CONSP (fun))
