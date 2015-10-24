@@ -2332,7 +2332,7 @@ XT_Set_Class_Hints(w)
 
 /* ------------------------------------------------------------
  */
-static int
+static void
 XT_Set_Command_Line(w)
     Window  w;
 {
