@@ -1537,7 +1537,7 @@ extern int initialized;
 
 extern int immediate_quit;	    /* Nonzero means ^G can quit instantly */
 
-extern void *xmalloc (int), *xrealloc (void *, int);
+extern void *xmalloc (size_t), *xrealloc (void *, size_t);
 
 #ifdef MAINTAIN_ENVIRONMENT
 extern unsigned char *egetenv ();
