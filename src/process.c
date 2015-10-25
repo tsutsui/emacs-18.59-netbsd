@@ -2214,20 +2214,20 @@ process_send_signal (process, signo, current_group, nomsg)
 	{
 	case SIGINT:
 	  tcgetattr (XINT (p->infd), &t);
-	  send_process (proc, &t.c_cc[VINTR], 1, Qnil);
+	  send_process (proc, &t.c_cc[VINTR], 1);
 	  return;
 
 	case SIGQUIT:
 	  tcgetattr (XINT (p->infd), &t);
-	  send_process (proc, &t.c_cc[VQUIT], 1, Qnil);
+	  send_process (proc, &t.c_cc[VQUIT], 1);
 	  return;
 
 	case SIGTSTP:
 	  tcgetattr (XINT (p->infd), &t);
 #if defined (VSWTCH) && !defined (PREFER_VSUSP)
-	  send_process (proc, &t.c_cc[VSWTCH], 1, Qnil);
+	  send_process (proc, &t.c_cc[VSWTCH], 1);
 #else
-	  send_process (proc, &t.c_cc[VSUSP], 1, Qnil);
+	  send_process (proc, &t.c_cc[VSUSP], 1);
 #endif
 	  return;
 	}
