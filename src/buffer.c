@@ -249,7 +249,7 @@ void
 reset_buffer_local_variables(b)
      register struct buffer *b;
 {
-  register int offset;
+  register Lisp_Object_Int offset;
 
   /* Reset the major mode to Fundamental, together with all the
      things that depend on the major mode.
@@ -269,7 +269,7 @@ reset_buffer_local_variables(b)
 
   for (offset = (char *)&buffer_local_flags.name - (char *)&buffer_local_flags;
        offset < sizeof (struct buffer);
-       offset += sizeof (Lisp_Object)) /* sizeof int == sizeof Lisp_Object */
+       offset += sizeof (Lisp_Object))
     if (*(Lisp_Object *)(offset + (char *) &buffer_local_flags) > 0
 	|| *(Lisp_Object *)(offset + (char *) &buffer_local_flags) == -2)
       *(Lisp_Object *)(offset + (char *)b) =
@@ -386,13 +386,13 @@ does not change the local values.")
 
   /* Add on all the variables stored in special slots.  */
   {
-    register int offset, mask;
+    register Lisp_Object_Int offset, mask;
 
     for (offset = (char *)&buffer_local_symbols.name - (char *)&buffer_local_symbols;
 	 offset < sizeof (struct buffer);
 	 offset += (sizeof (Lisp_Object)))
       {
-	mask = *(Lisp_Object *)(offset + (char *) &buffer_local_flags);
+	mask = *(Lisp_Object_Int *)(offset + (char *) &buffer_local_flags);
 	if (mask == -1 || (buf->local_var_flags & mask))
 	  if (XTYPE (*(Lisp_Object *)(offset + (char *)&buffer_local_symbols))
 	      == Lisp_Symbol)
