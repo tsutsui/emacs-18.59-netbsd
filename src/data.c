@@ -621,7 +621,7 @@ for this variable.")
     {
       register int idx = XUINT (valcontents);
 
-      if (*(int *) (idx + (char *) &buffer_local_flags) != 0)
+      if (*(Lisp_Object *) (idx + (char *) &buffer_local_flags) != 0)
 	return *(Lisp_Object *)(idx + (char *) &buffer_defaults);
     }
 
@@ -651,7 +651,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
   if (XTYPE (valcontents) == Lisp_Buffer_Objfwd)
     {
       register int idx = XUINT (valcontents);
-      register int mask = *(int *)(idx + (char *) &buffer_local_flags);
+      register Lisp_Object_Int mask = *(Lisp_Object_Int *)(idx + (char *) &buffer_local_flags);
       if (mask > 0)
 	current_buffer->local_var_flags |= mask;
     }
@@ -747,7 +747,7 @@ for this variable.")
 #else
       struct buffer *b;
 #endif
-      register int mask = *(int *) (idx + (char *) &buffer_local_flags);
+      register Lisp_Object_Int mask = *(Lisp_Object_Int *) (idx + (char *) &buffer_local_flags);
 
       if (mask < 0)
 	/* -1 means the variable is always local in every buffer.
@@ -903,7 +903,7 @@ From now on the default value will apply in this buffer.")
   if (XTYPE (valcontents) == Lisp_Buffer_Objfwd)
     {
       register int idx = XUINT (valcontents);
-      register int mask = *(int *) (idx + (char *) &buffer_local_flags);
+      register Lisp_Object_Int mask = *(Lisp_Object_Int *) (idx + (char *) &buffer_local_flags);
 
       if (mask > 0)
 	{
