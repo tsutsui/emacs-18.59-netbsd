@@ -191,7 +191,11 @@ int standout_mode;			/* Nonzero when in standout mode.  */
 
 int specified_window;
 
+#ifdef LIBS_TERMCAP
+char *tparam (char *, char *, int, long, long, long, long, long, long, long, long, long);
+#else
 char *tparam ();
+#endif
 void turn_on_insert (void);
 void turn_off_insert (void);
 void turn_on_highlight (void);
@@ -284,16 +288,16 @@ set_scroll_region (start, stop)
   char *buf;
   if (TS_set_scroll_region)
     {
-      buf = tparam (TS_set_scroll_region, 0, 0, start, stop - 1);
+      buf = tparam (TS_set_scroll_region, 0, 0, start, stop - 1, 0, 0, 0, 0, 0, 0, 0);
     }
   else if (TS_set_scroll_region_1)
     {
       buf = tparam (TS_set_scroll_region_1, 0, 0,
-		    screen_height, start, screen_height - stop, screen_height);
+		    screen_height, start, screen_height - stop, screen_height, 0, 0, 0, 0, 0);
     }
   else
     {
-      buf = tparam (TS_set_window, 0, 0, start, 0, stop, screen_width);
+      buf = tparam (TS_set_window, 0, 0, start, 0, stop, screen_width, 0, 0, 0, 0, 0);
     }
   OUTPUT (buf);
   free (buf);
@@ -661,7 +665,7 @@ output_chars (string, len)
 	    repeat_count = p - string;
 	    if (repeat_count > RPov)
 	      {
-		buf = tparam (TS_repeat, 0, 0, *string, repeat_count);
+		buf = tparam (TS_repeat, 0, 0, *string, repeat_count, 0, 0, 0, 0, 0, 0, 0);
 		tputs (buf, repeat_count, cmputc);
 		free (buf);
 		string = p;
@@ -708,7 +712,7 @@ insert_chars (start, len)
 
   if (TS_ins_multi_chars)
     {
-      buf = tparam (TS_ins_multi_chars, 0, 0, len);
+      buf = tparam (TS_ins_multi_chars, 0, 0, len, 0, 0, 0, 0, 0, 0, 0, 0);
       OUTPUT1 (buf);
       free (buf);
       if (start)
@@ -770,7 +774,7 @@ delete_chars (n)
 
   if (TS_del_multi_chars)
     {
-      buf = tparam (TS_del_multi_chars, 0, 0, n);
+      buf = tparam (TS_del_multi_chars, 0, 0, n, 0, 0, 0, 0, 0, 0, 0, 0);
       OUTPUT1 (buf);
       free (buf);
     }
@@ -816,7 +820,7 @@ ins_del_lines (vpos, n)
     {
       raw_move_cursor (vpos, 0);
       background_highlight ();
-      buf = tparam (multi, 0, 0, i);
+      buf = tparam (multi, 0, 0, i, 0, 0, 0, 0, 0, 0, 0, 0);
       OUTPUT (buf);
       free (buf);
     }
