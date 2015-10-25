@@ -46,7 +46,7 @@ static Lisp_Object Vuser_full_name;  /* full name of current user */
 static Lisp_Object Vuser_name;	/* user name from USER or LOGNAME.  */
 
 void
-init_editfns ()
+init_editfns (void)
 {
   char *user_name;
   register unsigned char *p, *q;
@@ -120,8 +120,7 @@ init_editfns ()
 
 DEFUN ("char-to-string", Fchar_to_string, Schar_to_string, 1, 1, 0,
   "Convert arg CHAR to a string containing that character.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   char c;
   CHECK_NUMBER (n, 0);
@@ -132,8 +131,7 @@ DEFUN ("char-to-string", Fchar_to_string, Schar_to_string, 1, 1, 0,
 
 DEFUN ("string-to-char", Fstring_to_char, Sstring_to_char, 1, 1, 0,
   "Convert arg STRING to a character, the first character of that string.")
-  (str)
-     register Lisp_Object str;
+  (register Lisp_Object str)
 {
   register Lisp_Object val;
   register struct Lisp_String *p;
@@ -148,8 +146,7 @@ DEFUN ("string-to-char", Fstring_to_char, Sstring_to_char, 1, 1, 0,
 }
 
 static Lisp_Object
-buildmark (val)
-     int val;
+buildmark (int val)
 {
   register Lisp_Object mark;
   mark = Fmake_marker ();
@@ -160,7 +157,7 @@ buildmark (val)
 DEFUN ("point", Fpoint, Spoint, 0, 0, 0,
   "Return value of point, as an integer.\n\
 Beginning of buffer is position (point-min)")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XFASTINT (temp) = point;
@@ -169,14 +166,13 @@ Beginning of buffer is position (point-min)")
 
 DEFUN ("point-marker", Fpoint_marker, Spoint_marker, 0, 0, 0,
    "Return value of point, as a marker object.")
-  ()
+  (void)
 {
   return buildmark (point);
 }
 
 int
-clip_to_bounds (lower, num, upper)
-     int lower, num, upper;
+clip_to_bounds (int lower, int num, int upper)
 {
   if (num < lower)
     return lower;
@@ -189,8 +185,7 @@ clip_to_bounds (lower, num, upper)
 DEFUN ("goto-char", Fgoto_char, Sgoto_char, 1, 1, "NGoto char: ",
   "One arg, a number.  Set point to that number.\n\
 Beginning of buffer is position (point-min), end is (point-max).")
-  (n)
-     register Lisp_Object n;
+  (register Lisp_Object n)
 {
   register int charno;
   CHECK_NUMBER_COERCE_MARKER (n, 0);
@@ -200,8 +195,7 @@ Beginning of buffer is position (point-min), end is (point-max).")
 }
 
 static Lisp_Object
-region_limit (beginningp)
-     int beginningp;
+region_limit (int beginningp)
 {
   register Lisp_Object m;
   m = Fmarker_position (current_buffer->mark);
@@ -214,14 +208,14 @@ region_limit (beginningp)
 
 DEFUN ("region-beginning", Fregion_beginning, Sregion_beginning, 0, 0, 0,
   "Return position of beginning of region, as an integer.")
-  ()
+  (void)
 {
   return (region_limit (1));
 }
 
 DEFUN ("region-end", Fregion_end, Sregion_end, 0, 0, 0,
   "Return position of end of region, as an integer.")
-  ()
+  (void)
 {
   return (region_limit (0));
 }
@@ -231,7 +225,7 @@ DEFUN ("mark", Fmark, Smark, 0, 0, 0,
   "Return this buffer's mark value as integer, or nil if no mark.\n\
 If you are using this in an editing command, you are most likely making\n\
 a mistake; see the documentation of `set-mark'.")
-  ()
+  (void)
 {
   return Fmarker_position (current_buffer->mark);
 }
@@ -241,7 +235,7 @@ DEFUN ("mark-marker", Fmark_marker, Smark_marker, 0, 0, 0,
   "Return this buffer's mark, as a marker object.\n\
 Watch out!  Moving this marker changes the mark position.\n\
 The marker will not point anywhere if mark is not set.")
-  ()
+  (void)
 {
   return current_buffer->mark;
 }
@@ -263,8 +257,7 @@ To remember a location for internal use in the Lisp program,\n\
 store it in a Lisp variable.  Example:\n\
 \n\
    (let ((beg (point))) (forward-line 1) (delete-region beg (point))).")
-  (pos)
-     Lisp_Object pos;
+  (Lisp_Object pos)
 {
   if (NILP (pos))
     {
@@ -282,7 +275,7 @@ store it in a Lisp variable.  Example:\n\
 #endif /* commented-out code */
 
 Lisp_Object
-save_excursion_save ()
+save_excursion_save (void)
 {
   register int visible = XBUFFER (XWINDOW (selected_window)->buffer) == current_buffer;
 
@@ -291,8 +284,7 @@ save_excursion_save ()
 }
 
 Lisp_Object
-save_excursion_restore (info)
-     register Lisp_Object info;
+save_excursion_restore (register Lisp_Object info)
 {
   register Lisp_Object tem;
 
@@ -321,8 +313,7 @@ DEFUN ("save-excursion", Fsave_excursion, Ssave_excursion, 0, UNEVALLED, 0,
   "Save point (and mark), execute BODY, then restore point and mark.\n\
 Executes BODY just like PROGN.  Point and mark values are restored\n\
 even in case of abnormal exit (throw or error).")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object val;
   int count = specpdl_ptr - specpdl;
@@ -336,7 +327,7 @@ even in case of abnormal exit (throw or error).")
 
 DEFUN ("buffer-size", Fbufsize, Sbufsize, 0, 0, 0,
   "Return the number of characters in the current buffer.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XFASTINT (temp) = Z - BEG;
@@ -346,7 +337,7 @@ DEFUN ("buffer-size", Fbufsize, Sbufsize, 0, 0, 0,
 DEFUN ("point-min", Fpoint_min, Spoint_min, 0, 0, 0,
   "Return the minimum permissible value of point in the current buffer.\n\
 This is 1, unless a clipping restriction is in effect.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XFASTINT (temp) = BEGV;
@@ -356,7 +347,7 @@ This is 1, unless a clipping restriction is in effect.")
 DEFUN ("point-min-marker", Fpoint_min_marker, Spoint_min_marker, 0, 0, 0,
   "Return a marker to the beginning of the currently visible part of the buffer.\n\
 This is the beginning, unless a clipping restriction is in effect.")
-  ()
+  (void)
 {
   return buildmark (BEGV);
 }
@@ -365,7 +356,7 @@ DEFUN ("point-max", Fpoint_max, Spoint_max, 0, 0, 0,
   "Return the maximum permissible value of point in the current buffer.\n\
 This is (1+ (buffer-size)), unless a clipping restriction is in effect,\n\
 in which case it is less.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XFASTINT (temp) = ZV;
@@ -375,14 +366,14 @@ in which case it is less.")
 DEFUN ("point-max-marker", Fpoint_max_marker, Spoint_max_marker, 0, 0, 0,
   "Return a marker to the end of the currently visible part of the buffer.\n\
 This is the actual end, unless a clipping restriction is in effect.")
-  ()
+  (void)
 {
   return buildmark (ZV);
 }
 
 DEFUN ("following-char", Ffollchar, Sfollchar, 0, 0, 0,
   "Return the character following point, as a number.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   if (point >= ZV)
@@ -394,7 +385,7 @@ DEFUN ("following-char", Ffollchar, Sfollchar, 0, 0, 0,
 
 DEFUN ("preceding-char", Fprevchar, Sprevchar, 0, 0, 0,
   "Return the character preceding point, as a number.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   if (point <= BEGV)
@@ -407,7 +398,7 @@ DEFUN ("preceding-char", Fprevchar, Sprevchar, 0, 0, 0,
 DEFUN ("bobp", Fbobp, Sbobp, 0, 0, 0,
   "Return T if point is at the beginning of the buffer.\n\
 If the buffer is narrowed, this means the beginning of the narrowed part.")
-  ()
+  (void)
 {
   if (point == BEGV)
     return Qt;
@@ -417,7 +408,7 @@ If the buffer is narrowed, this means the beginning of the narrowed part.")
 DEFUN ("eobp", Feobp, Seobp, 0, 0, 0,
   "Return T if point is at the end of the buffer.\n\
 If the buffer is narrowed, this means the end of the narrowed part.")
-  ()
+  (void)
 {
   if (point == ZV)
     return Qt;
@@ -426,7 +417,7 @@ If the buffer is narrowed, this means the end of the narrowed part.")
 
 DEFUN ("bolp", Fbolp, Sbolp, 0, 0, 0,
   "Return T if point is at the beginning of a line.")
-  ()
+  (void)
 {
   if (point == BEGV || FETCH_CHAR (point - 1) == '\n')
     return Qt;
@@ -436,7 +427,7 @@ DEFUN ("bolp", Fbolp, Sbolp, 0, 0, 0,
 DEFUN ("eolp", Feolp, Seolp, 0, 0, 0,
   "Return T if point is at the end of a line.\n\
 `End of a line' includes point being at the end of the buffer.")
-  ()
+  (void)
 {
   if (point == ZV || FETCH_CHAR (point) == '\n')
     return Qt;
@@ -447,8 +438,7 @@ DEFUN ("char-after", Fchar_after, Schar_after, 1, 1, 0,
   "One arg, POS, a number.  Return the character in the current buffer\n\
 at position POS.\n\
 If POS is out of range, the value is NIL.")
-  (pos)
-     Lisp_Object pos;
+  (Lisp_Object pos)
 {
   register Lisp_Object val;
   register int n;
@@ -465,7 +455,7 @@ If POS is out of range, the value is NIL.")
 DEFUN ("user-login-name", Fuser_login_name, Suser_login_name, 0, 0, 0,
   "Return the name under which user logged in, as a string.\n\
 This is based on the effective uid, not the real uid.")
-  ()
+  (void)
 {
   return Vuser_name;
 }
@@ -474,42 +464,42 @@ DEFUN ("user-real-login-name", Fuser_real_login_name, Suser_real_login_name,
   0, 0, 0,
   "Return the name of the user's real uid, as a string.\n\
 Differs from user-login-name when running under su.")
-  ()
+  (void)
 {
   return Vuser_real_name;
 }
 
 DEFUN ("user-uid", Fuser_uid, Suser_uid, 0, 0, 0,
   "Return the effective uid of Emacs, as an integer.")
-  ()
+  (void)
 {
   return make_number (geteuid ());
 }
 
 DEFUN ("user-real-uid", Fuser_real_uid, Suser_real_uid, 0, 0, 0,
   "Return the real uid of Emacs, as an integer.")
-  ()
+  (void)
 {
   return make_number (getuid ());
 }
 
 DEFUN ("user-full-name", Fuser_full_name, Suser_full_name, 0, 0, 0,
   "Return the full name of the user logged in, as a string.")
-  ()
+  (void)
 {
   return Vuser_full_name;
 }
 
 DEFUN ("system-name", Fsystem_name, Ssystem_name, 0, 0, 0,
   "Return the name of the machine you are running on, as a string.")
-  ()
+  (void)
 {
   return Vsystem_name;
 }
 
 DEFUN ("current-time-string", Fcurrent_time_string, Scurrent_time_string, 0, 0, 0,
   "Return the current time, as a human-readable string.")
-  ()
+  (void)
 {
   time_t current_time = time (0);
   register char *tem = (char *) ctime (&current_time);
@@ -518,17 +508,14 @@ DEFUN ("current-time-string", Fcurrent_time_string, Scurrent_time_string, 0, 0, 
 }
 
 void
-insert1 (arg)
-     Lisp_Object arg;
+insert1 (Lisp_Object arg)
 {
   Finsert (1, &arg);
 }
 
 DEFUN ("insert", Finsert, Sinsert, 0, MANY, 0,
   "Any number of args, strings or chars.  Insert them after point, moving point forward.")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   register int argnum;
   register Lisp_Object tem;
@@ -560,9 +547,7 @@ DEFUN ("insert-before-markers", Finsert_before_markers, Sinsert_before_markers, 
   "Any number of args, strings or chars.  Insert them after point,\n\
 moving point forward.  Also, any markers pointing at the insertion point\n\
 get relocated to point after the newly inserted text.")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   register int argnum;
   register Lisp_Object tem;
@@ -593,8 +578,7 @@ get relocated to point after the newly inserted text.")
 DEFUN ("insert-char", Finsert_char, Sinsert_char, 2, 2, 0,
   "Insert COUNT (second arg) copies of CHAR (first arg).\n\
 Both arguments are required.")
-  (chr, count)
-       Lisp_Object chr, count;
+  (Lisp_Object chr, Lisp_Object count)
 {
   register unsigned char *string;
   register int strlen;
@@ -626,8 +610,7 @@ Both arguments are required.")
 DEFUN ("buffer-substring", Fbuffer_substring, Sbuffer_substring, 2, 2, 0,
   "Return the contents of part of the current buffer as a string.\n\
 The two arguments specify the start and end, as character numbers.")
-  (b, e)
-     Lisp_Object b, e;
+  (Lisp_Object b, Lisp_Object e)
 {
   register int beg, end;
 
@@ -642,7 +625,7 @@ The two arguments specify the start and end, as character numbers.")
 
 DEFUN ("buffer-string", Fbuffer_string, Sbuffer_string, 0, 0, 0,
   "Return the contents of the current buffer as a string.")
-  ()
+  (void)
 {
   if (BEGV < GPT && ZV > GPT)
     move_gap (BEGV);
@@ -655,8 +638,7 @@ DEFUN ("insert-buffer-substring", Finsert_buffer_substring, Sinsert_buffer_subst
 BUFFER may be a buffer or a buffer name.\n\
 Arguments START and END are character numbers specifying the substring.\n\
 They default to the beginning and the end of BUFFER.")
-  (buf, b, e)
-     Lisp_Object buf, b, e;
+  (Lisp_Object buf, Lisp_Object b, Lisp_Object e)
 {
   register int beg, end, exch;
   register struct buffer *bp;
@@ -713,8 +695,7 @@ DEFUN ("subst-char-in-region", Fsubst_char_in_region,
   "From START to END, replace FROMCHAR with TOCHAR each time it occurs.\n\
 If optional arg NOUNDO is non-nil, don't record this change for undo\n\
 and don't mark the buffer as really changed.")
-  (start, end, fromchar, tochar, noundo)
-     Lisp_Object start, end, fromchar, tochar, noundo;
+  (Lisp_Object start, Lisp_Object end, Lisp_Object fromchar, Lisp_Object tochar, Lisp_Object noundo)
 {
   register int pos, stop, look;
 
@@ -753,8 +734,7 @@ DEFUN ("delete-region", Fdelete_region, Sdelete_region, 2, 2, "r",
   "Delete the text between point and mark.\n\
 When called from a program, expects two arguments,\n\
 character numbers specifying the stretch to be deleted.")
-  (b, e)
-     Lisp_Object b, e;
+  (Lisp_Object b, Lisp_Object e)
 {
   validate_region (&b, &e);
   del_range (XINT (b), XINT (e));
@@ -763,7 +743,7 @@ character numbers specifying the stretch to be deleted.")
 
 DEFUN ("widen", Fwiden, Swiden, 0, 0, "",
   "Remove restrictions from current buffer, allowing full text to be seen and edited.")
-  ()
+  (void)
 {
   BEGV = BEG;
   SET_BUF_ZV (current_buffer, Z);
@@ -781,8 +761,7 @@ text is included in the file.  \\[widen] makes all visible again.\n\
 \n\
 When calling from a program, pass two arguments; character numbers\n\
 bounding the text that should remain visible.")
-  (b, e)
-     register Lisp_Object b, e;
+  (register Lisp_Object b, register Lisp_Object e)
 {
   register int i;
 
@@ -812,7 +791,7 @@ bounding the text that should remain visible.")
 }
 
 Lisp_Object
-save_restriction_save ()
+save_restriction_save (void)
 {
   register Lisp_Object bottom, top;
   /* Note: I tried using markers here, but it does not win
@@ -825,8 +804,7 @@ save_restriction_save ()
 }
 
 Lisp_Object
-save_restriction_restore (data)
-     Lisp_Object data;
+save_restriction_restore (Lisp_Object data)
 {
   register struct buffer *buf;
   register int newhead, newtail;
@@ -867,8 +845,7 @@ and then make changes outside the area within the saved restrictions.\n\
 \n\
 Note: if you are using both save-excursion and save-restriction,\n\
 use save-excursion outermost.")
-  (body)
-     Lisp_Object body;
+  (Lisp_Object body)
 {
   register Lisp_Object val;
   int count = specpdl_ptr - specpdl;
@@ -887,9 +864,7 @@ It may contain %s or %d or %c to print successive following arguments.\n\
 %c means print a number as a single character.\n\
 The argument used by %s must be a string or a symbol;\n\
 the argument used by %d or %c must be a number.")
-  (nargs, args)
-     int nargs;
-     Lisp_Object *args;
+  (int nargs, Lisp_Object *args)
 {
   register Lisp_Object val;
 
@@ -907,9 +882,7 @@ It may contain %s or %d or %c to substitute successive following arguments.\n\
 %c means print a number as a single character.\n\
 The argument used by %s must be a string or a symbol;\n\
 the argument used by %d, %b, %o, %x or %c must be a number.")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   register int n;
   register int total = 5;
@@ -990,9 +963,7 @@ the argument used by %d, %b, %o, %x or %c must be a number.")
 }
 
 Lisp_Object
-format2 (string1, arg0, arg1)
-     char *string1;
-     Lisp_Object arg0, arg1;
+format2 (char *string1, Lisp_Object arg0, Lisp_Object arg1)
 {
   Lisp_Object args[3];
   args[0] = build_string (string1);
@@ -1004,8 +975,7 @@ format2 (string1, arg0, arg1)
 DEFUN ("char-equal", Fchar_equal, Schar_equal, 2, 2, 0,
   "T if args (both characters (numbers)) match.  May ignore case.\n\
 Case is ignored if the current buffer specifies to do so.")
-  (c1, c2)
-     register Lisp_Object c1, c2;
+  (register Lisp_Object c1, register Lisp_Object c2)
 {
   CHECK_NUMBER (c1, 0);
   CHECK_NUMBER (c2, 1);
@@ -1022,8 +992,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 1, 2, 0,
   "Return the value of environment variable VAR, as a string.\n\
 VAR should be a string.  If the environment variable VAR is not defined,\n\
 the value is nil.")
-  (str)
-     Lisp_Object str;
+  (Lisp_Object str)
 {
   register char *val;
   CHECK_STRING (str, 0);
@@ -1035,7 +1004,7 @@ the value is nil.")
 #endif /* MAINTAIN_ENVIRONMENT */
 
 void
-syms_of_editfns ()
+syms_of_editfns (void)
 {
   staticpro (&Vsystem_name);
   staticpro (&Vuser_name);

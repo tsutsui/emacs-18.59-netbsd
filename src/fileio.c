@@ -109,9 +109,7 @@ void close_file_unwind (Lisp_Object);
 int e_write (int, char *, int);
 
 void
-report_file_error (string, data)
-     char *string;
-     Lisp_Object data;
+report_file_error (char *string, Lisp_Object data)
 {
   Lisp_Object errstring;
 
@@ -137,8 +135,7 @@ Return nil if NAME does not include a directory.\n\
 Otherwise returns a directory spec.\n\
 Given a Unix syntax file name, returns a string ending in slash;\n\
 on VMS, perhaps instead a string ending in :, ] or >.")
-  (file)
-     Lisp_Object file;
+  (Lisp_Object file)
 {
   register unsigned char *beg;
   register unsigned char *p;
@@ -165,8 +162,7 @@ DEFUN ("file-name-nondirectory", Ffile_name_nondirectory, Sfile_name_nondirector
 For example, in a Unix-syntax file name,\n\
 this is everything after the last slash,\n\
 or the entire name if it contains no slash.")
-  (file)
-     Lisp_Object file;
+  (Lisp_Object file)
 {
   register unsigned char *beg, *p, *end;
 
@@ -185,8 +181,7 @@ or the entire name if it contains no slash.")
 }
 
 char *
-file_name_as_directory (out, in)
-     char *out, *in;
+file_name_as_directory (char *out, char *in)
 {
   int size = strlen (in) - 1;
 
@@ -264,8 +259,7 @@ This string can be used as the value of default-directory\n\
 or passed as second argument to expand-file-name.\n\
 For a Unix-syntax file name, just appends a slash.\n\
 On VMS, converts \"[X]FOO.DIR\" to \"[X.FOO]\", etc.")
-  (file)
-     Lisp_Object file;
+  (Lisp_Object file)
 {
   char *buf;
 
@@ -287,8 +281,7 @@ On VMS, converts \"[X]FOO.DIR\" to \"[X.FOO]\", etc.")
  */
 
 int
-directory_file_name (src, dst)
-     char *src, *dst;
+directory_file_name (char *src, char *dst)
 {
   long slen;
 #ifdef VMS
@@ -425,8 +418,7 @@ This is the name of the file that holds the data for the directory DIR.\n\
 In Unix-syntax, this just removes the final slash.\n\
 On VMS, given a VMS-syntax directory name such as \"[X.Y]\",\n\
 returns a file name such as \"[X]Y.DIR.1\".")
-  (directory)
-     Lisp_Object directory;
+  (Lisp_Object directory)
 {
   char *buf;
 
@@ -448,8 +440,7 @@ returns a file name such as \"[X]Y.DIR.1\".")
 
 DEFUN ("make-temp-name", Fmake_temp_name, Smake_temp_name, 1, 1, 0,
   "Generate temporary name (string) starting with PREFIX (a string).")
-  (prefix)
-     Lisp_Object prefix;
+  (Lisp_Object prefix)
 {
   Lisp_Object val;
   val = concat2 (prefix, build_string ("XXXXXX"));
@@ -464,8 +455,7 @@ Second arg DEFAULT is directory to start with if FILENAME is relative\n\
 the current buffer's value of default-directory is used.\n\
 Filenames containing . or .. as components are simplified;\n\
 initial ~ is expanded.  See also the function  substitute-in-file-name.")
-     (name, defalt)
-     Lisp_Object name, defalt;
+     (Lisp_Object name, Lisp_Object defalt)
 {
   unsigned char *nm;
   
@@ -808,8 +798,7 @@ characters and underscores after the $, or is surrounded by braces.\n\
 If a ~ appears following a /, everything through that / is discarded.\n\
 On VMS, $ substitution is not done; this function does little and only\n\
 duplicates what expand-file-name does.")
-  (string)
-     Lisp_Object string;
+  (Lisp_Object string)
 {
   unsigned char *nm;
 
@@ -993,8 +982,7 @@ duplicates what expand-file-name does.")
 }
 
 Lisp_Object
-expand_and_dir_to_file (filename, defdir)
-     Lisp_Object filename, defdir;
+expand_and_dir_to_file (Lisp_Object filename, Lisp_Object defdir)
 {
   register Lisp_Object abspath;
 
@@ -1020,10 +1008,7 @@ expand_and_dir_to_file (filename, defdir)
 }
 
 void
-barf_or_query_if_file_exists (absname, querystring, interactive)
-     Lisp_Object absname;
-     unsigned char *querystring;
-     int interactive;
+barf_or_query_if_file_exists (Lisp_Object absname, unsigned char *querystring, int interactive)
 {
   register Lisp_Object tem;
   struct gcpro gcpro1;
@@ -1055,8 +1040,7 @@ A number as third arg means request confirmation if NEWNAME already exists.\n\
 This is what happens in interactive use with M-x.\n\
 Fourth arg non-nil means give the new file the same last-modified time\n\
 that the old one has.  (This works on only some systems.)")
-  (filename, newname, ok_if_already_exists, keep_date)
-     Lisp_Object filename, newname, ok_if_already_exists, keep_date;
+  (Lisp_Object filename, Lisp_Object newname, Lisp_Object ok_if_already_exists, Lisp_Object keep_date)
 {
   int ifd, ofd, n;
   char buf[16 * 1024];
@@ -1139,8 +1123,7 @@ that the old one has.  (This works on only some systems.)")
 DEFUN ("delete-file", Fdelete_file, Sdelete_file, 1, 1, "fDelete file: ",
   "Delete specified file.  One argument, a file name string.\n\
 If file has multiple names, it continues to exist with the other names.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   CHECK_STRING (filename, 0);
   filename = Fexpand_file_name (filename, Qnil);
@@ -1157,8 +1140,7 @@ Signals a  file-already-exists  error if NEWNAME already exists\n\
 unless optional third argument OK-IF-ALREADY-EXISTS is non-nil.\n\
 A number as third arg means request confirmation if NEWNAME already exists.\n\
 This is what happens in interactive use with M-x.")
-  (filename, newname, ok_if_already_exists)
-     Lisp_Object filename, newname, ok_if_already_exists;
+  (Lisp_Object filename, Lisp_Object newname, Lisp_Object ok_if_already_exists)
 {
 #ifdef NO_ARG_ARRAY
   Lisp_Object args[2];
@@ -1208,8 +1190,7 @@ Signals a  file-already-exists  error if NEWNAME already exists\n\
 unless optional third argument OK-IF-ALREADY-EXISTS is non-nil.\n\
 A number as third arg means request confirmation if NEWNAME already exists.\n\
 This is what happens in interactive use with M-x.")
-  (filename, newname, ok_if_already_exists)
-     Lisp_Object filename, newname, ok_if_already_exists;
+  (Lisp_Object filename, Lisp_Object newname, Lisp_Object ok_if_already_exists)
 {
 #ifdef NO_ARG_ARRAY
   Lisp_Object args[2];
@@ -1251,8 +1232,7 @@ Signals a  file-already-exists  error if LINKNAME already exists\n\
 unless optional third argument OK-IF-ALREADY-EXISTS is non-nil.\n\
 A number as third arg means request confirmation if LINKNAME already exists.\n\
 This happens for interactive use with M-x.")
-  (filename, newname, ok_if_already_exists)
-     Lisp_Object filename, newname, ok_if_already_exists;
+  (Lisp_Object filename, Lisp_Object newname, Lisp_Object ok_if_already_exists)
 {
 #ifdef NO_ARG_ARRAY
   Lisp_Object args[2];
@@ -1350,8 +1330,7 @@ DEFUN ("sysnetunam", Fsysnetunam, Ssysnetunam, 2, 2, 0,
 DEFUN ("file-name-absolute-p", Ffile_name_absolute_p, Sfile_name_absolute_p,
        1, 1, 0,
        "Return t if file FILENAME specifies an absolute path name.")
-     (filename)
-     Lisp_Object filename;
+     (Lisp_Object filename)
 {
   unsigned char *ptr;
 
@@ -1373,8 +1352,7 @@ DEFUN ("file-name-absolute-p", Ffile_name_absolute_p, Sfile_name_absolute_p,
 DEFUN ("file-exists-p", Ffile_exists_p, Sfile_exists_p, 1, 1, 0,
   "Return t if file FILENAME exists.  (This does not mean you can read it.)\n\
 See also file-readable-p and file-attributes.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   Lisp_Object abspath;
   struct stat sb;
@@ -1391,8 +1369,7 @@ See also file-readable-p and file-attributes.")
 DEFUN ("file-readable-p", Ffile_readable_p, Sfile_readable_p, 1, 1, 0,
   "Return t if file FILENAME exists and you can read it.\n\
 See also file-exists-p and file-attributes.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   Lisp_Object abspath;
 
@@ -1405,8 +1382,7 @@ DEFUN ("file-symlink-p", Ffile_symlink_p, Sfile_symlink_p, 1, 1, 0,
   "If file FILENAME is the name of a symbolic link\n\
 returns the name of the file to which it is linked.\n\
 Otherwise returns NIL.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
 #ifdef S_IFLNK
   char *buf;
@@ -1445,8 +1421,7 @@ Otherwise returns NIL.")
    on the RT/PC.  */
 DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
   "Return t if file FILENAME can be written or created by you.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   Lisp_Object abspath, dir;
 
@@ -1467,8 +1442,7 @@ DEFUN ("file-directory-p", Ffile_directory_p, Sfile_directory_p, 1, 1, 0,
   "Return t if file FILENAME is the name of a directory as a file.\n\
 A directory name spec may be given instead; then the value is t\n\
 if the directory so specified exists and really is a directory.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   register Lisp_Object abspath;
   struct stat st;
@@ -1482,8 +1456,7 @@ if the directory so specified exists and really is a directory.")
 
 DEFUN ("file-modes", Ffile_modes, Sfile_modes, 1, 1, 0,
   "Return mode bits of FILE, as an integer.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   Lisp_Object abspath;
   struct stat st;
@@ -1498,8 +1471,7 @@ DEFUN ("file-modes", Ffile_modes, Sfile_modes, 1, 1, 0,
 DEFUN ("set-file-modes", Fset_file_modes, Sset_file_modes, 2, 2, 0,
   "Set mode bits of FILE to MODE (an integer).\n\
 Only the 12 low bits of MODE are used.")
-  (filename, mode)
-     Lisp_Object filename, mode;
+  (Lisp_Object filename, Lisp_Object mode)
 {
   Lisp_Object abspath;
 
@@ -1544,8 +1516,7 @@ DEFUN ("file-newer-than-file-p", Ffile_newer_than_file_p, Sfile_newer_than_file_
   "Return t if file FILE1 is newer than file FILE2.\n\
 If FILE1 does not exist, the answer is nil;\n\
 otherwise, if FILE2 does not exist, the answer is t.")
-  (file1, file2)
-     Lisp_Object file1, file2;
+  (Lisp_Object file1, Lisp_Object file2)
 {
   Lisp_Object abspath;
   struct stat st;
@@ -1570,8 +1541,7 @@ otherwise, if FILE2 does not exist, the answer is t.")
 }
 
 void
-close_file_unwind (fd)
-     Lisp_Object fd;
+close_file_unwind (Lisp_Object fd)
 {
   close (XFASTINT (fd));
 }
@@ -1584,8 +1554,7 @@ If second argument VISIT is non-nil, the buffer's visited filename\n\
 and last save file modtime are set, and it is marked unmodified.\n\
 If visiting and the file does not exist, visiting is completed\n\
 before the error is signaled.")
-  (filename, visit)
-     Lisp_Object filename, visit;
+  (Lisp_Object filename, Lisp_Object visit)
 {
   struct stat st;
   register int fd;
@@ -1720,8 +1689,7 @@ Optional fifth argument VISIT if t means\n\
   and mark buffer not modified.\n\
 If VISIT is neither t nor nil, it means do not print\n\
   the \"Wrote file\" message.")
-  (start, end, filename, append, visit)
-     Lisp_Object start, end, filename, append, visit;
+  (Lisp_Object start, Lisp_Object end, Lisp_Object filename, Lisp_Object append, Lisp_Object visit)
 {
   register int desc;
   int failure;
@@ -1943,10 +1911,7 @@ If VISIT is neither t nor nil, it means do not print\n\
 }
 
 int
-e_write (desc, addr, len)
-     int desc;
-     register char *addr;
-     register int len;
+e_write (int desc, register char *addr, register int len)
 {
   char buf[16 * 1024];
   register char *p, *end;
@@ -1980,8 +1945,7 @@ DEFUN ("verify-visited-file-modtime", Fverify_visited_file_modtime,
   Sverify_visited_file_modtime, 1, 1, 0,
   "Return t if last mod time of BUF's visited file matches what BUF records.\n\
 This means that the file has not been changed since it was visited or saved.")
-  (buf)
-     Lisp_Object buf;
+  (Lisp_Object buf)
 {
   struct buffer *b;
   struct stat st;
@@ -2014,14 +1978,14 @@ DEFUN ("clear-visited-file-modtime", Fclear_visited_file_modtime,
   Sclear_visited_file_modtime, 0, 0, 0,
   "Clear out records of last mod time of visited file.\n\
 Next attempt to save will certainly not complain of a discrepancy.")
-  ()
+  (void)
 {
   current_buffer->modtime = 0;
   return Qnil;
 }
 
 Lisp_Object
-auto_save_error ()
+auto_save_error (void)
 {
   unsigned char *name = XSTRING (current_buffer->name)->data;
 
@@ -2036,7 +2000,7 @@ auto_save_error ()
 }
 
 Lisp_Object
-auto_save_1 ()
+auto_save_1 (void)
 {
   return
     Fwrite_region (Qnil, Qnil,
@@ -2052,8 +2016,7 @@ Auto-saving writes the buffer into a file\n\
 so that your editing is not lost if the system crashes.\n\
 This file is not the file you visited; that changes only when you save.\n\n\
 Non-nil argument means do not print any message if successful.")
-  (nomsg)
-     Lisp_Object nomsg;
+  (Lisp_Object nomsg)
 {
   struct buffer *old = current_buffer, *b;
   Lisp_Object tail, buf;
@@ -2121,7 +2084,7 @@ DEFUN ("set-buffer-auto-saved", Fset_buffer_auto_saved,
   Sset_buffer_auto_saved, 0, 0, 0,
   "Mark current buffer as auto-saved with its current text.\n\
 No auto-save file will be written until the buffer changes again.")
-  ()
+  (void)
 {
   current_buffer->auto_save_modified = MODIFF;
   XFASTINT (current_buffer->save_length) = Z - BEG;
@@ -2131,7 +2094,7 @@ No auto-save file will be written until the buffer changes again.")
 DEFUN ("recent-auto-save-p", Frecent_auto_save_p, Srecent_auto_save_p,
   0, 0, 0,
   "Return t if buffer has been auto-saved since last read in or saved.")
-  ()
+  (void)
 {
   return (current_buffer->save_modified < current_buffer->auto_save_modified) ? Qt : Qnil;
 }
@@ -2141,8 +2104,7 @@ DEFUN ("recent-auto-save-p", Frecent_auto_save_p, Srecent_auto_save_p,
 DEFUN ("read-file-name-internal", Fread_file_name_internal, Sread_file_name_internal,
   3, 3, 0,
   "Internal subroutine for read-file-name.  Do not call this.")
-  (string, dir, action)
-     Lisp_Object string, dir, action;
+  (Lisp_Object string, Lisp_Object dir, Lisp_Object action)
   /* action is nil for complete, t for return list of completions,
      lambda for verify final value */
 {
@@ -2223,8 +2185,7 @@ Default name to DEFAULT if user enters a null string.\n\
 Fourth arg MUSTMATCH non-nil means require existing file's name.\n\
  Non-nil and non-t means also require confirmation after completion.\n\
 DIR defaults to current buffer's directory default.")
-  (prompt, dir, defalt, mustmatch)
-     Lisp_Object prompt, dir, defalt, mustmatch;
+  (Lisp_Object prompt, Lisp_Object dir, Lisp_Object defalt, Lisp_Object mustmatch)
 {
   Lisp_Object val, insdef, tem;
   struct gcpro gcpro1, gcpro2;
@@ -2277,7 +2238,7 @@ DIR defaults to current buffer's directory default.")
 }
 
 void
-syms_of_fileio ()
+syms_of_fileio (void)
 {
   Qfile_error = intern ("file-error");
   staticpro (&Qfile_error);

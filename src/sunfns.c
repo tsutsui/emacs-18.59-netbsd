@@ -121,8 +121,7 @@ Unless optional argument FORCE is non-nil, is a noop after its first call.\n\
 Dummy version, compiled with NO_SUNWINDOW, returns -1."
 #endif	/* NO_SUNVIEW */
        )
-      (force)
-      Lisp_Object force;
+      (Lisp_Object force)
 {
   char *cp;
   static int already_initialized = 0;
@@ -165,8 +164,7 @@ DEFUN ("sit-for-millisecs",
 Perform redisplay, then wait for ARG milliseconds or until\n\
 input is available.  Returns t if wait completed with no input.\n\
 Redisplay does not happen if input is available before it starts.")
-	(n)
-	Lisp_Object n;
+	(Lisp_Object n)
 {
   struct timeval Timeout;
   int waitmask = 1;
@@ -194,8 +192,7 @@ DEFUN ("sleep-for-millisecs",
 	Fsleep_for_millisecs,
 	Ssleep_for_millisecs, 1, 1, 0,
    "Pause, without updating display, for ARG milliseconds.")
-	(n)
-	Lisp_Object n;
+	(Lisp_Object n)
 {
   unsigned useconds;
 
@@ -207,7 +204,7 @@ DEFUN ("sleep-for-millisecs",
 
 DEFUN ("update-display", Fupdate_display, Supdate_display, 0, 0, 0,
        "Perform redisplay.")
-     ()
+     (void)
 {
   redisplay_preserve_echo_area ();
   return(Qt);
@@ -224,8 +221,7 @@ DEFUN ("sun-change-cursor-icon",
 is the X offset of the cursor hot-point, whose 2nd element is the Y offset\n\
 of the cursor hot-point and whose 3rd element is the cursor pixel data\n\
 expressed as a string.  If ICON is nil then the original arrow cursor is used")
-     (Icon)
-     Lisp_Object Icon;
+     (Lisp_Object Icon)
 {
   register unsigned char *cp;
   register short *p;
@@ -273,26 +269,20 @@ expressed as a string.  If ICON is nil then the original arrow cursor is used")
  */
 static Lisp_Object Current_Selection;
 
-static
-sel_write (sel, file)
-     struct selection *sel;
-     FILE *file;
+static void
+sel_write (struct selection *sel, FILE *file)
 {
   fwrite (XSTRING (Current_Selection)->data, sizeof (char), 
 	  sel->sel_items, file);
 }
 
-static
-sel_clear (sel, windowfd)
-     struct selection *sel;
-     int windowfd;
+static void
+sel_clear (struct selection *sel, int windowfd)
 {
 }
 
-static
-sel_read (sel, file)
-     struct selection *sel;
-     FILE *file;
+static int
+sel_read (struct selection *sel, FILE *file)
 {
   register int i, n;
   register char *cp;
@@ -331,8 +321,7 @@ sel_read (sel, file)
 DEFUN ("sun-set-selection", Fsun_set_selection, Ssun_set_selection, 1, 1,
        "sSet selection to: ",
   "Set the current sunwindow selection to STRING.")
-     (str)
-     Lisp_Object str;
+     (Lisp_Object str)
 {
   struct selection selection;
 
@@ -352,7 +341,7 @@ DEFUN ("sun-set-selection", Fsun_set_selection, Ssun_set_selection, 1, 1,
  */
 DEFUN ("sun-get-selection", Fsun_get_selection, Ssun_get_selection, 0, 0, 0,
        "Return the current sunwindows selection as a string.")
-     ()
+     (void)
 {
   CHECK_GFX (Current_Selection);
   selection_get (sel_read, win_fd);
@@ -390,9 +379,8 @@ sun_item_create (Pair)
   return menu_item;
 }
 
-Menu 
-sun_menu_create (Vector)
-     Lisp_Object Vector;
+Menu
+sun_menu_create (Lisp_Object Vector)
 {
   Menu menu;
   int i;
@@ -448,8 +436,7 @@ The MENU argument is a vector containing (STRING . VALUE) pairs.\n\
 The VALUE of the selected item is returned.\n\
 If the VALUE of the first pair is nil, then the first STRING will be used\n\
 as a menu label.")
-      (window, X_Position, Y_Position, Button, MEnu)
-      Lisp_Object window, X_Position, Y_Position, Button, MEnu;
+      (Lisp_Object window, Lisp_Object X_Position, Lisp_Object Y_Position, Lisp_Object Button, Lisp_Object MEnu)
 {
   Menu menu;
   int button, xpos, ypos;
@@ -505,7 +492,8 @@ as a menu label.")
 /*
  *	Define everything
  */
-syms_of_sunfns()
+int
+syms_of_sunfns (void)
 {
 #ifndef NO_SUNVIEW
 #ifdef  Menu_Base_Kludge

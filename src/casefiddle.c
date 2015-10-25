@@ -27,9 +27,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 enum case_action {CASE_UP, CASE_DOWN, CASE_CAPITALIZE, CASE_CAPITALIZE_UP};
 
 Lisp_Object
-casify_object (flag, obj)
-     enum case_action flag;
-     Lisp_Object obj;
+casify_object (enum case_action flag, Lisp_Object obj)
 {
   register int i, c, len;
   register int inword = flag == CASE_DOWN;
@@ -71,16 +69,14 @@ casify_object (flag, obj)
 
 DEFUN ("upcase", Fupcase, Supcase, 1, 1, 0,
   "One arg, a character or string.  Convert it to upper case and return that.")
-  (obj)
-     Lisp_Object obj;
+  (Lisp_Object obj)
 {
   return casify_object (CASE_UP, obj);
 }
 
 DEFUN ("downcase", Fdowncase, Sdowncase, 1, 1, 0,
   "One arg, a character or string.  Convert it to lower case and return that.")
-  (obj)
-     Lisp_Object obj;
+  (Lisp_Object obj)
 {
   return casify_object (CASE_DOWN, obj);
 }
@@ -88,8 +84,7 @@ DEFUN ("downcase", Fdowncase, Sdowncase, 1, 1, 0,
 DEFUN ("capitalize", Fcapitalize, Scapitalize, 1, 1, 0,
   "One arg, a character or string.  Convert it to capitalized form and return that.\n\
 This means that each word's first character is upper case and the rest is lower case.")
-  (obj)
-     Lisp_Object obj;
+  (Lisp_Object obj)
 {
   return casify_object (CASE_CAPITALIZE, obj);
 }
@@ -98,9 +93,7 @@ This means that each word's first character is upper case and the rest is lower 
    b and e specify range of buffer to operate on. */
 
 void
-casify_region (flag, b, e)
-     enum case_action flag;
-     Lisp_Object b, e;
+casify_region (enum case_action flag, Lisp_Object b, Lisp_Object e)
 {
   register int i;
   register int c;
@@ -131,8 +124,7 @@ DEFUN ("upcase-region", Fupcase_region, Supcase_region, 2, 2, "r",
 These arguments specify the starting and ending character numbers of\n\
 the region to operate on.  When used as a command, the text between\n\
 point and the mark is operated on.")
-  (b, e)
-     Lisp_Object b, e;
+  (Lisp_Object b, Lisp_Object e)
 {
   casify_region (CASE_UP, b, e);
   return Qnil;
@@ -143,8 +135,7 @@ DEFUN ("downcase-region", Fdowncase_region, Sdowncase_region, 2, 2, "r",
 These arguments specify the starting and ending character numbers of\n\
 the region to operate on.  When used as a command, the text between\n\
 point and the mark is operated on.")
-  (b, e)
-     Lisp_Object b, e;
+  (Lisp_Object b, Lisp_Object e)
 {
   casify_region (CASE_DOWN, b, e);
   return Qnil;
@@ -157,8 +148,7 @@ the region to operate on.  When used as a command, the text between\n\
 point and the mark is operated on.\n\
 Capitalized form means each word's first character is upper case\n\
 and the rest of it is lower case.")
-  (b, e)
-     Lisp_Object b, e;
+  (Lisp_Object b, Lisp_Object e)
 {
   casify_region (CASE_CAPITALIZE, b, e);
   return Qnil;
@@ -167,16 +157,14 @@ and the rest of it is lower case.")
 /* Like Fcapitalize but change only the initials.  */
 
 Lisp_Object
-upcase_initials_region (b, e)
-     Lisp_Object b, e;
+upcase_initials_region (Lisp_Object b, Lisp_Object e)
 {
   casify_region (CASE_CAPITALIZE_UP, b, e);
   return Qnil;
 }
 
 Lisp_Object
-operate_on_word (arg)
-     Lisp_Object arg;
+operate_on_word (Lisp_Object arg)
 {
   Lisp_Object end, val;
   int farend;
@@ -194,8 +182,7 @@ operate_on_word (arg)
 DEFUN ("upcase-word", Fupcase_word, Supcase_word, 1, 1, "p",
   "Convert following word (or ARG words) to upper case, moving over.\n\
 With negative argument, convert previous words but do not move.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Lisp_Object opoint;
   XFASTINT (opoint) = point;
@@ -206,8 +193,7 @@ With negative argument, convert previous words but do not move.")
 DEFUN ("downcase-word", Fdowncase_word, Sdowncase_word, 1, 1, "p",
   "Convert following word (or ARG words) to lower case, moving over.\n\
 With negative argument, convert previous words but do not move.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Lisp_Object opoint;
   XFASTINT (opoint) = point;
@@ -220,8 +206,7 @@ DEFUN ("capitalize-word", Fcapitalize_word, Scapitalize_word, 1, 1, "p",
 This gives the word(s) a first character in upper case\n\
 and the rest lower case.\n\
 With negative argument, capitalize previous words but do not move.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Lisp_Object opoint;
   XFASTINT (opoint) = point;
@@ -230,7 +215,7 @@ With negative argument, capitalize previous words but do not move.")
 }
 
 void
-syms_of_casefiddle ()
+syms_of_casefiddle (void)
 {
   defsubr (&Supcase);
   defsubr (&Sdowncase);
@@ -244,7 +229,7 @@ syms_of_casefiddle ()
 }
 
 void
-keys_of_casefiddle ()
+keys_of_casefiddle (void)
 {
   ndefkey (Vctl_x_map, Ctl('U'), "upcase-region");
   ndefkey (Vctl_x_map, Ctl('L'), "downcase-region");

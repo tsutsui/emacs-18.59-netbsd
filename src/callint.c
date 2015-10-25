@@ -83,8 +83,7 @@ In addition, if the first character of the string is '*' then an error is\n\
 /* ARGSUSED */
 DEFUN ("interactive", Finteractive, Sinteractive, 0, UNEVALLED, 0,
   0 /* See immediately above */)
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   return Qnil;
 }
@@ -92,8 +91,7 @@ DEFUN ("interactive", Finteractive, Sinteractive, 0, UNEVALLED, 0,
 /* Quotify EXP: if EXP is constant, return it.
    If EXP is not constant, return (quote EXP).  */
 Lisp_Object
-quotify_arg (exp)
-     register Lisp_Object exp;
+quotify_arg (register Lisp_Object exp)
 {
   if (XTYPE (exp) != Lisp_Int && XTYPE (exp) != Lisp_String
       && !NILP (exp) && !EQ (exp, Qt))
@@ -104,8 +102,7 @@ quotify_arg (exp)
 
 /* Modify EXP by quotifying each element (except the first).  */
 Lisp_Object
-quotify_args (exp)
-     Lisp_Object exp;
+quotify_args (Lisp_Object exp)
 {
   register Lisp_Object tail;
   register struct Lisp_Cons *ptr;
@@ -121,7 +118,7 @@ char *callint_argfuns[]
     = {"", "point", "mark", "region-beginning", "region-end"};
 
 static void
-check_mark ()
+check_mark (void)
 {
   Lisp_Object tem = Fmarker_buffer (current_buffer->mark);
   if (NILP (tem) || (XBUFFER (tem) != current_buffer))
@@ -139,8 +136,7 @@ See `interactive'.\n\
 Optional second arg RECORD-FLAG non-nil\n\
 means unconditionally put this command in the command-history.\n\
 Otherwise, this is done only if an arg is read using the minibuffer.")
-  (function, record)
-     Lisp_Object function, record;
+  (Lisp_Object function, Lisp_Object record)
 {
   Lisp_Object *args, *visargs;
   unsigned char **argstrings;
@@ -457,8 +453,7 @@ DEFUN ("prefix-numeric-value", Fprefix_numeric_value, Sprefix_numeric_value,
   1, 1, 0,
   "Return numeric meaning of raw prefix argument ARG.\n\
 A raw prefix argument is what you get from (interactive \"P\").")
-  (raw)
-     Lisp_Object raw;
+  (Lisp_Object raw)
 {
   Lisp_Object val;
   
@@ -480,7 +475,7 @@ A raw prefix argument is what you get from (interactive \"P\").")
 }
 
 void
-syms_of_callint ()
+syms_of_callint (void)
 {
   Qminus = intern ("-");
   staticpro (&Qminus);

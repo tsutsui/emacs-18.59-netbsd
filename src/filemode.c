@@ -76,9 +76,7 @@ static VOID rwx (unsigned short, char []);
 static VOID setst (unsigned short, char []);
 
 VOID
-filemodestring (s,a)
-   struct stat	*s;
-   char *a;
+filemodestring (struct stat *s, char *a)
 {
    a[0] = ftypelet (s);
    /* Aren't there symbolic names for these byte-fields? */
@@ -100,8 +98,7 @@ special files, 'm' for multiplexor files, 'l' for symbolic link,
  */
 
 static char
-ftypelet(s)
-   struct stat *s;
+ftypelet (struct stat *s)
 {
   switch (s->st_mode & S_IFMT)
     {
@@ -153,9 +150,7 @@ flags accordingly
  */
 
 static VOID
-rwx (bits, chars)
-   unsigned short bits;
-   char chars[];
+rwx (unsigned short bits, char chars[])
 {
   chars[0] = (bits & S_IREAD)  ? 'r' : '-';
   chars[1] = (bits & S_IWRITE) ? 'w' : '-';
@@ -166,9 +161,7 @@ rwx (bits, chars)
 /* setst - set s & t flags in a file attributes string */
 /* *** WARNING!  FILE STRUCTURE DEPENDENT *** */
 static VOID
-setst (bits, chars)
-   unsigned short bits;
-   char chars[];
+setst (unsigned short bits, char chars[])
 {
 #ifdef S_ISUID
    if (bits & S_ISUID)

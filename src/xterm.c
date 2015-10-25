@@ -199,9 +199,8 @@ static int flashback ();
  * change font.  Check an XText library function call. 
  */
 
-static
-HLmode (new)
-     int new;
+static void
+HLmode (int new)
 {
   CurHL =  new;
 }
@@ -211,8 +210,8 @@ HLmode (new)
    Call this when about to modify line at position VPOS
    and not change whether it is highlighted.  */
 
-XTreassert_line_highlight (highlight, vpos)
-     int highlight, vpos;
+void
+XTreassert_line_highlight (int highlight, int vpos)
 {
   HLmode (highlight);
 }
@@ -220,9 +219,8 @@ XTreassert_line_highlight (highlight, vpos)
 /* Call this when about to modify line at position VPOS
    and change whether it is highlighted.  */
 
-static
-XTchange_line_highlight (new_highlight, vpos, first_unused_hpos)
-     int new_highlight, vpos, first_unused_hpos;
+static void
+XTchange_line_highlight (int new_highlight, int vpos, int first_unused_hpos)
 {
   HLmode (new_highlight);
   XTmove_cursor (vpos, 0);
@@ -238,8 +236,8 @@ XTchange_line_highlight (new_highlight, vpos, first_unused_hpos)
 
 
 
-static
-XTset_terminal_modes ()
+static void
+XTset_terminal_modes (void)
 {
   int stuffpending;
 #ifdef XDEBUG
@@ -265,9 +263,8 @@ XTset_terminal_modes ()
  * is in progress in order to toggle it on.
  */
 
-static
-XTmove_cursor (row, col)
-     register int row, col;
+static void
+XTmove_cursor (register int row, register int col)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -310,8 +307,8 @@ XTmove_cursor (row, col)
  * used when restarting suspended or waiting emacs
  */
 
-static
-cleanup ()
+static void
+cleanup (void)
 {
   inverse_video = 0;
   HLmode (0);
@@ -320,9 +317,8 @@ cleanup ()
 /* Erase current line from column cursor_hpos to column END.
    Leave cursor at END.  */
 
-static
-XTclear_end_of_line (end)
-     register int end;
+static void
+XTclear_end_of_line (register int end)
 {
   register int numcols;
 
@@ -363,9 +359,8 @@ XTclear_end_of_line (end)
 /* Erase current line from column START to right margin.
    Leave cursor at START.  */
 
-static
-x_clear_end_of_line (start)
-     register int start;
+static void
+x_clear_end_of_line (register int start)
 {
   register int numcols;
 
@@ -403,8 +398,8 @@ x_clear_end_of_line (start)
   }
 }
 
-static
-XTreset_terminal_modes ()
+static void
+XTreset_terminal_modes (void)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XTreset_terminal_modes\n");
@@ -412,8 +407,8 @@ XTreset_terminal_modes ()
   XTclear_screen ();
 }
 
-static
-XTclear_screen ()
+static void
+XTclear_screen (void)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XTclear_screen\n");
@@ -443,11 +438,8 @@ XTclear_screen ()
  * events which come from bit blt's or moving an obscuring opaque window
  */
 
-static
-dumpchars (current_screen, numcols, tempX, tempY, tempHL)
-     register struct matrix *current_screen;
-     register int numcols;
-     register int tempX, tempY, tempHL;
+static void
+dumpchars (register struct matrix *current_screen, register int numcols, register int tempX, register int tempY, register int tempHL)
 {
   if (numcols <= 0) return;
   if (((numcols - 1) + tempX) > screen_width)
@@ -477,9 +469,8 @@ dumpchars (current_screen, numcols, tempX, tempY, tempHL)
  * output.  Simply the new text at the current cursor position given
  * by VisibleX,Y.  The cursor is moved to the end of the new text.
  */
-static
-writechars (start, end)
-     register char *start, *end;
+static void
+writechars (register char *start, register char *end)
 {
   register int temp_length;
   BLOCK_INPUT_DECLARE ()
@@ -544,10 +535,8 @@ writechars (start, end)
 }
 
 
-static
-XToutput_chars (start, len)
-     register char *start;
-     register int len;
+static void
+XToutput_chars (register char *start, register int len)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XToutput_chars\n");
@@ -561,8 +550,8 @@ XToutput_chars (start, len)
 
 static int flashedback;
 
-static
-XTflash ()
+static void
+XTflash (void)
 {
 #ifdef ITIMER_REAL
   struct itimerval itimer;
@@ -593,8 +582,8 @@ XTflash ()
 #endif /* have ITIMER_REAL */
 }
 
-static
-flashback ()
+static void
+flashback (void)
 {
 #ifdef ITIMER_REAL
 #ifdef SIGIO
@@ -614,8 +603,8 @@ flashback ()
 
 /* A kludge to get a bell */
 
-static
-XTfeep ()
+static void
+XTfeep (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -635,7 +624,8 @@ XTfeep ()
  * finishes.
  */
 
-CursorToggle ()
+int
+CursorToggle (void)
 {
   if (!WindowMapped)
     {
@@ -705,8 +695,8 @@ CursorToggle ()
 /* region, this routine makes sure it is gone so that dumprectangle can */
 /* toggle it back into existance if dumprectangle is invoked when not in */
 /* the midst of a screen update. */
-static
-ClearCursor ()
+static void
+ClearCursor (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -734,8 +724,8 @@ ClearCursor ()
   UNBLOCK_INPUT ();
 }
 
-static
-XTupdate_begin ()
+static void
+XTupdate_begin (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -759,8 +749,8 @@ XTupdate_begin ()
 }
 
 
-static
-XTupdate_end ()
+static void
+XTupdate_end (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -780,8 +770,8 @@ XTupdate_end ()
  * back into the newly blank areas.
  */
 
-dumprectangle (top, left, rows, cols)
-     register int top, left, rows, cols;
+void
+dumprectangle (register int top, register int left, register int rows, register int cols)
 {
   register int index;
   int localX, localY, localHL;
@@ -844,9 +834,8 @@ dumprectangle (top, left, rows, cols)
  * greater than flexlines will not change during an update.  This is really
  * used only during dellines and inslines routines (scraplines and stufflines)
  */
-static
-XTset_terminal_window (n)
-     register int n;
+static void
+XTset_terminal_window (register int n)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XTset_terminal_window\n");
@@ -857,8 +846,8 @@ XTset_terminal_window (n)
     flexlines = n;
 }
 
-XTins_del_lines (vpos, n)
-     int vpos, n;
+void
+XTins_del_lines (int vpos, int n)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XTins_del_lines\n");
@@ -868,10 +857,8 @@ XTins_del_lines (vpos, n)
   else scraplines (-n);
 }
 
-static
-XTinsert_chars (start, len)
-     register char *start;
-     register int len;
+static void
+XTinsert_chars (register char *start, register int len)
 {
 #ifdef XDEBUG
   fprintf (stderr, "XTinsert_chars\n");
@@ -879,9 +866,8 @@ XTinsert_chars (start, len)
   writechars (start, start + len - 1);
 }
 
-static
-XTdelete_chars (n)
-     register int n;
+static void
+XTdelete_chars (register int n)
 {
   char *msg = "***Delete Chars Called Outside of Update!!!***";
 #ifdef XDEBUG
@@ -890,9 +876,8 @@ XTdelete_chars (n)
   writechars (msg, msg + strlen (msg) - 1);
 }
 
-static
-stufflines (n)
-     register int n;
+static void
+stufflines (register int n)
 {
   register int topregion, bottomregion;
   register int length, newtop;
@@ -946,9 +931,8 @@ stufflines (n)
   /*  if (!InUpdate) CursorToggle (); */
 }
 
-static
-scraplines (n)
-     register int n;
+static void
+scraplines (register int n)
 {
   BLOCK_INPUT_DECLARE ()
   if (!WindowMapped)
@@ -1002,10 +986,8 @@ scraplines (n)
  * bytes but rather individual packets.
  */
 
-XTread_socket (sd, bufp, numchars)
-     register int sd;
-     register char *bufp;
-     register int numchars;
+int
+XTread_socket (register int sd, register char *bufp, register int numchars)
 {
 
   int count;
@@ -1187,7 +1169,8 @@ XTread_socket (sd, bufp, numchars)
 }
 
 /* refresh bitmap kitchen sink icon */
-refreshicon ()
+void
+refreshicon (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -1200,7 +1183,8 @@ refreshicon ()
   UNBLOCK_INPUT ();
 }
 
-XBitmapIcon ()
+void
+XBitmapIcon (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -1214,7 +1198,8 @@ XBitmapIcon ()
   UNBLOCK_INPUT ();
 }
 
-XTextIcon ()
+void
+XTextIcon (void)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -1235,16 +1220,15 @@ XTextIcon ()
 /* Exit gracefully from gnuemacs, doing an autosave and giving a status.
  */
 
-XExitGracefully (disp, event)
-     Display *disp;
-     XErrorEvent *event;
+void
+XExitGracefully (Display *disp, XErrorEvent *event)
 {
   XCleanUp ();
   exit (70);
 }
 
-x_io_error (disp)
-     Display *disp;
+void
+x_io_error (Display *disp)
 {
   XCleanUp ();
   exit (71);
@@ -1254,8 +1238,8 @@ x_io_error (disp)
 /* This kludge overcomes the failure to handle EAGAIN and EINTR
    in a certain version of X for 386 running system V.  */
 
-x_io_error (disp, a, b, c, nwrite)
-     Display *disp;
+void
+x_io_error (Display *disp, int a, int b, int c, int nwrite)
 {
   extern _XSend ();
   unsigned int pc = ((unsigned int *)&disp)[-1];
@@ -1272,7 +1256,8 @@ x_io_error (disp, a, b, c, nwrite)
 }
 #endif
 
-xfixscreen ()
+void
+xfixscreen (void)
 {
   register int temp_width, temp_height;
   BLOCK_INPUT_DECLARE ()
@@ -1326,7 +1311,8 @@ xfixscreen ()
   SIGNAL_INPUT ();
 }
 
-x_term_init ()
+void
+x_term_init (void)
 {
   char *vardisplay;
   char *temp_font;
@@ -1643,7 +1629,8 @@ x_term_init ()
   if (reversevideo) XFlipColor ();
 }
 
-x_init_1 (unrequest)
+void
+x_init_1 (int unrequest)
 {
 #ifdef F_SETOWN
   extern int old_fcntl_owner;
@@ -1675,8 +1662,8 @@ x_init_1 (unrequest)
 }
 
 /* Process all queued ExposeRegion events. */
-static
-dumpqueue ()
+static void
+dumpqueue (void)
 {
   register int i;
   XExposeRegionEvent r;
@@ -1698,18 +1685,20 @@ dumpqueue ()
       }
 }
 
-XSetFlash ()
+void
+XSetFlash (void)
 {
   ring_bell_hook = XTflash;
 }
 
-XSetFeep ()
+void
+XSetFeep (void)
 {
   ring_bell_hook = XTfeep;
 }
 
-XNewFont (newname)
-     register char *newname;
+int
+XNewFont (register char *newname)
 {
   FontInfo *temp;
   BLOCK_INPUT_DECLARE ()
@@ -1734,7 +1723,8 @@ XNewFont (newname)
   return 0;
 }
 
-XFlipColor ()
+void
+XFlipColor (void)
 {
   Pixmap temp;
   int tempcolor;
@@ -1796,8 +1786,8 @@ XFlipColor ()
   UNBLOCK_INPUT ();
 }
 
-XSetOffset (xoff, yoff)
-     register int xoff, yoff;
+void
+XSetOffset (register int xoff, register int yoff)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -1824,8 +1814,8 @@ XSetOffset (xoff, yoff)
   /* XWarpMouse (XXwindow, pixelwidth >> 1, pixelheight >> 1); */
 }
 
-XSetWindowSize (rows, cols)
-     register int rows, cols;
+void
+XSetWindowSize (register int rows, register int cols)
 {
   /* if (rows < 3) rows = 24;
      if (cols < 1) cols = 80; */
@@ -1837,7 +1827,8 @@ XSetWindowSize (rows, cols)
   PendingExposure = 0;
 }
 
-XPopUpWindow ()
+void
+XPopUpWindow (void)
 {
   BLOCK_INPUT_DECLARE ()
   if (WindowMapped)
@@ -1874,8 +1865,8 @@ XPopUpWindow ()
   UNBLOCK_INPUT ();
 }
 
-spacecheck (mindex, rindex, windex, minfreespace)
-     register int mindex, rindex, windex, minfreespace;
+int
+spacecheck (register int mindex, register int rindex, register int windex, register int minfreespace)
 {
   if ((rindex > mindex) || (windex > mindex))
     {
@@ -1897,9 +1888,8 @@ spacecheck (mindex, rindex, windex, minfreespace)
   return -1;
 }
 
-loadxrepbuffer (p_xrep, p_buffer)
-     register XEvent *p_xrep;
-     register XREPBUFFER *p_buffer;
+void
+loadxrepbuffer (register XEvent *p_xrep, register XREPBUFFER *p_buffer)
 {
   p_buffer->xrep[p_buffer->windex] = *p_xrep;
   if (p_buffer->windex == p_buffer->mindex)
@@ -1908,9 +1898,8 @@ loadxrepbuffer (p_xrep, p_buffer)
     p_buffer->windex++;
 }
 
-unloadxrepbuffer (p_xrep, p_buffer)
-     register XEvent *p_xrep;
-     register XREPBUFFER *p_buffer;
+int
+unloadxrepbuffer (register XEvent *p_xrep, register XREPBUFFER *p_buffer)
 {
   if (p_buffer->windex == p_buffer->rindex)
     return -1;
@@ -1922,7 +1911,8 @@ unloadxrepbuffer (p_xrep, p_buffer)
   return 0;
 }
 
-fixxrepbuffer ()
+void
+fixxrepbuffer (void)
 {
   Xxrepbuffer.mindex = XREPBUFSIZE - 1;
   Xxrepbuffer.windex = 0;

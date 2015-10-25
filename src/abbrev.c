@@ -80,15 +80,14 @@ int last_abbrev_point;
 
 DEFUN ("make-abbrev-table", Fmake_abbrev_table, Smake_abbrev_table, 0, 0, 0,
   "Create a new, empty abbrev table object.")
-  ()
+  (void)
 {
   return Fmake_vector (make_number (59), make_number (0));
 }
 
 DEFUN ("clear-abbrev-table", Fclear_abbrev_table, Sclear_abbrev_table, 1, 1, 0,
   "Undefine all abbrevs in abbrev table TABLE, leaving it empty.")
-  (table)
-     Lisp_Object table;
+  (Lisp_Object table)
 {
   int i, size;
 
@@ -104,8 +103,7 @@ DEFUN ("define-abbrev", Fdefine_abbrev, Sdefine_abbrev, 3, 5, 0,
   "Define an abbrev in TABLE named NAME, to expand to EXPANSION or call HOOK.\n\
 NAME and EXPANSION are strings.  HOOK is a function or nil.\n\
 To undefine an abbrev, define it with EXPANSION = nil")
-  (table, name, expansion, hook, count)
-     Lisp_Object table, name, expansion, hook, count;
+  (Lisp_Object table, Lisp_Object name, Lisp_Object expansion, Lisp_Object hook, Lisp_Object count)
 {
   Lisp_Object sym, oexp, ohook, tem;
   CHECK_VECTOR (table, 0);
@@ -139,8 +137,7 @@ To undefine an abbrev, define it with EXPANSION = nil")
 DEFUN ("define-global-abbrev", Fdefine_global_abbrev, Sdefine_global_abbrev, 2, 2,
   "sDefine global abbrev: \nsExpansion for %s: ",
   "Define ABBREV as a global abbreviation for EXPANSION.")
-  (name, expansion)
-     Lisp_Object name, expansion;
+  (Lisp_Object name, Lisp_Object expansion)
 {
   Fdefine_abbrev (Vglobal_abbrev_table, Fdowncase (name),
 		  expansion, Qnil, make_number (0));
@@ -150,8 +147,7 @@ DEFUN ("define-global-abbrev", Fdefine_global_abbrev, Sdefine_global_abbrev, 2, 
 DEFUN ("define-mode-abbrev", Fdefine_mode_abbrev, Sdefine_mode_abbrev, 2, 2,
   "sDefine mode abbrev: \nsExpansion for %s: ",
   "Define ABBREV as a mode-specific abbreviation for EXPANSION.")
-  (name, expansion)
-     Lisp_Object name, expansion;
+  (Lisp_Object name, Lisp_Object expansion)
 {
   if (NILP (current_buffer->abbrev_table))
     error ("Major mode has no abbrev table");
@@ -166,8 +162,7 @@ DEFUN ("abbrev-symbol", Fabbrev_symbol, Sabbrev_symbol, 1, 2, 0,
 Value is nil if that abbrev is not defined.\n\
 Optional second arg TABLE is abbrev table to look it up in.\n\
 Default is try buffer's mode-specific abbrev table, then global table.")
-  (abbrev, table)
-     Lisp_Object abbrev, table;
+  (Lisp_Object abbrev, Lisp_Object table)
 {
   Lisp_Object sym;
   CHECK_STRING (abbrev, 0);
@@ -190,8 +185,7 @@ Default is try buffer's mode-specific abbrev table, then global table.")
 DEFUN ("abbrev-expansion", Fabbrev_expansion, Sabbrev_expansion, 1, 2, 0,
   "Return the string that ABBREV expands into in the current buffer.\n\
 Optionally specify an abbrev table; then ABBREV is looked up in that table only.")
-  (abbrev, table)
-     Lisp_Object abbrev, table;
+  (Lisp_Object abbrev, Lisp_Object table)
 {
   Lisp_Object sym;
   sym = Fabbrev_symbol (abbrev, table);
@@ -206,7 +200,7 @@ DEFUN ("expand-abbrev", Fexpand_abbrev, Sexpand_abbrev, 0, 0, "",
   "Expand the abbrev before point, if it is an abbrev.\n\
 Effective when explicitly called even when abbrev-mode is not enabled.\n\
 Returns t if expansion took place.")
-  ()
+  (void)
 {
   char buffer[200];
   register char *p = buffer;
@@ -314,7 +308,7 @@ Returns t if expansion took place.")
 
 DEFUN ("unexpand-abbrev", Funexpand_abbrev, Sunexpand_abbrev, 0, 0, "",
   "Undo the expansion of the last abbrev that expanded.")
-  ()
+  (void)
 {
   int opoint = point;
   int adjust = 0;
@@ -340,8 +334,7 @@ DEFUN ("unexpand-abbrev", Funexpand_abbrev, Sunexpand_abbrev, 0, 0, "",
 }
 
 static void
-write_abbrev (sym, stream)
-     Lisp_Object sym, stream;
+write_abbrev (Lisp_Object sym, Lisp_Object stream)
 {
   Lisp_Object name;
   if (NILP (XSYMBOL (sym)->value))
@@ -359,8 +352,7 @@ write_abbrev (sym, stream)
 }
 
 static void
-describe_abbrev (sym, stream)
-     Lisp_Object sym, stream;
+describe_abbrev (Lisp_Object sym, Lisp_Object stream)
 {
   Lisp_Object one;
 
@@ -389,8 +381,7 @@ If 2nd arg READABLE is non-nil, a readable description is inserted.\n\
 Otherwise description is an expression,\n\
 a call to define-abbrev-table which would\n\
 define NAME exactly as it is currently defined.")
-  (name, readable)
-     Lisp_Object name, readable;
+  (Lisp_Object name, Lisp_Object readable)
 {
   Lisp_Object table;
   Lisp_Object stream;
@@ -426,8 +417,7 @@ DEFUN ("define-abbrev-table", Fdefine_abbrev_table, Sdefine_abbrev_table,
   "Define TABNAME (a symbol) as an abbrev table name.\n\
 Define abbrevs in it according to DEFINITIONS, a list of elements\n\
 of the form (ABBREVNAME EXPANSION HOOK USECOUNT).")
-  (tabname, defns)
-     Lisp_Object tabname, defns;
+  (Lisp_Object tabname, Lisp_Object defns)
 {
   Lisp_Object name, exp, hook, count;
   Lisp_Object table, elt;
@@ -459,7 +449,7 @@ of the form (ABBREVNAME EXPANSION HOOK USECOUNT).")
 }
 
 void
-syms_of_abbrev ()
+syms_of_abbrev (void)
 {
   DEFVAR_LISP ("abbrev-table-name-list", &Vabbrev_table_name_list,
     "List of symbols whose values are  abbrev tables.");

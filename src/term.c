@@ -267,8 +267,7 @@ update_end (void)
 }
 
 void
-set_terminal_window (size)
-     int size;
+set_terminal_window (int size)
 {
   if (set_terminal_window_hook)
     {
@@ -282,8 +281,7 @@ set_terminal_window (size)
 }
 
 void
-set_scroll_region (start, stop)
-     int start, stop;
+set_scroll_region (int start, int stop)
 {
   char *buf;
   if (TS_set_scroll_region)
@@ -389,8 +387,7 @@ highlight_if_desired (void)
    at vertical position vpos.  */
 
 void
-write_standout_marker (flag, vpos)
-     int flag, vpos;
+write_standout_marker (int flag, int vpos)
 {
   if (flag || (TS_end_standout_mode && !TF_teleray && !se_is_so
 	       && !(TF_xs && TN_standout_width == 0)))
@@ -407,9 +404,7 @@ write_standout_marker (flag, vpos)
    and not change whether it is highlighted.  */
 
 void
-reassert_line_highlight (highlight, vpos)
-     int highlight;
-     int vpos;
+reassert_line_highlight (int highlight, int vpos)
 {
   if (reassert_line_highlight_hook)
     {
@@ -429,8 +424,7 @@ reassert_line_highlight (highlight, vpos)
    and change whether it is highlighted.  */
 
 void
-change_line_highlight (new_highlight, vpos, first_unused_hpos)
-     int new_highlight, vpos, first_unused_hpos;
+change_line_highlight (int new_highlight, int vpos, int first_unused_hpos)
 {
   standout_requested = new_highlight;
   if (change_line_highlight_hook)
@@ -562,8 +556,7 @@ clear_screen (void)
    Note that the cursor may be moved.  */
 
 void
-clear_end_of_line (first_unused_hpos)
-     int first_unused_hpos;
+clear_end_of_line (int first_unused_hpos)
 {
   if (TN_standout_width == 0 && curX == 0 && chars_wasted[curY] != 0)
     output_chars (" ", 1);
@@ -577,8 +570,7 @@ clear_end_of_line (first_unused_hpos)
    Note that the cursor may be moved, on terminals lacking a `ce' string.  */
 
 void
-clear_end_of_line_raw (first_unused_hpos)
-     int first_unused_hpos;
+clear_end_of_line_raw (int first_unused_hpos)
 {
   register int i;
   first_unused_hpos += chars_wasted[curY] & 077;
@@ -611,9 +603,7 @@ clear_end_of_line_raw (first_unused_hpos)
 }
 
 void
-output_chars (string, len)
-     register char *string;
-     int len;
+output_chars (register char *string, int len)
 {
   register char *p;
   register int n;
@@ -696,9 +686,7 @@ output_chars (string, len)
 /* If start is zero, insert blanks instead of a string at start */
 
 void
-insert_chars (start, len)
-     register char *start;
-     int len;
+insert_chars (register char *start, int len)
 {
   register char *buf;
   register int c;
@@ -750,8 +738,7 @@ insert_chars (start, len)
 }
 
 void
-delete_chars (n)
-     register int n;
+delete_chars (register int n)
 {
   char *buf;
   register int i;
@@ -788,8 +775,7 @@ delete_chars (n)
 /* Insert N lines at vpos VPOS.  If N is negative, delete -N lines.  */
 
 void
-ins_del_lines (vpos, n)
-     int vpos, n;
+ins_del_lines (int vpos, int n)
 {
   char *multi = n > 0 ? TS_ins_multi_lines : TS_del_multi_lines;
   char *single = n > 0 ? TS_ins_line : TS_del_line;
@@ -875,8 +861,7 @@ ins_del_lines (vpos, n)
 /* Compute cost of sending "str", in characters,
    not counting any line-dependent padding.  */
 int
-string_cost (str)
-     char *str;
+string_cost (char *str)
 {
   cost = 0;
   if (str)
@@ -887,8 +872,7 @@ string_cost (str)
 /* Compute cost of sending "str", in characters,
    counting any line-dependent padding at one line.  */
 int
-string_cost_one_line (str)
-     char *str;
+string_cost_one_line (char *str)
 {
   cost = 0;
   if (str)
@@ -899,8 +883,7 @@ string_cost_one_line (str)
 /* Compute per line amount of line-dependent padding,
    in tenths of characters.  */
 int
-per_line_cost (str)
-     register char *str;
+per_line_cost (register char *str)
 {
   cost = 0;
   if (str)
@@ -1023,8 +1006,7 @@ calculate_costs (void)
 }
 
 void
-term_init (terminal_type)
-     char *terminal_type;
+term_init (char *terminal_type)
 {
   char *area;
   char **address = &area;

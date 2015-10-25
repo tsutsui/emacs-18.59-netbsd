@@ -32,8 +32,7 @@ void adjust_markers (int, int, int);
 void adjust_markers2 (int, int, int, int);
 
 void
-move_gap (pos)
-     int pos;
+move_gap (int pos)
 {
   if (pos < GPT)
     gap_left (pos, 0);
@@ -45,9 +44,7 @@ move_gap (pos)
    If NEWGAP is nonzero, then don't update beg_unchanged and end_unchanged.  */
 
 void
-gap_left (pos, newgap)
-     register int pos;
-     int newgap;
+gap_left (register int pos, int newgap)
 {
   register unsigned char *to, *from;
   register int i;
@@ -109,8 +106,7 @@ gap_left (pos, newgap)
 }
 
 void
-gap_right (pos)
-     register int pos;
+gap_right (register int pos)
 {
   register unsigned char *to, *from;
   register int i;
@@ -172,8 +168,7 @@ gap_right (pos)
    and then adjusted by `amount'.  */
 
 void
-adjust_markers (from, to, amount)
-     register int from, to, amount;
+adjust_markers (register int from, register int to, register int amount)
 {
   Lisp_Object marker;
   register struct Lisp_Marker *m;
@@ -205,8 +200,7 @@ adjust_markers (from, to, amount)
 /* Make the gap INCREMENT characters longer.  */
 
 void
-make_gap (increment)
-     int increment;
+make_gap (int increment)
 {
   unsigned char *memory;
   Lisp_Object tem;
@@ -244,8 +238,7 @@ make_gap (increment)
 /* Insert the character c before point */
 
 void
-insert_char (c)
-     const unsigned char c;
+insert_char (const unsigned char c)
 {
   insert (&c, 1);
 }
@@ -253,8 +246,7 @@ insert_char (c)
 /* Insert the null-terminated string s before point */
 
 void
-InsStr (s)
-     char *s;
+InsStr (char *s)
 {
   insert (s, strlen (s));
 }
@@ -264,9 +256,7 @@ InsStr (s)
    prepare_to_modify_buffer could relocate the string.  */
 
 void
-insert (string, length)
-     register const unsigned char *string;
-     register int length;
+insert (register const unsigned char *string, register int length)
 {
   register Lisp_Object temp;
 
@@ -303,9 +293,7 @@ insert (string, length)
    before we bcopy the stuff into the buffer, and relocate the string
    without insert noticing.  */
 void
-insert_from_string (string, pos, length)
-     Lisp_Object string;
-     register int pos, length;
+insert_from_string (Lisp_Object string, register int pos, register int length)
 {
   register Lisp_Object temp;
   struct gcpro gcpro1;
@@ -345,9 +333,7 @@ insert_from_string (string, pos, length)
    since gc could happen and relocate it.  */
 
 void
-insert_before_markers (string, length)
-     const unsigned char *string;
-     register int length;
+insert_before_markers (const unsigned char *string, register int length)
 {
   register int opoint = point;
   insert (string, length);
@@ -357,9 +343,7 @@ insert_before_markers (string, length)
 /* Insert part of a Lisp string, relocating markers after.  */
 
 void
-insert_from_string_before_markers (string, pos, length)
-     Lisp_Object string;
-     register int pos, length;
+insert_from_string_before_markers (Lisp_Object string, register int pos, register int length)
 {
   register int opoint = point;
   insert_from_string (string, pos, length);
@@ -370,8 +354,7 @@ insert_from_string_before_markers (string, pos, length)
   from `from' up to (but not incl) `to' */
 
 void
-del_range (from, to)
-     register int from, to;
+del_range (register int from, register int to)
 {
   register int numdel;
 
@@ -419,8 +402,7 @@ del_range (from, to)
 }
 
 void
-modify_region (start, end)
-     int start, end;
+modify_region (int start, int end)
 {
   prepare_to_modify_buffer ();
   if (start - 1 < beg_unchanged || unchanged_modified == MODIFF)
@@ -432,7 +414,7 @@ modify_region (start, end)
 }
 
 void
-prepare_to_modify_buffer ()
+prepare_to_modify_buffer (void)
 {
   if (!NILP (current_buffer->read_only))
     Fbarf_if_buffer_read_only();

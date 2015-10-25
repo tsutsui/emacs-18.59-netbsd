@@ -61,13 +61,7 @@ int *ILncost;
 int *DLncost;
 
 void
-scrolling_1 (window_size, unchanged_at_top, unchanged_at_bottom,
-	     draw_cost, old_hash, new_hash, free_at_end)
-     int window_size, unchanged_at_top, unchanged_at_bottom;
-     int *draw_cost;
-     int *old_hash;
-     int *new_hash;
-     int free_at_end;
+scrolling_1 (int window_size, int unchanged_at_top, int unchanged_at_bottom, int *draw_cost, int *old_hash, int *new_hash, int free_at_end)
 {
   struct matrix_elt *matrix;
   matrix = ((struct matrix_elt *)
@@ -97,16 +91,8 @@ scrolling_1 (window_size, unchanged_at_top, unchanged_at_bottom,
    new contents appears.  */
 
 void
-calculate_scrolling (matrix, window_size, lines_below,
-		     draw_cost, old_hash, new_hash,
-		     free_at_end)
-     /* matrix is of size window_size + 1 on each side.  */
-     struct matrix_elt *matrix;
-     int window_size;
-     int *draw_cost;
-     int *old_hash;
-     int *new_hash;
-     int free_at_end;
+calculate_scrolling (struct matrix_elt *matrix, int window_size, int lines_below, int *draw_cost, int *old_hash, int *new_hash, int free_at_end)
+/* matrix is of size window_size + 1 on each side.  */
 {
   register int i, j;
   register struct matrix_elt *p, *p1;
@@ -231,10 +217,7 @@ calculate_scrolling (matrix, window_size, lines_below,
  Updates the contents of current_screen to record what was done. */
 
 void
-do_scrolling (matrix, window_size, unchanged_at_top)
-     struct matrix_elt *matrix;
-     int window_size;
-     int unchanged_at_top;
+do_scrolling (struct matrix_elt *matrix, int window_size, int unchanged_at_top)
 {
   register struct matrix_elt *p;
   register int i, j;
@@ -336,9 +319,7 @@ do_scrolling (matrix, window_size, unchanged_at_top)
    avoiding redrawing such a line will have little weight.  */
 
 int
-scrolling_max_lines_saved (start, end, oldhash, newhash, cost)
-     int start, end;
-     int *oldhash, *newhash, *cost;
+scrolling_max_lines_saved (int start, int end, int *oldhash, int *newhash, int *cost)
 {
   struct { int hash; int count; } lines[01000];
   register int i, h;
@@ -381,8 +362,7 @@ scrolling_max_lines_saved (start, end, oldhash, newhash, cost)
    scroll_screen_lines to perform this scrolling.  */
 
 int
-scroll_cost (from, to, amount)
-     int from, to, amount;
+scroll_cost (int from, int to, int amount)
 {
   /* Compute how many lines, at bottom of screen,
      will not be involved in actual motion.  */
@@ -436,12 +416,7 @@ scroll_cost (from, to, amount)
  */
 
 void
-CalcIDCosts (ins_line_string, multi_ins_string,
-	     del_line_string, multi_del_string,
-	     setup_string, cleanup_string)
-     char *ins_line_string, *multi_ins_string;
-     char *del_line_string, *multi_del_string;
-     char *setup_string, *cleanup_string;
+CalcIDCosts (char *ins_line_string, char *multi_ins_string, char *del_line_string, char *multi_del_string, char *setup_string, char *cleanup_string)
 {
   /* Discourage long scrolls slightly on fast lines.
      This says that scrolling nearly the full length of the screen
@@ -472,13 +447,7 @@ CalcIDCosts (ins_line_string, multi_ins_string,
 }
 
 void
-CalcIDCosts1 (one_line_string, multi_string,
-	      setup_string, cleanup_string,
-	      costvec, ncostvec, extra)
-     char *one_line_string, *multi_string;
-     char *setup_string, *cleanup_string;
-     int *costvec, *ncostvec;
-     int extra;
+CalcIDCosts1 (char *one_line_string, char *multi_string, char *setup_string, char *cleanup_string, int *costvec, int *ncostvec, int extra)
 {
   if (calculate_costs_hook)
     (*calculate_costs_hook) (extra, costvec, ncostvec);
@@ -500,10 +469,7 @@ CalcIDCosts1 (one_line_string, multi_string,
 
 /* Calculate the line ID overhead and multiply factor values */
 void
-CalcLID (ov1, pf1, ovn, pfn, ov, mf)
-     int ov1, ovn;
-     int pf1, pfn;
-     register int *ov, *mf;
+CalcLID (int ov1, int pf1, int ovn, int pfn, register int *ov, register int *mf)
 {
   register int i;
   register int insert_overhead = ov1 * 10 + screen_height * pf1;

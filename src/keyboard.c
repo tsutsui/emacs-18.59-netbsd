@@ -271,8 +271,7 @@ static char *echoptr;
    Also start echoing.  */
 
 void
-echo_prompt (str)
-     char *str;
+echo_prompt (char *str)
 {
   int len = strlen (str);
   if (len > sizeof echobuf - 4)
@@ -287,8 +286,7 @@ echo_prompt (str)
    if echoing is going on.  */
 
 void
-echo_char (c)
-     int c;
+echo_char (int c)
 {
   if (immediate_echo)
     {
@@ -318,7 +316,7 @@ echo_char (c)
    so that it serves as a mini-prompt for the very next character.  */
 
 void
-echo_dash ()
+echo_dash (void)
 {
   if (!immediate_echo && echoptr == echobuf)
     return;
@@ -335,7 +333,7 @@ echo_dash ()
    doing so.  */
 
 void
-echo ()
+echo (void)
 {
   if (!immediate_echo)
     {
@@ -358,7 +356,7 @@ echo ()
 /* Turn off echoing, for the start of a new command.  */
 
 void
-cancel_echoing ()
+cancel_echoing (void)
 {
   immediate_echo = 0;
   echoptr = echobuf;
@@ -366,7 +364,7 @@ cancel_echoing ()
 
 /* When an auto-save happens, record the "time", and don't do again soon.  */
 void
-record_auto_save ()
+record_auto_save (void)
 {
   last_auto_save = num_input_chars;
 }
@@ -379,7 +377,7 @@ Do (throw 'exit nil) within the command loop to make this function return,\n\
 or (throw 'exit t) to make this function signal an error.\n\
 This function is called by the editor initialization\n\
 to begin editing.")
-  ()
+  (void)
 {
   int count = specpdl_ptr - specpdl;
 
@@ -398,7 +396,7 @@ to begin editing.")
 }
 
 Lisp_Object
-recursive_edit_1 ()
+recursive_edit_1 (void)
 {
   int count = specpdl_ptr - specpdl;
   Lisp_Object val;
@@ -418,8 +416,7 @@ recursive_edit_1 ()
 }
 
 Lisp_Object
-recursive_edit_unwind (buffer)
-     Lisp_Object buffer;
+recursive_edit_unwind (Lisp_Object buffer)
 {
   if (!NILP (buffer))
     Fset_buffer (buffer);
@@ -429,8 +426,7 @@ recursive_edit_unwind (buffer)
 }
 
 Lisp_Object
-cmd_error (data)
-     Lisp_Object data;
+cmd_error (Lisp_Object data)
 {
   Lisp_Object errmsg, tail, errname, file_error;
   struct gcpro gcpro1;
@@ -510,7 +506,7 @@ cmd_error (data)
    It returns nil to exit recursive edit, t to abort it.  */
 
 Lisp_Object
-command_loop ()
+command_loop (void)
 {
   if (command_loop_level > 0 || minibuf_level > 0)
     {
@@ -534,7 +530,7 @@ command_loop ()
    returned due to end of file (or end of kbd macro).  */
 
 Lisp_Object
-command_loop_2 ()
+command_loop_2 (void)
 {
   register Lisp_Object val;
   do
@@ -544,13 +540,13 @@ command_loop_2 ()
 }
 
 Lisp_Object
-top_level_2 ()
+top_level_2 (void)
 {
   return Feval (Vtop_level);
 }
 
 Lisp_Object
-top_level_1 ()
+top_level_1 (void)
 {
   /* On entry to the outer level, run the startup file */
   if (!NILP (Vtop_level))
@@ -564,14 +560,14 @@ top_level_1 ()
 
 DEFUN ("top-level", Ftop_level, Stop_level, 0, 0, "",
   "Exit all recursive editing levels.")
-  ()
+  (void)
 {
   Fthrow (Qtop_level, Qnil);
 }
 
 DEFUN ("exit-recursive-edit", Fexit_recursive_edit, Sexit_recursive_edit, 0, 0, "",
   "Exit from the innermost recursive edit or minibuffer.")
-  ()
+  (void)
 {
   if (command_loop_level > 0 || minibuf_level > 0)
     Fthrow (Qexit, Qnil);
@@ -580,7 +576,7 @@ DEFUN ("exit-recursive-edit", Fexit_recursive_edit, Sexit_recursive_edit, 0, 0, 
 
 DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 0, "",
   "Abort the command that requested this recursive edit or minibuffer input.")
-  ()
+  (void)
 {
   if (command_loop_level > 0 || minibuf_level > 0)
     Fthrow (Qexit, Qt);
@@ -591,7 +587,7 @@ DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 
  sans error-handling encapsulation */
 
 Lisp_Object
-command_loop_1 ()
+command_loop_1 (void)
 {
   Lisp_Object cmd;
   int lose;
@@ -807,7 +803,7 @@ int echo_now;
 
 /* Alarm interrupt calls this and requests echoing at earliest safe time. */
 void
-request_echo ()
+request_echo (void)
 {
   int old_errno = errno;
 
@@ -853,7 +849,8 @@ int polling_for_input;
 /* Handle an alarm once each second and read pending input
    so as to handle a C-g if it comces in.  */
 
-input_poll_signal ()
+int
+input_poll_signal (void)
 {
   int junk;
 
@@ -869,7 +866,7 @@ input_poll_signal ()
    This function is called unconditionally from various places.  */
 
 void
-start_polling ()
+start_polling (void)
 {
 #ifdef POLL_FOR_INPUT
   if (read_socket_hook)
@@ -888,7 +885,7 @@ start_polling ()
 /* Turn off polling.  */
 
 void
-stop_polling ()
+stop_polling (void)
 {
 #ifdef POLL_FOR_INPUT
   if (read_socket_hook)
@@ -909,8 +906,7 @@ stop_polling ()
    1 means do both.  */
 
 int
-read_command_char (commandflag)
-     int commandflag;
+read_command_char (int commandflag)
 {
   register int c;
   int alarmtime;
@@ -1071,8 +1067,7 @@ read_command_char (commandflag)
 }
 
 Lisp_Object
-print_help (object)
-     Lisp_Object object;
+print_help (Lisp_Object object)
 {
   Fprinc (object, Qnil);
   return Qnil;
@@ -1087,8 +1082,7 @@ int stop_character;
 
 /* Store a character obtained at interrupt level into kbd_buffer, fifo */
 void
-kbd_buffer_store_char (c)
-     register int c;
+kbd_buffer_store_char (register int c)
 {
   c &= 0377;
 
@@ -1118,7 +1112,7 @@ kbd_buffer_store_char (c)
 }
 
 int
-kbd_buffer_read_command_char ()
+kbd_buffer_read_command_char (void)
 {
   register int c;
 
@@ -1182,7 +1176,7 @@ kbd_buffer_read_command_char ()
 /* Force an attempt to read input regardless of what FIONREAD says.  */
 
 void
-force_input_read ()
+force_input_read (void)
 {
   force_input = 1;
   detect_input_pending ();
@@ -1194,8 +1188,7 @@ force_input_read ()
    even if FIONREAD does not exist.  */
 
 static void
-get_input_pending (addr)
-     int *addr;
+get_input_pending (int *addr)
 {
 #ifdef VMS
   /* On VMS, we always have something in the buffer
@@ -1246,7 +1239,7 @@ get_input_pending (addr)
    if possible, so this function has nothing to do except
    on systems that don't have SIGIO.  And they also don't have FIONREAD.  */
 void
-consume_available_input ()
+consume_available_input (void)
 {
 #ifdef SIGIO
   if (!interrupt_input || interrupts_deferred)
@@ -1266,8 +1259,7 @@ consume_available_input ()
    is interrupt-driven.  */
 
 static void
-read_avail_input (nread)
-     int nread;
+read_avail_input (int nread)
 {
   /* This function is not used on VMS.  */
 #ifndef VMS
@@ -1352,7 +1344,7 @@ read_avail_input (nread)
    buffer before we enabled interrupts, fake an interrupt for them.  */
 
 void
-gobble_input ()
+gobble_input (void)
 {
   int nread;
   if (interrupt_input)
@@ -1369,8 +1361,7 @@ gobble_input ()
 }
 
 void
-input_available_signal (signo)
-     int signo;
+input_available_signal (int signo)
 {
   unsigned char buf[256 * BUFFER_SIZE_FACTOR];
   int nread;
@@ -1446,8 +1437,7 @@ input_available_signal (signo)
    times we know that no redisplay is required.  */
 
 int
-fast_read_one_key (keybuf)
-     char *keybuf;
+fast_read_one_key (char *keybuf)
 {
   register Lisp_Object map;
   register int c;
@@ -1509,11 +1499,7 @@ fast_read_one_key (keybuf)
  (just for speedup).  */
 
 int
-read_key_sequence (keybuf, bufsize, prompt, nodisplay)
-     char *keybuf;
-     int bufsize;
-     unsigned char *prompt;
-     int nodisplay;
+read_key_sequence (char *keybuf, int bufsize, unsigned char *prompt, int nodisplay)
 {
   register int i;
   Lisp_Object nextlocal, nextglobal;
@@ -1642,8 +1628,7 @@ starting from the current local and global keymaps.\n\
 A C-g typed while in this function is treated like\n\
 any other character, and quit-flag is not set.\n\
 One arg, PROMPT, a prompt string or  nil, meaning do not prompt specially.")
-  (prompt)
-     Lisp_Object prompt;
+  (Lisp_Object prompt)
 {
   char keybuf[30];
   register int i;
@@ -1665,8 +1650,7 @@ CMD must be a symbol that satisfies the `commandp' predicate.\n\
 Optional second arg RECORD-FLAG non-nil\n\
 means unconditionally put this command in the command-history.\n\
 Otherwise, this is done only if an arg is read using the minibuffer.")
-     (cmd, record)
-     Lisp_Object cmd, record;
+     (Lisp_Object cmd, Lisp_Object record)
 {
   register Lisp_Object final;
   register Lisp_Object tem;
@@ -1725,8 +1709,7 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
 DEFUN ("execute-extended-command", Fexecute_extended_command, Sexecute_extended_command,
   1, 1, "P",
   "Read function name, then read its arguments and call it.")
-  (prefixarg)
-     Lisp_Object prefixarg;
+  (Lisp_Object prefixarg)
 {
   Lisp_Object function;
   char buf[40];
@@ -1775,7 +1758,7 @@ DEFUN ("execute-extended-command", Fexecute_extended_command, Sexecute_extended_
 }
 
 int
-detect_input_pending ()
+detect_input_pending (void)
 {
   if (!input_pending)
     get_input_pending (&input_pending);
@@ -1787,7 +1770,7 @@ detect_input_pending ()
    It cases the next call to detect_input_pending to recompute input_pending.
    So calling this function unnecessarily can't do any harm.  */
 void
-clear_input_pending ()
+clear_input_pending (void)
 {
   input_pending = 0;
 }
@@ -1795,7 +1778,7 @@ clear_input_pending ()
 DEFUN ("input-pending-p", Finput_pending_p, Sinput_pending_p, 0, 0, 0,
   "T if command input is currently available with no waiting.\n\
 Actually, the value is NIL only if we can be sure that no input is available.")
-  ()
+  (void)
 {
   if (unread_command_char >= 0) return Qt;
 
@@ -1804,7 +1787,7 @@ Actually, the value is NIL only if we can be sure that no input is available.")
 
 DEFUN ("recent-keys", Frecent_keys, Srecent_keys, 0, 0, 0,
   "Return string of last 100 chars read from terminal.")
-  ()
+  (void)
 {
   Lisp_Object val;
   if (total_keys < sizeof recent_keys)
@@ -1822,14 +1805,14 @@ DEFUN ("recent-keys", Frecent_keys, Srecent_keys, 0, 0, 0,
 
 DEFUN ("this-command-keys", Fthis_command_keys, Sthis_command_keys, 0, 0, 0,
   "Return string of the keystrokes that invoked this command.")
-  ()
+  (void)
 {
   return make_string (this_command_keys, this_command_key_count);
 }
 
 DEFUN ("recursion-depth", Frecursion_depth, Srecursion_depth, 0, 0, 0,
   "Return the current depth in recursive edits.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XFASTINT (temp) = command_loop_level + minibuf_level;
@@ -1840,8 +1823,7 @@ DEFUN ("open-dribble-file", Fopen_dribble_file, Sopen_dribble_file, 1, 1,
   "FOpen dribble file: ",
   "Start writing all keyboard characters to FILE.\n\
 Use nil as an argument to close the dribble file.")
-  (file)
-     Lisp_Object file;
+  (Lisp_Object file)
 {
   if (dribble != 0)
     fclose (dribble);
@@ -1857,7 +1839,7 @@ Use nil as an argument to close the dribble file.")
 DEFUN ("discard-input", Fdiscard_input, Sdiscard_input, 0, 0, 0,
   "Discard the contents of the terminal input buffer.\n\
 Also flush any kbd macro definition in progress.")
-  ()
+  (void)
 {
   defining_kbd_macro = 0;
   update_mode_lines++;
@@ -1880,8 +1862,7 @@ Before suspending, if `suspend-hook' is bound and value is non-nil\n\
 call the value as a function of no args.  Don't suspend if it returns non-nil.\n\
 Otherwise, suspend normally and after resumption call\n\
 `suspend-resume-hook' if that is bound and non-nil.")
-  (stuffstring)
-     Lisp_Object stuffstring;
+  (Lisp_Object stuffstring)
 {
   register Lisp_Object tem;
   int count = specpdl_ptr - specpdl;
@@ -1933,8 +1914,7 @@ Otherwise, suspend normally and after resumption call\n\
    Then in any case stuff anthing Emacs has read ahead and not used.  */
 
 void
-stuff_buffered_input (stuffstring)
-     Lisp_Object stuffstring;
+stuff_buffered_input (Lisp_Object stuffstring)
 {
   register unsigned char *p;
 
@@ -1963,8 +1943,7 @@ stuff_buffered_input (stuffstring)
 }
 
 void
-set_waiting_for_input (word_to_clear)
-     time_t *word_to_clear;
+set_waiting_for_input (time_t *word_to_clear)
 {
   input_available_clear_word = word_to_clear;
 
@@ -1988,7 +1967,7 @@ set_waiting_for_input (word_to_clear)
 }
 
 void
-clear_waiting_for_input ()
+clear_waiting_for_input (void)
 {
   /* Tell interrupt_signal not to throw back to read_command_char,  */
   waiting_for_input = 0;
@@ -2009,7 +1988,7 @@ clear_waiting_for_input ()
  If  quit-flag  is already non-nil, it stops the job right away.  */
 
 void
-interrupt_signal ()
+interrupt_signal (void)
 {
   char c;
   /* Must preserve main program's value of errno.  */
@@ -2097,7 +2076,7 @@ interrupt_signal ()
 /* Handle a C-g by making read_command_char return C-g.  */
 
 void
-quit_throw_to_read_command_char ()
+quit_throw_to_read_command_char (void)
 {
   quit_error_check ();
   sigfree ();
@@ -2119,8 +2098,7 @@ Second arg non-nil means use ^S/^Q flow control for output to terminal\n\
  (no effect except in CBREAK mode).\n\
 Optional third arg non-nil specifies character to use for quitting.\n\n\
 Note that the arguments will change incompatibly in version 19.")
-  (interrupt, flow, quit)
-     Lisp_Object interrupt, flow, quit;
+  (Lisp_Object interrupt, Lisp_Object flow, Lisp_Object quit)
 {
   reset_sys_modes ();
 #ifdef SIGIO
@@ -2147,7 +2125,7 @@ Note that the arguments will change incompatibly in version 19.")
 }
 
 void
-init_keyboard ()
+init_keyboard (void)
 {
   this_command_keys_size = 40;
   this_command_keys = (unsigned char *) xmalloc (40);
@@ -2198,7 +2176,7 @@ init_keyboard ()
 }
 
 void
-syms_of_keyboard ()
+syms_of_keyboard (void)
 {
   Qself_insert_command = intern ("self-insert-command");
   staticpro (&Qself_insert_command);
@@ -2302,7 +2280,7 @@ If string is of length N, character codes N and up are untranslated.");
 }
 
 void
-keys_of_keyboard ()
+keys_of_keyboard (void)
 {
   ndefkey (Vglobal_map, Ctl ('Z'), "suspend-emacs");
   ndefkey (Vctl_x_map, Ctl ('Z'), "suspend-emacs");

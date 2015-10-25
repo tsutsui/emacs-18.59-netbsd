@@ -33,8 +33,7 @@ void record_first_change (void);
    because we don't need to record the contents.)  */
 
 void
-record_insert (beg, length)
-     Lisp_Object beg, length;
+record_insert (Lisp_Object beg, Lisp_Object length)
 {
   Lisp_Object lbeg, lend;
 
@@ -72,8 +71,7 @@ record_insert (beg, length)
    for LENGTH characters at location BEG.  */
 
 void
-record_delete (beg, length)
-     int beg, length;
+record_delete (int beg, int length)
 {
   Lisp_Object lbeg, llength, lend, sbeg;
 
@@ -102,8 +100,7 @@ record_delete (beg, length)
    The replacement does not change the number of characters.  */
 
 void
-record_change (beg, length)
-     int beg, length;
+record_change (int beg, int length)
 {
   record_delete (beg, length);
   record_insert (beg, length);
@@ -114,7 +111,7 @@ record_change (beg, length)
    we can tell whether it is obsolete because the file was saved again.  */
 
 void
-record_first_change ()
+record_first_change (void)
 {
   Lisp_Object high, low;
   XFASTINT (high) = (current_buffer->modtime >> 16) & 0xffff;
@@ -126,7 +123,7 @@ DEFUN ("undo-boundary", Fundo_boundary, Sundo_boundary, 0, 0, 0,
   "Mark a boundary between units of undo.\n\
 An undo command will stop at this point,\n\
 but another undo command will undo to the previous boundary.")
-  ()
+  (void)
 {
   Lisp_Object tem;
   if (EQ (current_buffer->undo_list, Qt))
@@ -144,9 +141,7 @@ but another undo command will undo to the previous boundary.")
    undo-high-threshold.  */
 
 Lisp_Object
-truncate_undo_list (list, minsize, maxsize)
-     Lisp_Object list;
-     int minsize, maxsize;
+truncate_undo_list (Lisp_Object list, int minsize, int maxsize)
 {
   Lisp_Object prev, next, save_prev;
   int size_so_far = 0;
@@ -204,8 +199,7 @@ truncate_undo_list (list, minsize, maxsize)
 DEFUN ("primitive-undo", Fprimitive_undo, Sprimitive_undo, 2, 2, 0,
   "Undo N records from the front of the list LIST.\n\
 Return what remains of the list.")
-  (count, list)
-     Lisp_Object count, list;
+  (Lisp_Object count, Lisp_Object list)
 {
   register int arg = XINT (count);
 #if 0  /* This is a good feature, but would make undo-start
@@ -287,7 +281,7 @@ Return what remains of the list.")
 }
 
 void
-syms_of_undo ()
+syms_of_undo (void)
 {
   defsubr (&Sprimitive_undo);
   defsubr (&Sundo_boundary);

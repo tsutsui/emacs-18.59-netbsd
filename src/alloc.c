@@ -97,8 +97,7 @@ char *pending_malloc_warning;
 void truncate_all_undos (void);
 
 Lisp_Object
-malloc_warning_1 (str)
-     Lisp_Object str;
+malloc_warning_1 (Lisp_Object str)
 {
   Fprinc (str, Vstandard_output);
   write_string ("\nKilling some buffers may delay running out of memory.\n", -1);
@@ -109,14 +108,13 @@ malloc_warning_1 (str)
 
 /* malloc calls this if it finds we are near exhausting storage */
 void
-malloc_warning (str)
-     char *str;
+malloc_warning (char *str)
 {
   pending_malloc_warning = str;
 }
 
 void
-display_malloc_warning ()
+display_malloc_warning (void)
 {
   register Lisp_Object val;
 
@@ -127,7 +125,7 @@ display_malloc_warning ()
 
 /* Called if malloc returns zero */
 void
-memory_full ()
+memory_full (void)
 {
   while (1)
     Fsignal (Qerror, memory_exhausted_message);
@@ -136,8 +134,7 @@ memory_full ()
 /* like malloc and realloc but check for no memory left */
 
 void *
-xmalloc (size)
-     size_t size;
+xmalloc (size_t size)
 {
   register void *val;
   /* Avoid failure if malloc (0) returns 0.  */
@@ -149,9 +146,7 @@ xmalloc (size)
 }
 
 void *
-xrealloc (block, size)
-     void *block;
-     size_t size;
+xrealloc (void *block, size_t size)
 {
   register void *val;
   /* Avoid failure if malloc (0) returns 0.  */
@@ -187,7 +182,7 @@ int cons_block_index;
 struct Lisp_Cons *cons_free_list;
 
 void
-init_cons ()
+init_cons (void)
 {
   cons_block = (struct cons_block *) malloc (sizeof (struct cons_block));
   cons_block->next = 0;
@@ -198,8 +193,7 @@ init_cons ()
 
 /* Explicitly free a cons cell.  */
 void
-free_cons (ptr)
-     struct Lisp_Cons *ptr;
+free_cons (struct Lisp_Cons *ptr)
 {
   XFASTINT (ptr->car) = (Lisp_Object_Int) cons_free_list;
   cons_free_list = ptr;
@@ -207,8 +201,7 @@ free_cons (ptr)
 
 DEFUN ("cons", Fcons, Scons, 2, 2, 0,
   "Create a new cons, give it CAR and CDR as components, and return it.")
-  (car, cdr)
-     Lisp_Object car, cdr;
+  (Lisp_Object car, Lisp_Object cdr)
 {
   register Lisp_Object val;
 
@@ -239,9 +232,7 @@ DEFUN ("cons", Fcons, Scons, 2, 2, 0,
 
 DEFUN ("list", Flist, Slist, 0, MANY, 0,
   "Return a newly created list whose elements are the arguments (any number).")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   register Lisp_Object len, val, val_tail;
 
@@ -258,8 +249,7 @@ DEFUN ("list", Flist, Slist, 0, MANY, 0,
 
 DEFUN ("make-list", Fmake_list, Smake_list, 2, 2, 0,
   "Return a newly created list of length LENGTH, with each element being INIT.")
-  (length, init)
-     register Lisp_Object length, init;
+  (register Lisp_Object length, register Lisp_Object init)
 {
   register Lisp_Object val;
   register Lisp_Object_Int size;
@@ -280,8 +270,7 @@ struct Lisp_Vector *all_vectors;
 
 DEFUN ("make-vector", Fmake_vector, Smake_vector, 2, 2, 0,
   "Return a newly created vector of length LENGTH, with each element being INIT.")
-  (length, init)
-     register Lisp_Object length, init;
+  (register Lisp_Object length, register Lisp_Object init)
 {
   Lisp_Object_Int sizei;
   register int  index;
@@ -312,9 +301,7 @@ DEFUN ("make-vector", Fmake_vector, Smake_vector, 2, 2, 0,
 
 DEFUN ("vector", Fvector, Svector, 0, MANY, 0,
   "Return a newly created vector with our arguments (any number) as its elements.")
-  (nargs, args)
-     register int nargs;
-     Lisp_Object *args;
+  (register int nargs, Lisp_Object *args)
 {
   register Lisp_Object len, val;
   register int index;
@@ -350,7 +337,7 @@ int symbol_block_index;
 struct Lisp_Symbol *symbol_free_list;
 
 void
-init_symbol ()
+init_symbol (void)
 {
   symbol_block = (struct symbol_block *) malloc (sizeof (struct symbol_block));
   symbol_block->next = 0;
@@ -362,8 +349,7 @@ init_symbol ()
 DEFUN ("make-symbol", Fmake_symbol, Smake_symbol, 1, 1, 0,
   "Return a newly allocated uninterned symbol whose name is NAME.\n\
 Its value and function definition are void, and its property list is NIL.")
-  (str)
-     Lisp_Object str;
+  (Lisp_Object str)
 {
   register Lisp_Object val;
   register struct Lisp_Symbol *p;
@@ -417,7 +403,7 @@ int marker_block_index;
 struct Lisp_Marker *marker_free_list;
 
 void
-init_marker ()
+init_marker (void)
 {
   marker_block = (struct marker_block *) malloc (sizeof (struct marker_block));
   marker_block->next = 0;
@@ -428,7 +414,7 @@ init_marker ()
 
 DEFUN ("make-marker", Fmake_marker, Smake_marker, 0, 0, 0,
   "Return a newly allocated marker which does not point at any place.")
-  ()
+  (void)
 {
   register Lisp_Object val;
   register struct Lisp_Marker *p;
@@ -516,7 +502,7 @@ struct string_block *large_string_blocks;
 (((SIZE) + 2 * sizeof (Lisp_Object)) & ~(sizeof (Lisp_Object) - 1))
 
 void
-init_strings ()
+init_strings (void)
 {
   current_string_block = (struct string_block *) malloc (sizeof (struct string_block));
   first_string_block = current_string_block;
@@ -532,8 +518,7 @@ static Lisp_Object make_uninit_string (int);
 DEFUN ("make-string", Fmake_string, Smake_string, 2, 2, 0,
   "Return a newly created string of length LENGTH, with each element being INIT.\n\
 Both LENGTH and INIT must be numbers.")
-  (length, init)
-     Lisp_Object length, init;
+  (Lisp_Object length, Lisp_Object init)
 {
   register Lisp_Object val;
   register unsigned char *p, *end, c;
@@ -552,9 +537,7 @@ Both LENGTH and INIT must be numbers.")
 }
 
 Lisp_Object
-make_string (contents, length)
-     const char *contents;
-     int length;
+make_string (const char *contents, int length)
 {
   register Lisp_Object val;
   val = make_uninit_string (length);
@@ -563,15 +546,13 @@ make_string (contents, length)
 }
 
 Lisp_Object
-build_string (str)
-     const char *str;
+build_string (const char *str)
 {
   return make_string (str, strlen (str));
 }
 
 static Lisp_Object
-make_uninit_string (length)
-     int length;
+make_uninit_string (int length)
 {
   register Lisp_Object val;
   register int fullsize = STRING_FULLSIZE (length);
@@ -628,9 +609,7 @@ make_uninit_string (length)
  then the string is not protected from gc. */
 
 Lisp_Object
-make_pure_string (data, length)
-     char *data;
-     int length;
+make_pure_string (char *data, int length)
 {
   register Lisp_Object new;
   register int size = sizeof (Lisp_Object) + length + 1;
@@ -647,8 +626,7 @@ make_pure_string (data, length)
 }
 
 Lisp_Object
-pure_cons (car, cdr)
-     Lisp_Object car, cdr;
+pure_cons (Lisp_Object car, Lisp_Object cdr)
 {
   register Lisp_Object new;
 
@@ -662,8 +640,7 @@ pure_cons (car, cdr)
 }
 
 Lisp_Object
-make_pure_vector (len)
-     int len;
+make_pure_vector (int len)
 {
   register Lisp_Object new;
   register int size = sizeof (struct Lisp_Vector) + (len - 1) * sizeof (Lisp_Object);
@@ -681,8 +658,7 @@ DEFUN ("purecopy", Fpurecopy, Spurecopy, 1, 1, 0,
   "Make a copy of OBJECT in pure storage.\n\
 Recursively copies contents of vectors and cons cells.\n\
 Does not copy symbols.")
-  (obj)
-     register Lisp_Object obj;
+  (register Lisp_Object obj)
 {
   register Lisp_Object new, tem;
   register int i;
@@ -741,8 +717,7 @@ char staticvec1[NSTATICS * sizeof (Lisp_Object *)] = {0};
 /* Put an entry in staticvec, pointing at the variable whose address is given */
 
 void
-staticpro (varaddress)
-     Lisp_Object *varaddress;
+staticpro (Lisp_Object *varaddress)
 {
   staticvec[staticidx++] = varaddress;
   if (staticidx >= NSTATICS)
@@ -807,7 +782,7 @@ Returns info on amount of space in use:\n\
   (USED-MARKERS . FREE-MARKERS) USED-STRING-CHARS USED-VECTOR-SLOTS)\n\
 Garbage collection happens automatically if you cons more than\n\
 gc-cons-threshold  bytes of Lisp data since previous garbage collection.")
-  ()
+  (void)
 {
   register struct gcpro *tail;
   register struct specbinding *bind;
@@ -937,7 +912,7 @@ gc-cons-threshold  bytes of Lisp data since previous garbage collection.")
 
 #if 0
 static void
-clear_marks ()
+clear_marks (void)
 {
   /* Clear marks on all conses */
   {
@@ -1003,8 +978,7 @@ clear_marks ()
    because it is < (unsigned) STRING_BLOCK_SIZE.  */
 
 static void
-mark_object (objptr)
-     Lisp_Object *objptr;
+mark_object (Lisp_Object *objptr)
 {
   register Lisp_Object obj;
 
@@ -1172,8 +1146,7 @@ mark_object (objptr)
 /* Mark the pointers in a buffer structure.  */
 
 static void
-mark_buffer (buf)
-     Lisp_Object buf;
+mark_buffer (Lisp_Object buf)
 {
   Lisp_Object tem;
   register struct buffer *buffer = XBUFFER (buf);
@@ -1192,7 +1165,7 @@ mark_buffer (buf)
 /* Find all structures not marked, and free them. */
 
 static void
-gc_sweep ()
+gc_sweep (void)
 {
   total_string_size = 0;
   compact_strings ();
@@ -1372,7 +1345,7 @@ gc_sweep ()
    free any string blocks that become empty.  */
 
 static void
-compact_strings ()
+compact_strings (void)
 {
   /* String block of old strings we are scanning.  */
   register struct string_block *from_sb;
@@ -1493,7 +1466,7 @@ compact_strings ()
 }
 
 void
-truncate_all_undos ()
+truncate_all_undos (void)
 {
   register struct buffer *nextb = all_buffers;
 
@@ -1516,7 +1489,7 @@ truncate_all_undos ()
 /* Initialization */
 
 void
-init_alloc_once ()
+init_alloc_once (void)
 {
   /* Used to do Vpurify_flag = Qt here, but Qt isn't set up yet!  */
   pureptr = 0;
@@ -1536,13 +1509,13 @@ init_alloc_once ()
 }
 
 void
-init_alloc ()
+init_alloc (void)
 {
   gcprolist = 0;
 }
 
 void
-syms_of_alloc ()
+syms_of_alloc (void)
 {
   memory_exhausted_message = Fcons (build_string ("Memory exhausted"), Qnil);
   staticpro (&memory_exhausted_message);

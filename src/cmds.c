@@ -30,8 +30,7 @@ Lisp_Object Qkill_forward_chars, Qkill_backward_chars, Vblink_paren_hook;
 DEFUN ("forward-char", Fforward_char, Sforward_char, 0, 1, "p",
   "Move point right ARG characters (left if ARG negative).\n\
 On reaching end of buffer, stop and signal error.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   if (NILP (n))
     XFASTINT (n) = 1;
@@ -55,8 +54,7 @@ On reaching end of buffer, stop and signal error.")
 DEFUN ("backward-char", Fbackward_char, Sbackward_char, 0, 1, "p",
   "Move point left ARG characters (right if ARG negative).\n\
 On attempt to pass beginning or end of buffer, stop and signal error.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   if (NILP (n))
     XFASTINT (n) = 1;
@@ -73,8 +71,7 @@ If there isn't room, go as far as possible (no error).\n\
 Returns the count of lines left to move.\n\
 With positive ARG, a non-empty line traversed at end of buffer \n\
  counts as one line successfully moved (for the return value).")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   int pos2 = point;
   int pos;
@@ -104,8 +101,7 @@ DEFUN ("beginning-of-line", Fbeginning_of_line, Sbeginning_of_line,
   "Move point to beginning of current line.\n\
 With argument ARG not nil or 1, move forward ARG - 1 lines first.\n\
 If scan reaches end of buffer, stop there without error.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   if (NILP (n))
     XFASTINT (n) = 1;
@@ -121,8 +117,7 @@ DEFUN ("end-of-line", Fend_of_line, Send_of_line,
   "Move point to end of current line.\n\
 With argument ARG not nil or 1, move forward ARG - 1 lines first.\n\
 If scan reaches end of buffer, stop there without error.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   register int pos;
   register int stop;
@@ -148,8 +143,7 @@ DEFUN ("delete-char", Fdelete_char, Sdelete_char, 1, 2, "p\nP",
 Optional second arg KILLFLAG non-nil means kill instead (save in kill ring).\n\
 Interactively, ARG is the prefix arg, and KILLFLAG is set if\n\
 ARG was explicitly specified.")
-  (n, killflag)
-     Lisp_Object n, killflag;
+  (Lisp_Object n, Lisp_Object killflag)
 {
   CHECK_NUMBER (n, 0);
 
@@ -183,8 +177,7 @@ DEFUN ("delete-backward-char", Fdelete_backward_char, Sdelete_backward_char,
 Optional second arg KILLFLAG non-nil means kill instead (save in kill ring).\n\
 Interactively, ARG is the prefix arg, and KILLFLAG is set if\n\
 ARG was explicitly specified.")
-  (n, killflag)
-     Lisp_Object n, killflag;
+  (Lisp_Object n, Lisp_Object killflag)
 {
   CHECK_NUMBER (n, 0);
   return Fdelete_char (make_number (-XINT (n)), killflag);
@@ -192,8 +185,7 @@ ARG was explicitly specified.")
 
 DEFUN ("self-insert-command", Fself_insert_command, Sself_insert_command, 1, 1, "p",
   "Insert this character.  Prefix arg is repeat-count.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   CHECK_NUMBER (arg, 0);
 
@@ -208,8 +200,7 @@ DEFUN ("self-insert-command", Fself_insert_command, Sself_insert_command, 1, 1, 
 DEFUN ("newline", Fnewline, Snewline, 0, 1, "P",
   "Insert a newline.  With arg, insert that many newlines.\n\
 In Auto Fill mode, can break the preceding line if no numeric arg.")
-  (arg1)
-     Lisp_Object arg1;
+  (Lisp_Object arg1)
 {
   int flag;
   Lisp_Object arg;
@@ -248,9 +239,7 @@ In Auto Fill mode, can break the preceding line if no numeric arg.")
 }
 
 int
-self_insert_internal (c1, noautofill)
-     char c1;
-     int noautofill;
+self_insert_internal (char c1, int noautofill)
 {
   int hairy = 0;
   Lisp_Object tem;
@@ -303,7 +292,7 @@ self_insert_internal (c1, noautofill)
 /* module initialization */
 
 void
-syms_of_cmds ()
+syms_of_cmds (void)
 {
   Qkill_backward_chars = intern ("kill-backward-chars");
   staticpro (&Qkill_backward_chars);
@@ -329,7 +318,7 @@ syms_of_cmds ()
 }
 
 void
-keys_of_cmds ()
+keys_of_cmds (void)
 {
   int n;
 

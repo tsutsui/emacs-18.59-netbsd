@@ -94,8 +94,7 @@ Lisp_Object QSFundamental;	/* A string "Fundamental" */
 void reset_buffer_local_variables (struct buffer *);
 
 void
-nsberror (spec)
-     Lisp_Object spec;
+nsberror (Lisp_Object spec)
 {
   if (XTYPE (spec) == Lisp_String)
     error ("No buffer named %s", XSTRING (spec)->data);
@@ -104,7 +103,7 @@ nsberror (spec)
 
 DEFUN ("buffer-list", Fbuffer_list, Sbuffer_list, 0, 0, 0,
   "Return a list of all buffers.")
-  ()
+  (void)
 {
   return Fmapcar (Qcdr, Vbuffer_alist);
 }
@@ -114,8 +113,7 @@ DEFUN ("get-buffer", Fget_buffer, Sget_buffer, 1, 1, 0,
 It is found by looking up NAME in  buffer-alist.\n\
 If there is no buffer named NAME, nil is returned.\n\
 NAME may also be a buffer; it is returned.")
-  (name)
-     register Lisp_Object name;
+  (register Lisp_Object name)
 {
   if (XTYPE (name) == Lisp_Buffer)
     return name;
@@ -127,8 +125,7 @@ NAME may also be a buffer; it is returned.")
 DEFUN ("get-file-buffer", Fget_file_buffer, Sget_file_buffer, 1, 1, 0,
   "Return the buffer visiting file FILENAME (a string).\n\
 If there is no such buffer, nil is returned.")
-  (filename)
-     register Lisp_Object filename;
+  (register Lisp_Object filename)
 {
   register Lisp_Object tail, buf, tem;
   CHECK_STRING (filename, 0);
@@ -148,8 +145,7 @@ If there is no such buffer, nil is returned.")
 
 DEFUN ("get-buffer-create", Fget_buffer_create, Sget_buffer_create, 1, 1, 0,
   "Like get-buffer but creates a buffer named NAME and returns it if none already exists.")
-  (name)
-     register Lisp_Object name;
+  (register Lisp_Object name)
 {
   register Lisp_Object buf, function, tem;
   int count = specpdl_ptr - specpdl;
@@ -229,8 +225,7 @@ DEFUN ("get-buffer-create", Fget_buffer_create, Sget_buffer_create, 1, 1, 0,
 /* Reinitialize everything about a buffer except its name and contents.  */
 
 void
-reset_buffer (b)
-     register struct buffer *b;
+reset_buffer (register struct buffer *b)
 {
   b->filename = Qnil;
   b->directory = (current_buffer) ? current_buffer->directory : Qnil;
@@ -246,8 +241,7 @@ reset_buffer (b)
 }
 
 void
-reset_buffer_local_variables(b)
-     register struct buffer *b;
+reset_buffer_local_variables (register struct buffer *b)
 {
   register Lisp_Object_Int offset;
 
@@ -281,8 +275,7 @@ DEFUN ("generate-new-buffer", Fgenerate_new_buffer, Sgenerate_new_buffer,
   "Creates and returns a buffer named NAME if one does not already exist,\n\
 else tries adding successive suffixes to NAME until a new buffer-name is\n\
 formed, then creates and returns a new buffer with that new name.")
- (name)
-     register Lisp_Object name;
+ (register Lisp_Object name)
 {
   register Lisp_Object gentemp, tem;
   int count;
@@ -309,8 +302,7 @@ formed, then creates and returns a new buffer with that new name.")
 DEFUN ("buffer-name", Fbuffer_name, Sbuffer_name, 0, 1, 0,
   "Return the name of BUFFER, as a string.\n\
 No arg means return name of current buffer.")
-  (buffer)
-     register Lisp_Object buffer;
+  (register Lisp_Object buffer)
 {
   if (NILP (buffer))
     return current_buffer->name;
@@ -322,8 +314,7 @@ No arg means return name of current buffer.")
   DEFUN ("buffer-number", Fbuffer_number, Sbuffer_number, 0, 1, 0,
     "Return the number of BUFFER.\n\
   No arg means return number of current buffer.")
-    (buffer)
-       Lisp_Object buffer;
+    (Lisp_Object buffer)
   {
     if (NILP (buffer))
       return current_buffer->number;
@@ -336,8 +327,7 @@ No arg means return name of current buffer.")
 DEFUN ("buffer-file-name", Fbuffer_file_name, Sbuffer_file_name, 0, 1, 0,
   "Return name of file BUFFER is visiting, or NIL if none.\n\
 No argument means use current buffer as BUFFER.")
-  (buffer)
-     register Lisp_Object buffer;
+  (register Lisp_Object buffer)
 {
   if (NILP (buffer))
     return current_buffer->filename;
@@ -352,8 +342,7 @@ No argument means use current buffer as BUFFER.\n\
 Each element of the value looks like (SYMBOL . VALUE).\n\
 Note that storing new VALUEs in these elements\n\
 does not change the local values.")
-  (buffer)
-     register Lisp_Object buffer;
+  (register Lisp_Object buffer)
 {
   register struct buffer *buf;
   register Lisp_Object val;
@@ -409,8 +398,7 @@ DEFUN ("buffer-modified-p", Fbuffer_modified_p, Sbuffer_modified_p,
   0, 1, 0,
   "Return t if BUFFER is modified since file last read in or saved.\n\
 No argument means use current buffer as BUFFER.")
-  (buffer)
-     register Lisp_Object buffer;
+  (register Lisp_Object buffer)
 {
   register struct buffer *buf;
   if (NILP (buffer))
@@ -427,8 +415,7 @@ No argument means use current buffer as BUFFER.")
 DEFUN ("set-buffer-modified-p", Fset_buffer_modified_p, Sset_buffer_modified_p,
   1, 1, 0,
   "Mark current buffer as modified or unmodified according to FLAG.")
-  (flag)
-     register Lisp_Object flag;
+  (register Lisp_Object flag)
 {
   register int already;
   register Lisp_Object fn;
@@ -456,8 +443,7 @@ DEFUN ("set-buffer-modified-p", Fset_buffer_modified_p, Sset_buffer_modified_p,
 DEFUN ("rename-buffer", Frename_buffer, Srename_buffer, 1, 1,
        "sRename buffer (to new name): ",
   "Change current buffer's name to NEWNAME (a string).")
-  (name)
-     register Lisp_Object name;
+  (register Lisp_Object name)
 {
   register Lisp_Object tem, buf;
 
@@ -483,8 +469,7 @@ DEFUN ("other-buffer", Fother_buffer, Sother_buffer, 0, 1, 0,
 Buffers not visible in windows are preferred to visible buffers.\n\
 If no other exists, the buffer *scratch* is returned.\n\
 If BUFFER is omitted or nil, some interesting buffer is returned.")
-  (buffer)
-     register Lisp_Object buffer;
+  (register Lisp_Object buffer)
 {
   register Lisp_Object tail, buf, notsogood, tem;
   notsogood = Qnil;
@@ -509,8 +494,7 @@ If BUFFER is omitted or nil, some interesting buffer is returned.")
 
 DEFUN ("buffer-flush-undo", Fbuffer_flush_undo, Sbuffer_flush_undo, 1, 1, 0,
   "Make BUFFER stop keeping undo information.")
-  (buf)
-     register Lisp_Object buf;
+  (register Lisp_Object buf)
 {
   CHECK_BUFFER (buf, 0);
   XBUFFER (buf)->undo_list = Qt;
@@ -520,8 +504,7 @@ DEFUN ("buffer-flush-undo", Fbuffer_flush_undo, Sbuffer_flush_undo, 1, 1, 0,
 DEFUN ("buffer-enable-undo", Fbuffer_enable_undo, Sbuffer_enable_undo,
        0, 1, "",
   "Start keeping undo information for buffer BUFFER (default is current buffer).")
-  (buf)
-     register Lisp_Object buf;
+  (register Lisp_Object buf)
 {
   if (NILP (buf))
     {
@@ -541,8 +524,7 @@ DEFUN ("kill-buffer", Fkill_buffer, Skill_buffer, 1, 1, "bKill buffer: ",
   "One arg, a string or a buffer.  Get rid of the specified buffer.\n\
 Any processes that have this buffer as the `process-buffer' are killed\n\
 with `delete-process'.")
-  (bufname)
-     Lisp_Object bufname;
+  (Lisp_Object bufname)
 {
   Lisp_Object buf;
   register struct buffer *b;
@@ -633,8 +615,7 @@ with `delete-process'.")
  so that other_buffer will return something nice.  */
 
 void
-record_buffer (buf)
-     Lisp_Object buf;
+record_buffer (Lisp_Object buf)
 {
   register Lisp_Object link, prev;
 
@@ -667,8 +648,7 @@ do not put this buffer at the front of the list of recently selected ones.\n\
 WARNING: This is NOT the way to work on another buffer temporarily\n\
 within a Lisp program!  Use `set-buffer' instead.  That avoids messing with\n\
 the window-buffer correspondances.")
-  (bufname, norecord)
-     Lisp_Object bufname, norecord;
+  (Lisp_Object bufname, Lisp_Object norecord)
 {
   register Lisp_Object buf;
 
@@ -695,8 +675,7 @@ DEFUN ("pop-to-buffer", Fpop_to_buffer, Spop_to_buffer, 1, 2, 0,
 If  pop-up-windows  is non-nil, windows can be split to do this.\n\
 If second arg  OTHER-WINDOW is non-nil, insist on finding another\n\
 window even if BUFFER is already visible in the selected window.")
-  (bufname, other)
-     Lisp_Object bufname, other;
+  (Lisp_Object bufname, Lisp_Object other)
 {
   register Lisp_Object buf;
   if (NILP (bufname))
@@ -711,7 +690,7 @@ window even if BUFFER is already visible in the selected window.")
 
 DEFUN ("current-buffer", Fcurrent_buffer, Scurrent_buffer, 0, 0, 0,
   "Return the current buffer as a Lisp buffer object.")
-  ()
+  (void)
 {
   register Lisp_Object buf;
   XSET (buf, Lisp_Buffer, current_buffer);
@@ -727,8 +706,7 @@ selects the chosen buffer of the current window,\n\
 and this function has no effect on what buffer that is.\n\
 See also `save-excursion' when you want to select a buffer temporarily.\n\
 Use `switch-to-buffer' or `pop-to-buffer' for interactive buffer selection.")
-  (bufname)
-     register Lisp_Object bufname;
+  (register Lisp_Object bufname)
 {
   register Lisp_Object buffer;
   buffer = Fget_buffer (bufname);
@@ -743,7 +721,7 @@ Use `switch-to-buffer' or `pop-to-buffer' for interactive buffer selection.")
 DEFUN ("barf-if-buffer-read-only", Fbarf_if_buffer_read_only,
 				   Sbarf_if_buffer_read_only, 0, 0, 0,
   "Signal a  buffer-read-only  error if the current buffer is read-only.")
-  ()
+  (void)
 {
   while (!NILP (current_buffer->read_only))
     Fsignal (Qbuffer_read_only, (Fcons (Fcurrent_buffer (), Qnil)));
@@ -755,8 +733,7 @@ DEFUN ("bury-buffer", Fbury_buffer, Sbury_buffer, 0, 1, "",
 There it is the least likely candidate for other-buffer to return;\n\
 thus, the least likely buffer for \\[switch-to-buffer] to select by default.\n\
 BUFFER is also removed from the selected window if it was displayed there.")
-  (buf)
-     register Lisp_Object buf;
+  (register Lisp_Object buf)
 {
   register Lisp_Object aelt, link;
 
@@ -789,8 +766,7 @@ extern int last_known_column_point;
    rather than a Lisp object.  */
 
 void
-set_buffer_internal (b)
-     register struct buffer *b;
+set_buffer_internal (register struct buffer *b)
 {
   register struct buffer *swb = 0;
   register struct buffer *old_buf;
@@ -898,7 +874,7 @@ set_buffer_internal (b)
 
 DEFUN ("erase-buffer", Ferase_buffer, Serase_buffer, 0, 0, 0,
   "Delete the entire contents of the current buffer.")
-  ()
+  (void)
 {
   Fwiden ();
   del_range (BEG, Z);
@@ -911,8 +887,7 @@ DEFUN ("erase-buffer", Ferase_buffer, Serase_buffer, 0, 0, 0,
 }
 
 void
-validate_region (b, e)
-     register Lisp_Object *b, *e;
+validate_region (register Lisp_Object *b, register Lisp_Object *e)
 {
   register Lisp_Object_Int i;
 
@@ -932,8 +907,7 @@ validate_region (b, e)
 }
 
 Lisp_Object
-list_buffers_1 (files)
-     Lisp_Object files;
+list_buffers_1 (Lisp_Object files)
 {
   register Lisp_Object tail, tem, buf;
   Lisp_Object col1, col2, col3, minspace;
@@ -1004,8 +978,7 @@ Non-null optional arg FILES-ONLY means mention only file buffers.\n\
 \n\
 The M column contains a * for buffers that are modified.\n\
 The R column contains a % for buffers that are read-only.")
-  (files)
-     Lisp_Object files;
+  (Lisp_Object files)
 {
   internal_with_output_to_temp_buffer ("*Buffer List*",
 				       list_buffers_1, files);
@@ -1016,7 +989,7 @@ DEFUN ("kill-all-local-variables", Fkill_all_local_variables, Skill_all_local_va
   0, 0, 0,
   "Eliminate all the buffer-local variable values of the current buffer.\n\
 This buffer will then see the default values of all variables.")
-  ()
+  (void)
 {
   register Lisp_Object alist, sym, tem;
 
@@ -1045,7 +1018,7 @@ This buffer will then see the default values of all variables.")
 
 extern Lisp_Object Vprin1_to_string_buffer;	/* in print.c */
 void
-init_buffer_once ()
+init_buffer_once (void)
 {
   register Lisp_Object tem;
 
@@ -1131,7 +1104,7 @@ init_buffer_once ()
 }
 
 void
-init_buffer ()
+init_buffer (void)
 {
   char buf[MAXPATHLEN+1];
 
@@ -1150,7 +1123,7 @@ init_buffer ()
 
 /* initialize the buffer routines */
 void
-syms_of_buffer ()
+syms_of_buffer (void)
 {
   staticpro (&Vbuffer_defaults);
   staticpro (&Vbuffer_local_symbols);
@@ -1358,7 +1331,7 @@ Automatically becomes local when set in any fashion.");
 }
 
 void
-keys_of_buffer ()
+keys_of_buffer (void)
 {
   ndefkey (Vctl_x_map, 'b', "switch-to-buffer");
   ndefkey (Vctl_x_map, 'k', "kill-buffer");

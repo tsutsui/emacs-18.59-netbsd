@@ -43,16 +43,14 @@ int cost;		/* sums up costs */
 
 /* ARGSUSED */
 int
-evalcost (c)
-     int c;
+evalcost (int c)
 {
   cost++;
   return c;
 }
 
 int
-cmputc (c)
-     int c;
+cmputc (int c)
 {
   if (termscript)
     fputc (c & 0177, termscript);
@@ -68,8 +66,9 @@ cmputc (c)
  * let's let the guy put it anywhere.
  */
 
-static
-at (row, col) {
+static void
+at (int row, int col)
+{
     curY = row;
     curX = col;
 }
@@ -78,8 +77,9 @@ at (row, col) {
  * Add n columns to the current cursor position.
  */
 
-static
-addcol (n) {
+static void
+addcol (int n)
+{
     curX += n;
 
     /*
@@ -116,7 +116,7 @@ addcol (n) {
  */
 
 void
-cmcostinit ()
+cmcostinit (void)
 {
     char *p;
 
@@ -156,7 +156,7 @@ cmcostinit ()
  */
 
 static int
-calccost (srcy, srcx, dsty, dstx, doit)
+calccost (int srcy, int srcx, int dsty, int dstx, int doit)
 {
     register int    deltay,
                     deltax,
@@ -279,7 +279,7 @@ done:
 }
 
 void
-losecursor ()
+losecursor (void)
 {
   curY = -1;
 }
@@ -290,7 +290,7 @@ losecursor ()
 #define	USECR	3
 
 void
-cmgoto (row, col)
+cmgoto (int row, int col)
 {
     int     homecost,
             crcost,
@@ -392,7 +392,7 @@ cmgoto (row, col)
  */
 
 void
-Wcm_clear ()
+Wcm_clear (void)
 {
   bzero (&Wcm, sizeof Wcm);
   UP = 0;
@@ -405,7 +405,7 @@ Wcm_clear ()
  */
 
 int
-Wcm_init ()
+Wcm_init (void)
 {
   /* Check that we know the size of the screen.... */
   if (Wcm.cm_rows <= 0 || Wcm.cm_cols <= 0)

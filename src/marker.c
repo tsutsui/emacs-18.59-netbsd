@@ -27,8 +27,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 DEFUN ("marker-buffer", Fmarker_buffer, Smarker_buffer, 1, 1, 0,
   "Return the buffer that MARKER points into, or nil if none.\n\
 Returns nil if MARKER points into a dead buffer.")
-  (marker)
-     register Lisp_Object marker;
+  (register Lisp_Object marker)
 {
   register Lisp_Object buf;
   CHECK_MARKER (marker, 0);
@@ -44,8 +43,7 @@ Returns nil if MARKER points into a dead buffer.")
 
 DEFUN ("marker-position", Fmarker_position, Smarker_position, 1, 1, 0,
   "Return the position MARKER points at, as a character number.")
-  (marker)
-     Lisp_Object marker;
+  (Lisp_Object marker)
 {
   register Lisp_Object pos;
   register int i;
@@ -77,8 +75,7 @@ BUFFER defaults to the current buffer.\n\
 If NUMBER is nil, makes marker point nowhere.\n\
 Then it no longer slows down editing in any buffer.\n\
 Returns MARKER.")
-  (marker, pos, buffer)
-     Lisp_Object marker, pos, buffer;
+  (Lisp_Object marker, Lisp_Object pos, Lisp_Object buffer)
 {
   register int charno;
   register struct buffer *b;
@@ -134,9 +131,8 @@ Returns MARKER.")
 }
 
 /* This version of Fset_marker won't let the position be outside the visible part.  */
-Lisp_Object 
-set_marker_restricted (marker, pos, buffer)
-     Lisp_Object marker, pos, buffer;
+Lisp_Object
+set_marker_restricted (Lisp_Object marker, Lisp_Object pos, Lisp_Object buffer)
 {
   register int charno;
   register struct buffer *b;
@@ -197,8 +193,7 @@ set_marker_restricted (marker, pos, buffer)
  including those in chain fields of markers.  */
 
 void
-unchain_marker (marker)
-     register Lisp_Object marker;
+unchain_marker (register Lisp_Object marker)
 {
   register Lisp_Object tail, prev, next;
   register Lisp_Object_Int omark;
@@ -243,8 +238,7 @@ unchain_marker (marker)
 }
 
 int
-marker_position (marker)
-     Lisp_Object marker;
+marker_position (Lisp_Object marker)
 {
   register struct Lisp_Marker *m = XMARKER (marker);
   register struct buffer *buf = m->buffer;
@@ -268,8 +262,7 @@ DEFUN ("copy-marker", Fcopy_marker, Scopy_marker, 1, 1, 0,
   "Return a new marker pointing at the same place as MARKER.\n\
 If argument is a number, makes a new marker pointing\n\
 at that position in the current buffer.")
-  (marker)
-     register Lisp_Object marker;
+  (register Lisp_Object marker)
 {
   register Lisp_Object new;
 
@@ -291,7 +284,7 @@ at that position in the current buffer.")
 }
 
 void
-syms_of_marker ()
+syms_of_marker (void)
 {
   defsubr (&Smarker_position);
   defsubr (&Smarker_buffer);

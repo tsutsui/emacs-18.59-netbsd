@@ -32,10 +32,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 */
 
 char *
-tparam (string, outstring, len, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-     char *string;
-     char *outstring;
-     long arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9;
+tparam (char *string, char *outstring, int len, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long arg7, long arg8, long arg9)
 {
   char *temp;
 

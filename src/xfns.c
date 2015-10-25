@@ -145,7 +145,8 @@ extern void x_init_1 ();
 
 int x_edges_specified;
 
-check_xterm ()
+void
+check_xterm (void)
 {
   if (NILP (Vxterm))
     error ("Terminal does not understand X protocol.");
@@ -153,7 +154,7 @@ check_xterm ()
 
 DEFUN ("x-pop-up-window", Fx_pop_up_window, Sx_pop_up_window, 0, 0, 0,
   "Make the X window appear on the screen.")
-  ()
+  (void)
 {
   check_xterm ();
   XPopUpWindow ();
@@ -163,8 +164,7 @@ DEFUN ("x-pop-up-window", Fx_pop_up_window, Sx_pop_up_window, 0, 0, 0,
 DEFUN ("x-set-bell", Fx_set_bell, Sx_set_bell, 1, 1, "P",
   "For X window system, set audible vs visible bell.\n\
 With non-nil argument (prefix arg), use visible bell; otherwise, audible bell.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -180,7 +180,7 @@ With non-nil argument (prefix arg), use visible bell; otherwise, audible bell.")
 
 DEFUN ("x-flip-color", Fx_flip_color, Sx_flip_color, 0, 0, "",
   "Toggle the background and foreground colors")
-  ()
+  (void)
 {
   check_xterm ();
   XFlipColor ();
@@ -190,8 +190,7 @@ DEFUN ("x-flip-color", Fx_flip_color, Sx_flip_color, 0, 0, "",
 DEFUN ("x-set-foreground-color", Fx_set_foreground_color,
        Sx_set_foreground_color, 1, 1, "sSet foregroud color:  ",
        "Set foreground (text) color to COLOR.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Color cdef;
   BLOCK_INPUT_DECLARE ()
@@ -236,8 +235,7 @@ DEFUN ("x-set-foreground-color", Fx_set_foreground_color,
 DEFUN ("x-set-background-color", Fx_set_background_color,
        Sx_set_background_color, 1, 1, "sSet background color: ",
        "Set background color to COLOR.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Color cdef;
   Pixmap temp;
@@ -286,8 +284,7 @@ DEFUN ("x-set-background-color", Fx_set_background_color,
 DEFUN ("x-set-border-color", Fx_set_border_color, Sx_set_border_color, 1, 1,
        "sSet border color: ",
        "Set border color to COLOR.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Color cdef;
   Pixmap temp;
@@ -331,8 +328,7 @@ DEFUN ("x-set-border-color", Fx_set_border_color, Sx_set_border_color, 1, 1,
 DEFUN ("x-set-cursor-color", Fx_set_cursor_color, Sx_set_cursor_color, 1, 1,
        "sSet text cursor color: ",
        "Set text cursor color to COLOR.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Color cdef;
   BLOCK_INPUT_DECLARE ()
@@ -370,8 +366,7 @@ DEFUN ("x-set-cursor-color", Fx_set_cursor_color, Sx_set_cursor_color, 1, 1,
 DEFUN ("x-set-mouse-color", Fx_set_mouse_color, Sx_set_mouse_color, 1, 1,
        "sSet mouse cursor color: ",
        "Set mouse cursor color to COLOR.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Cursor temp;
   BLOCK_INPUT_DECLARE ()
@@ -413,7 +408,7 @@ DEFUN ("x-set-mouse-color", Fx_set_mouse_color, Sx_set_mouse_color, 1, 1,
 
 DEFUN ("x-color-p", Fx_color_p, Sx_color_p, 0, 0, 0,
        "Returns t if the display is a color X terminal.")
-  ()
+  (void)
 {
   check_xterm ();
   if (DisplayCells () > 2)
@@ -425,7 +420,7 @@ DEFUN ("x-color-p", Fx_color_p, Sx_color_p, 0, 0, 0,
 DEFUN ("x-get-foreground-color", Fx_get_foreground_color,
        Sx_get_foreground_color, 0, 0, 0,
        "Returns the color of the foreground, as a string.")
-  ()
+  (void)
 {
   Lisp_Object string;
   string = build_string (fore_color);
@@ -435,7 +430,7 @@ DEFUN ("x-get-foreground-color", Fx_get_foreground_color,
 DEFUN ("x-get-background-color", Fx_get_background_color,
        Sx_get_background_color, 0, 0, 0,
        "Returns the color of the background, as a string.")
-  ()
+  (void)
 {
   Lisp_Object string;
   string = build_string (back_color);
@@ -445,7 +440,7 @@ DEFUN ("x-get-background-color", Fx_get_background_color,
 DEFUN ("x-get-border-color", Fx_get_border_color,
        Sx_get_border_color, 0, 0, 0,
        "Returns the color of the border, as a string.")
-  ()
+  (void)
 {
   Lisp_Object string;
   string = build_string (brdr_color);
@@ -455,7 +450,7 @@ DEFUN ("x-get-border-color", Fx_get_border_color,
 DEFUN ("x-get-cursor-color", Fx_get_cursor_color,
        Sx_get_cursor_color, 0, 0, 0,
        "Returns the color of the cursor, as a string.")
-  ()
+  (void)
 {
   Lisp_Object string;
   string = build_string (curs_color);
@@ -465,7 +460,7 @@ DEFUN ("x-get-cursor-color", Fx_get_cursor_color,
 DEFUN ("x-get-mouse-color", Fx_get_mouse_color,
        Sx_get_mouse_color, 0, 0, 0,
        "Returns the color of the mouse cursor, as a string.")
-  ()
+  (void)
 {
   Lisp_Object string;
   string = build_string (mous_color);
@@ -475,8 +470,7 @@ DEFUN ("x-get-mouse-color", Fx_get_mouse_color,
 DEFUN ("x-get-default", Fx_get_default, Sx_get_default, 1, 1, 0,
        "Get X default ATTRIBUTE from the system.  Returns nil if\n\
 attribute does not exist.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   unsigned char *default_name, *value;
 
@@ -496,8 +490,7 @@ DEFUN ("x-set-icon", Fx_set_icon, Sx_set_icon, 1, 1, "P",
   "Set type of icon used by X for Emacs's window.\n\
 ARG non-nil means use kitchen-sink icon;\n\
 nil means use generic window manager icon.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   check_xterm ();
   if (NILP (arg))
@@ -509,8 +502,7 @@ nil means use generic window manager icon.")
 
 DEFUN ("x-set-font", Fx_set_font, Sx_set_font, 1, 1, "sFont Name: ",
       "At initialization sets the font to be used for the X window.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   register char *newfontname;
 	
@@ -548,8 +540,7 @@ DEFUN ("x-set-window-edges", Fx_set_window_edges, Sx_set_window_edges, 4, 4,
 nY Offset in Pixels: ",
   "Sets X window size/position: size COLS by ROWS, positions XOFF and YOFF.\n\
 To get \"minus zero\" for XOFF or YOFF, supply -1.")
-  (cols, rows, xoffset, yoffset)
-     Lisp_Object rows, cols, xoffset, yoffset;
+  (Lisp_Object cols, Lisp_Object rows, Lisp_Object xoffset, Lisp_Object yoffset)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -576,8 +567,7 @@ DEFUN ("coordinates-in-window-p", Fcoordinates_in_window_p,
   "Return non-nil if POSITIONS (a list, (SCREEN-X SCREEN-Y)) is in WINDOW.\n\
 Returned value is list of positions expressed\n\
 relative to window upper left corner.")
-  (coordinate, window)
-     register Lisp_Object coordinate, window;
+  (register Lisp_Object coordinate, register Lisp_Object window)
 {
   register Lisp_Object xcoord, ycoord;
 	
@@ -608,7 +598,7 @@ relative to window upper left corner.")
 
 DEFUN ("x-mouse-events", Fx_mouse_events, Sx_mouse_events, 0, 0, 0,
   "Return number of pending mouse events from X window system.")
-  ()
+  (void)
 {
   register Lisp_Object tem;
   register int windex, rindex, mindex;
@@ -633,7 +623,7 @@ DEFUN ("x-proc-mouse-event", Fx_proc_mouse_event, Sx_proc_mouse_event,
   0, 0, 0,
   "Pulls a mouse event out of the mouse event buffer and dispatches\n\
 the appropriate function to act upon this event.")
-  ()
+  (void)
 {
   XButtonEvent xrep;
   register Lisp_Object Mouse_Cmd;
@@ -681,8 +671,7 @@ DEFUN ("x-get-mouse-event", Fx_get_mouse_event, Sx_get_mouse_event,
   "Get next mouse event out of mouse event buffer (com-letter (x y)).\n\
 ARG non-nil means return nil immediately if no pending event;\n\
 otherwise, wait for an event.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   XButtonEvent xrep;
   register Lisp_Object Mouse_Cmd;
@@ -722,8 +711,7 @@ DEFUN ("x-set-keyboard-enable", Fx_set_keyboard_enable,
   Sx_set_keyboard_enable, 1, 1, 0,
   "In the X window system, set the flag that permite keyboard input.\n\
 Permit input if ARG is non-nil.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -743,8 +731,7 @@ Permit input if ARG is non-nil.")
 DEFUN ("x-set-mouse-inform-flag", Fx_set_mouse_inform_flag,
   Sx_set_mouse_inform_flag, 1, 1, 0,
   "Set inform-of-mouse-events flag in X window system on if ARG is non-nil.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   informflag = !NILP (arg);
   return arg;
@@ -753,8 +740,7 @@ DEFUN ("x-set-mouse-inform-flag", Fx_set_mouse_inform_flag,
 DEFUN ("x-store-cut-buffer", Fx_store_cut_buffer, Sx_store_cut_buffer,
   1, 1, "sSend string to X:",
   "Store contents of STRING into the cut buffer of the X window system.")
-  (string)
-     register Lisp_Object string;
+  (register Lisp_Object string)
 {
   BLOCK_INPUT_DECLARE ()
 
@@ -770,7 +756,7 @@ DEFUN ("x-store-cut-buffer", Fx_store_cut_buffer, Sx_store_cut_buffer,
 
 DEFUN ("x-get-cut-buffer", Fx_get_cut_buffer, Sx_get_cut_buffer, 0, 0, 0,
   "Return contents of cut buffer of the X window system, as a string.")
-  ()
+  (void)
 {
   int len;
   register Lisp_Object string;
@@ -788,7 +774,7 @@ DEFUN ("x-rubber-band", Fx_rubber_band, Sx_rubber_band, 0, 0, "",
   "Ask user to specify Emacs window position and size with mouse.\n\
 This is done automatically if the data has not been specified\n\
 when Emacs needs the window to be displayed.")
-  ()
+  (void)
 {
   int x, y, width, height;
   BLOCK_INPUT_DECLARE ()
@@ -810,8 +796,7 @@ when Emacs needs the window to be displayed.")
 DEFUN ("x-create-x-window", Fx_create_x_window, Sx_create_x_window,
        1, 1, 0,
        "Create window for GNU Emacs from a valid GEOMETRY specification.")
-     (arg)
-     Lisp_Object arg;
+     (Lisp_Object arg)
 {
   int x, y, width, height;
   char *geometry;
@@ -838,8 +823,7 @@ DEFUN ("x-create-x-window", Fx_create_x_window, Sx_create_x_window,
 
 
 static int
-grey_p (colour)
-     char *colour;
+grey_p (char *colour)
 {
   return (!strcmp (colour, "grey") || !strcmp (colour, "Grey") ||
 	  !strcmp (colour, "gray") || !strcmp (colour, "Gray"));
@@ -848,8 +832,7 @@ grey_p (colour)
 DEFUN ("x-set-border-width", Fx_set_border_width, Sx_set_border_width,
   1, 1, "NSet border width: ",
   "Set width of border to WIDTH, in the X window system.")
-  (borderwidth)
-     register Lisp_Object borderwidth;
+  (register Lisp_Object borderwidth)
 {
   WindowInfo WinInfo;
   BLOCK_INPUT_DECLARE ()
@@ -925,8 +908,7 @@ DEFUN ("x-set-border-width", Fx_set_border_width, Sx_set_border_width,
 DEFUN ("x-set-internal-border-width", Fx_set_internal_border_width,
        Sx_set_internal_border_width, 1, 1, "NSet internal border width: ",
   "Set width of internal border to WIDTH, in the X window system.")
-  (internalborderwidth)
-     register Lisp_Object internalborderwidth;
+  (register Lisp_Object internalborderwidth)
 {
   WindowInfo WinInfo;
   BLOCK_INPUT_DECLARE ()
@@ -1004,7 +986,8 @@ Display *OldDisplay;
 FontInfo *OldFontInfo;
 Window OldWindow;
 
-XRestoreDisplay ()
+int
+XRestoreDisplay (void)
 {
   longjmp (dispenv, "Unable to access display (probably)");
 }
@@ -1017,8 +1000,7 @@ the current display will be closed.  The new X display will be opened and\n\
 the rubber-band outline of the new window will appear on the new X display.\n\
 This function does not look at your .Xdefaults file, so you should use the\n\
 function x-new-display instead.")
-  (new_display)
-     register Lisp_Object new_display;
+  (register Lisp_Object new_display)
 {
   Cursor OldEmacsCursor;
   BLOCK_INPUT_DECLARE ()
@@ -1026,7 +1008,7 @@ function x-new-display instead.")
   register char *newdisplayname = 0;
   int x, y, width, height;
   int temp_icon;
-  int XRestoreDisplay ();
+  int XRestoreDisplay (void);
   Pixmap temp_brdr, temp_back;
   register char *XXerrorcode;
 
@@ -1243,10 +1225,7 @@ NOTE: due to an X bug, this function will not take effect unless one has\n\
 a ~/.Xkeymap file.  (See the documentation for the \"keycomp\" program.)\n\
 This problem will be fixed in X version 11.")
 
-  (keycode, shift_mask, newstring)
-     register Lisp_Object keycode;
-     register Lisp_Object shift_mask;
-     register Lisp_Object newstring;
+  (register Lisp_Object keycode, register Lisp_Object shift_mask, register Lisp_Object newstring)
 {
   char *rawstring;
   int rawkey, rawshift;
@@ -1277,9 +1256,7 @@ DEFUN ("x-rebind-keys", Fx_rebind_keys, Sx_rebind_keys, 2, 2, 0,
 STRINGS should be a list of 16 elements, one for each all shift combination.\n\
 nil as element means don't change.\n\
 See the documentation of x-rebind-key for more information.")
-  (keycode, strings)
-     register Lisp_Object keycode;
-     register Lisp_Object strings;
+  (register Lisp_Object keycode, register Lisp_Object strings)
 {
   register Lisp_Object item;
   register char *rawstring;
@@ -1304,9 +1281,8 @@ See the documentation of x-rebind-key for more information.")
   return Qnil;
 }
 
-XExitWithCoreDump (Disp, Event)
-     Display *Disp;
-     XErrorEvent *Event;
+void
+XExitWithCoreDump (void)
 {
   XCleanUp ();
   abort ();
@@ -1314,8 +1290,7 @@ XExitWithCoreDump (Disp, Event)
 
 DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
   "ARG non-nil means that X errors should generate a coredump.")
-  (arg)
-     register Lisp_Object arg;
+  (register Lisp_Object arg)
 {
   if (!NILP (arg))
     handler = XExitWithCoreDump;
@@ -1329,12 +1304,14 @@ DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
   return (Qnil);
 }
 
-XRedrawDisplay ()
+void
+XRedrawDisplay (void)
 {
   Fredraw_display ();
 }
 
-XCleanUp ()
+void
+XCleanUp (void)
 {
   Fdo_auto_save (Qt);
 #ifdef subprocesses
@@ -1343,7 +1320,8 @@ XCleanUp ()
 }
 
 
-syms_of_xfns ()
+void
+syms_of_xfns (void)
 {
   x_edges_specified = 0;
 

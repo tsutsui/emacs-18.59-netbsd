@@ -94,9 +94,7 @@ static int max_print;
 static int printbufidx;
 
 static void
-printchar (ch, fun)
-     unsigned char ch;
-     Lisp_Object fun;
+printchar (unsigned char ch, Lisp_Object fun)
 {
   Lisp_Object ch1;
 
@@ -137,10 +135,7 @@ printchar (ch, fun)
 }
 
 static void
-strout (ptr, size, printcharfun)
-     char *ptr;
-     int size;
-     Lisp_Object printcharfun;
+strout (char *ptr, int size, Lisp_Object printcharfun)
 {
   int i = 0;
 
@@ -190,8 +185,7 @@ strout (ptr, size, printcharfun)
 DEFUN ("write-char", Fwrite_char, Swrite_char, 1, 2, 0,
   "Output character CHAR to stream STREAM.\n\
 STREAM defaults to the value of `standard-output' (which see).")
-  (ch, printcharfun)
-     Lisp_Object ch, printcharfun;
+  (Lisp_Object ch, Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -208,9 +202,7 @@ STREAM defaults to the value of `standard-output' (which see).")
 }
 
 void
-write_string (data, size)
-     const char *data;
-     int size;
+write_string (const char *data, int size)
 {
   struct buffer *old = current_buffer;
   Lisp_Object printcharfun;
@@ -226,10 +218,7 @@ write_string (data, size)
 }
 
 void
-write_string_1 (data, size, printcharfun)
-     const char *data;
-     int size;
-     Lisp_Object printcharfun;
+write_string_1 (const char *data, int size, Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -245,8 +234,7 @@ write_string_1 (data, size, printcharfun)
 #ifndef standalone
 
 void
-temp_output_buffer_setup (bufname)
-    char *bufname;
+temp_output_buffer_setup (char *bufname)
 {
   register struct buffer *old = current_buffer;
   register Lisp_Object buf;
@@ -263,10 +251,7 @@ temp_output_buffer_setup (bufname)
 }
 
 Lisp_Object
-internal_with_output_to_temp_buffer (bufname, function, args)
-     char *bufname;
-     Lisp_Object (*function) (Lisp_Object);
-     Lisp_Object args;
+internal_with_output_to_temp_buffer (char *bufname, Lisp_Object (*function)(Lisp_Object), Lisp_Object args)
 {
   int count = specpdl_ptr - specpdl;
   Lisp_Object buf, val;
@@ -292,8 +277,7 @@ It is displayed in another window, but not selected.\n\
 The value of the last form in BODY is returned.\n\
 If variable `temp-buffer-show-hook' is non-nil, call it at the end\n\
 to get the buffer displayed.  It gets one argument, the buffer to display.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   struct gcpro gcpro1;
   Lisp_Object name;
@@ -321,8 +305,7 @@ static void print (Lisp_Object, Lisp_Object, int);
 
 DEFUN ("terpri", Fterpri, Sterpri, 0, 1, 0,
   "Output a newline to STREAM (or value of standard-output).")
-  (printcharfun)
-     Lisp_Object printcharfun;
+  (Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -342,8 +325,7 @@ DEFUN ("prin1", Fprin1, Sprin1, 1, 2, 0,
 Quoting characters are printed when needed to make output that `read'\n\
 can handle, whenever this is possible.\n\
 Output stream is STREAM, or value of `standard-output' (which see).")
-  (obj, printcharfun)
-     Lisp_Object obj, printcharfun;
+  (Lisp_Object obj, Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -369,8 +351,7 @@ DEFUN ("prin1-to-string", Fprin1_to_string, Sprin1_to_string, 1, 1, 0,
   "Return a string containing the printed representation of OBJECT,\n\
 any Lisp object.  Quoting characters are used when needed to make output\n\
 that `read' can handle, whenever this is possible.")
-  (obj)
-     Lisp_Object obj;
+  (Lisp_Object obj)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -398,8 +379,7 @@ DEFUN ("princ", Fprinc, Sprinc, 1, 2, 0,
 No quoting characters are used; no delimiters are printed around\n\
 the contents of strings.\n\
 Output stream is STREAM, or value of standard-output (which see).")
-  (obj, printcharfun)
-     Lisp_Object obj, printcharfun;
+  (Lisp_Object obj, Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -420,8 +400,7 @@ DEFUN ("print", Fprint, Sprint, 1, 2, 0,
 Quoting characters are printed when needed to make output that `read'\n\
 can handle, whenever this is possible.\n\
 Output stream is STREAM, or value of `standard-output' (which see).")
-  (obj, printcharfun)
-     Lisp_Object obj, printcharfun;
+  (Lisp_Object obj, Lisp_Object printcharfun)
 {
   struct buffer *old = current_buffer;
   int old_point = -1;
@@ -451,14 +430,7 @@ Output stream is STREAM, or value of `standard-output' (which see).")
 }
 
 static void
-print (obj, printcharfun, escapeflag)
-#ifndef RTPC_REGISTER_BUG
-     register Lisp_Object obj;
-#else
-     Lisp_Object obj;
-#endif
-     register Lisp_Object printcharfun;
-     int escapeflag;
+print (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag)
 {
   char buf[30];
 
@@ -672,7 +644,7 @@ print (obj, printcharfun, escapeflag)
 }
 
 void
-syms_of_print ()
+syms_of_print (void)
 {
   DEFVAR_LISP ("standard-output", &Vstandard_output,
     "Function print uses by default for outputting a character.\n\

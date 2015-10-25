@@ -36,8 +36,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 Lisp_Object Vdoc_file_name;
 
 Lisp_Object
-get_doc_string (filepos)
-     long filepos;
+get_doc_string (long filepos)
 {
   char buf[512 * 32 + 1];
   register int fd;
@@ -101,8 +100,7 @@ get_doc_string (filepos)
 
 DEFUN ("documentation", Fdocumentation, Sdocumentation, 1, 1, 0,
   "Return the documentation string of FUNCTION.")
-  (fun1)
-     Lisp_Object fun1;
+  (Lisp_Object fun1)
 {
   Lisp_Object fun;
   Lisp_Object funcar;
@@ -152,8 +150,7 @@ DEFUN ("documentation-property", Fdocumentation_property,
   "Return the documentation string that is SYMBOL's PROP property.\n\
 This differs from using `get' only in that it can refer to strings\n\
 stored in the etc/DOC file.")
-  (sym, prop)
-     Lisp_Object sym, prop;
+  (Lisp_Object sym, Lisp_Object prop)
 {
   register Lisp_Object tem;
 
@@ -171,8 +168,7 @@ record them in function definitions.\n\
 One arg, FILENAME, a string which does not include a directory.\n\
 The file is found in ../etc now; found in the exec-directory\n\
 when doc strings are referred to later in the dumped Emacs.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   int fd;
   char buf[1024 + 1];
@@ -284,8 +280,7 @@ Substrings of the form \\=\\<MAPVAR> specify to use the value of MAPVAR\n\
 as the keymap for future \\=\\[COMMAND] substrings.\n\
 \\=\\= quotes the following character and is discarded;\n\
 thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ into the output.")
-  (str)
-     Lisp_Object str;
+  (Lisp_Object str)
 {
   unsigned char *buf;
   int changed = 0;
@@ -421,7 +416,7 @@ thus, \\=\\=\\=\\= puts \\=\\= into the output, and \\=\\=\\=\\[ puts \\=\\[ int
 }
 
 void
-syms_of_doc ()
+syms_of_doc (void)
 {
   staticpro (&Vdoc_file_name);
   Vdoc_file_name = Qnil;

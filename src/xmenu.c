@@ -97,7 +97,8 @@ extern int (*handler)();
 /*************************************************************/
 
 /* Ignoring the args is easiest.  */
-XMenuQuit ()
+int
+XMenuQuit (void)
 {
   error("Unknown XMenu error");
 }
@@ -115,8 +116,7 @@ MENU is a specifier for a menu.  It is a list of the form\n\
 (title pane1 pane2...), and each pane is a list of form\n\
 (title (line item)...).  Each line should be a string, and item should\n\
 be the return value for that line (i. e. if it is selected.")
-       (arg,menu)
-     Lisp_Object arg,menu;
+       (Lisp_Object arg, Lisp_Object menu)
 {
   int number_of_panes;
   Lisp_Object XMenu_return;
@@ -217,17 +217,18 @@ struct indices {
 };
 
 Lisp_Object
-XEmacsMenu(parent, startx, starty, line_list, pane_list, line_cnt,
-	   pane_cnt, item_list, title, error)
-     Window parent;		
-     int startx, starty;	/* upper left corner position BROKEN */
-     char **line_list[];   	/* list of strings for items */
-     char *pane_list[];		/* list of pane titles */
-     char *title;
-     int pane_cnt;		/* total number of panes */
-     Lisp_Object *item_list[];	/* All items */
-     int line_cnt[];		/* Lines in each pane */
-     char **error;		/* Error returned */
+XEmacsMenu (
+    Window parent,
+    int startx,
+    int starty,	/* upper left corner position BROKEN */
+    char **line_list[],   	/* list of strings for items */
+    char *pane_list[],		/* list of pane titles */
+    int line_cnt[],		/* Lines in each pane */
+    int pane_cnt,		/* total number of panes */
+    Lisp_Object *item_list[],	/* All items */
+    char *title,
+    char **error		/* Error returned */
+)
 {
   XMenu *GXMenu;
   int last, panes, selidx, lpane, status;
@@ -335,17 +336,20 @@ XEmacsMenu(parent, startx, starty, line_list, pane_list, line_cnt,
   return(entry);
 }
 
-syms_of_xmenu ()
+int
+syms_of_xmenu (void)
 {
   defsubr (&Sx_popup_menu);
 }
 
-list_of_panes (vector, panes, names, items, menu)
-     Lisp_Object ***vector;	/* RETURN all menu objects */
-     char ***panes;		/* RETURN pane names */
-     char ****names;		/* RETURN all line names */
-     int **items;		/* RETURN number of items per pane */
-     Lisp_Object menu;
+int
+list_of_panes (
+    Lisp_Object ***vector,	/* RETURN all menu objects */
+    char ***panes,		/* RETURN pane names */
+    char ****names,		/* RETURN all line names */
+    int **items,		/* RETURN number of items per pane */
+    Lisp_Object menu
+)
 {
   Lisp_Object tail, item, item1;
   int i;
@@ -382,10 +386,12 @@ list_of_panes (vector, panes, names, items, menu)
 }
      
 
-list_of_items (vector,names,pane)  /* get list from emacs and put to vector */
-     Lisp_Object **vector;	/* RETURN menu "objects" */
-     char ***names;		/* RETURN line names */
-     Lisp_Object pane;
+int
+list_of_items (  /* get list from emacs and put to vector */
+    Lisp_Object **vector,	/* RETURN menu "objects" */
+    char ***names,		/* RETURN line names */
+    Lisp_Object pane
+)
 {
   Lisp_Object tail, item, item1;
   int i;

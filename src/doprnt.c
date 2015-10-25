@@ -27,12 +27,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "lisp.h"
 
 int
-doprnt (buffer, bufsize, format, nargs, args)
-     char *buffer;
-     register int bufsize;
-     char *format;
-     int nargs;
-     char **args;
+doprnt (char *buffer, register int bufsize, char *format, int nargs, char **args)
 {
   int cnt = 0;			/* Number of arg to gobble next */
   register char *fmt = format;	/* Pointer into format string */

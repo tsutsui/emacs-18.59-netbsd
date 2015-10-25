@@ -139,8 +139,7 @@ int fatal_error_in_progress;
 
 /* Handle bus errors, illegal instruction, etc. */
 void
-fatal_error_signal (sig)
-     int sig;
+fatal_error_signal (int sig)
 {
 #ifdef BSD
   int tpgrp;
@@ -188,10 +187,7 @@ fatal_error_signal (sig)
 /* Code for dealing with Lisp access to the Unix command line */
 
 static void
-init_cmdargs (argc, argv, skip_args)
-     int argc;
-     char **argv;
-     int skip_args;
+init_cmdargs (int argc, char **argv, int skip_args)
 {
   register int i;
 
@@ -241,10 +237,7 @@ void syms_of_emacs (void);
 
 /* ARGSUSED */
 int
-main (argc, argv, envp)
-     int argc;
-     char **argv;
-     char **envp;
+main (int argc, char **argv, char **envp)
 {
   int skip_args = 0;
   extern int errno;

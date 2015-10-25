@@ -234,8 +234,7 @@ remake_screen_structures (void)
 }
 
 struct matrix *
-make_screen_structure (empty)
-     int empty;
+make_screen_structure (int empty)
 {
   int i;
   struct matrix *new = (struct matrix *) xmalloc (sizeof (struct matrix));
@@ -274,8 +273,7 @@ make_screen_structure (empty)
 }
 
 void
-free_screen_structure (matrix)
-     struct matrix *matrix;
+free_screen_structure (struct matrix *matrix)
 {
   if (matrix->total_contents)
     free (matrix->total_contents);
@@ -289,9 +287,7 @@ free_screen_structure (matrix)
 /* Return the hash code of contents of line VPOS of screen-matrix M.  */
 
 int
-line_hash_code (m, vpos)
-     struct matrix *m;
-     int vpos;
+line_hash_code (struct matrix *m, int vpos)
 {
   register unsigned char *body;
   register int h = 0;
@@ -332,9 +328,7 @@ line_hash_code (m, vpos)
    unless the terminal requires those to be explicitly output.  */
 
 int
-line_draw_cost (m, vpos)
-     struct matrix *m;
-     int vpos;
+line_draw_cost (struct matrix *m, int vpos)
 {
   register unsigned char *body;
   register int i;
@@ -357,14 +351,13 @@ line_draw_cost (m, vpos)
 /* cancel_line eliminates any request to display a line at position `vpos' */
 
 void
-cancel_line (vpos)
-     int vpos;
+cancel_line (int vpos)
 {
   new_screen->enable[vpos] = 0;
 }
 
 void
-clear_screen_records ()
+clear_screen_records (void)
 {
   int i;
 
@@ -376,9 +369,7 @@ clear_screen_records ()
    Return the text string where that line is stored.  */
 
 unsigned char *
-get_display_line (vpos, hpos)
-     int vpos;
-     register int hpos;
+get_display_line (int vpos, register int hpos)
 {
   if (new_screen->enable[vpos] && new_screen->used[vpos] > hpos)
     abort ();
@@ -406,8 +397,7 @@ get_display_line (vpos, hpos)
  Returns nonzero if done, zero if terminal cannot scroll them. */
 
 int
-scroll_screen_lines (from, end, amount)
-     Lisp_Object_Int from, end, amount;
+scroll_screen_lines (Lisp_Object_Int from, Lisp_Object_Int end, Lisp_Object_Int amount)
 {
   register int i;
 
@@ -487,10 +477,7 @@ scroll_screen_lines (from, end, amount)
    DISTANCE may be negative.  */
 
 void
-rotate_vector (v, size, distance)
-     void *v;
-     int size;
-     int distance;
+rotate_vector (void *v, int size, int distance)
 {
   char *vector = v;
   char *temp = (char *) alloca (size);
@@ -506,9 +493,7 @@ rotate_vector (v, size, distance)
 /* Like bcopy except never gets confused by overlap.  */
 
 void
-safe_bcopy (src, dst, size)
-     void *src, *dst;
-     int size;
+safe_bcopy (void *src, void *dst, int size)
 {
   char *from = src;
   char *to = dst;
@@ -541,8 +526,7 @@ safe_bcopy (src, dst, size)
  so that update_screen will not change those columns.  */
 
 void
-preserve_other_columns (w)
-     struct window *w;
+preserve_other_columns (struct window *w)
 {
   register int vpos;
   int start = XFASTINT (w->left);
@@ -583,8 +567,7 @@ preserve_other_columns (w)
  get_display_line will not complain. */
 
 void
-cancel_my_columns (w)
-     struct window *w;
+cancel_my_columns (struct window *w)
 {
   register int vpos;
   register int start = XFASTINT (w->left);
@@ -604,8 +587,7 @@ cancel_my_columns (w)
    see command_loop_1 where these are called.  */
 
 int
-direct_output_for_insert (c)
-     int c;
+direct_output_for_insert (int c)
 {
 #ifndef COMPILER_REGISTER_BUG
   register
@@ -657,8 +639,7 @@ direct_output_for_insert (c)
 }
 
 int
-direct_output_forward_char (n)
-     int n;
+direct_output_forward_char (int n)
 {
   register struct window *w = XWINDOW (selected_window);
 
@@ -687,9 +668,7 @@ direct_output_forward_char (n)
    FORCE nonzero means do not stop for pending input.  */
 
 int
-update_screen (force, inhibit_hairy_id)
-     int force;
-     int inhibit_hairy_id;
+update_screen (int force, int inhibit_hairy_id)
 {
   register struct display_line **p;
   register struct display_line *l, *lnew;
@@ -811,7 +790,7 @@ update_screen (force, inhibit_hairy_id)
    at an improper time.  */
 
 void
-quit_error_check ()
+quit_error_check (void)
 {
   if (new_screen == 0)
     return;
@@ -824,7 +803,7 @@ quit_error_check ()
 /* Decide what insert/delete line to do, and do it */
 
 int
-scrolling ()
+scrolling (void)
 {
   int unchanged_at_top, unchanged_at_bottom;
   int window_size;
@@ -898,8 +877,7 @@ scrolling ()
 }
 
 void
-update_line (vpos)
-     int vpos;
+update_line (int vpos)
 {
   register unsigned char *obody, *nbody, *op1, *op2, *np1;
   int tem;
@@ -1200,8 +1178,7 @@ update_line (vpos)
 }
 
 int
-count_blanks (str)
-     char *str;
+count_blanks (char *str)
 {
   register char *p = str;
   while (*str++ == ' ');
@@ -1209,8 +1186,7 @@ count_blanks (str)
 }
 
 int
-count_match (str1, str2)
-     char *str1, *str2;
+count_match (char *str1, char *str2)
 {
   register char *p1 = str1;
   register char *p2 = str2;
@@ -1278,7 +1254,7 @@ DEFUN ("screen-width", Fscreen_width, Sscreen_width, 0, 0, 0,
 
 #ifdef SIGWINCH
 void
-window_change_signal ()
+window_change_signal (void)
 {
   int width, height;
   int old_errno = errno;
@@ -1296,7 +1272,7 @@ window_change_signal ()
 /* Do any change in screen size that was requested by a signal.  */
 
 void
-do_pending_window_change ()
+do_pending_window_change (void)
 {
   /* If change_screen_size should have run before, run it now.  */
   while (delayed_size_change)
@@ -1323,8 +1299,7 @@ do_pending_window_change ()
    This is effective only is DELAYED is not set.  */
 
 void
-change_screen_size (newlength, newwidth, pretend, delayed, force)
-     register int newlength, newwidth, pretend, delayed, force;
+change_screen_size (register int newlength, register int newwidth, register int pretend, register int delayed, register int force)
 {
   /* Don't queue a size change if we won't really do anything.  */
   if ((newlength == 0 || newlength == screen_height)
@@ -1345,8 +1320,7 @@ change_screen_size (newlength, newwidth, pretend, delayed, force)
 }
 
 void
-change_screen_size_1 (newlength, newwidth, pretend, force)
-     register int newlength, newwidth, pretend, force;
+change_screen_size_1 (register int newlength, register int newwidth, register int pretend, register int force)
 {
   if ((newlength == 0 || newlength == screen_height)
       && (newwidth == 0 || newwidth == screen_width))
@@ -1426,7 +1400,7 @@ is given.")
 }
 
 void
-bell ()
+bell (void)
 {
   if (noninteractive)
     putchar (07);
@@ -1504,8 +1478,7 @@ DEFUN ("sleep-for", Fsleep_for, Ssleep_for, 1, 1, 0,
    Return 1 if the difference is negative, otherwise 0.  */
 
 int
-timeval_subtract (result, x, y)
-     struct timeval *result, x, y;
+timeval_subtract (struct timeval *result, struct timeval x, struct timeval y)
 {
   /* Perform the carry for the later subtraction by updating y.
      This is safer because on some systems
@@ -1596,7 +1569,7 @@ char *terminal_type;
   in the terminal package */
 
 void
-init_display ()
+init_display (void)
 {
 #ifdef HAVE_X_WINDOWS
   extern Lisp_Object Vxterm;
@@ -1664,7 +1637,7 @@ For types not defined in VMS, use  define emacs_term \"TYPE\".\n\
 }
 
 void
-syms_of_display ()
+syms_of_display (void)
 {
   defsubr (&Sopen_termscript);
   defsubr (&Sding);

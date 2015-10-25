@@ -64,8 +64,8 @@ static int read_from_string_limit;
 
 static int unrch;
 
-static int readchar (readcharfun)
-     Lisp_Object readcharfun;
+static int
+readchar (Lisp_Object readcharfun)
 {
   Lisp_Object tem;
   register struct buffer *inbuffer;
@@ -135,7 +135,7 @@ static int read_escape (Lisp_Object);
 DEFUN ("read-char", Fread_char, Sread_char, 0, 0, 0,
   "Read a character from the command input (keyboard or macro).\n\
 It is returned as a number.")
-  ()
+  (void)
 {
   register Lisp_Object val;
 
@@ -150,7 +150,7 @@ It is returned as a number.")
 
 DEFUN ("get-file-char", Fget_file_char, Sget_file_char, 0, 0, 0,
   "Don't use this yourself.")
-  ()
+  (void)
 {
   register Lisp_Object val;
   XSET (val, Lisp_Int, getc (instream));
@@ -171,8 +171,7 @@ Print messages at start and end of loading unless\n\
 If optional fourth arg NOSUFFIX is non-nil, don't try adding\n\
  suffixes .elc or .el to the specified name FILE.\n\
 Return t if file exists.")
-  (str, noerror, nomessage, nosuffix)
-     Lisp_Object str, noerror, nomessage, nosuffix;
+  (Lisp_Object str, Lisp_Object noerror, Lisp_Object nomessage, Lisp_Object nosuffix)
 {
   register FILE *stream;
   register int fd = -1;
@@ -224,8 +223,7 @@ Return t if file exists.")
 }
 
 static Lisp_Object
-load_unwind (stream)  /* used as unwind-protect function in load */
-     Lisp_Object stream;
+load_unwind (Lisp_Object stream) /* used as unwind-protect function in load */
 {
   fclose (*(FILE **) XSTRING (stream));
   free ((void *)(XPNTR (stream)));
@@ -235,8 +233,7 @@ load_unwind (stream)  /* used as unwind-protect function in load */
 
 
 static int
-absolute_filename_p (pathname)
-     Lisp_Object pathname;
+absolute_filename_p (Lisp_Object pathname)
 {
   register unsigned char *s = XSTRING (pathname)->data;
   return (*s == '~' || *s == '/'
@@ -260,11 +257,7 @@ absolute_filename_p (pathname)
    Nil is stored there on failure.  */
 
 int
-openp (path, str, suffix, storeptr, exec_only)
-     Lisp_Object path, str;
-     char *suffix;
-     Lisp_Object *storeptr;
-     int exec_only;
+openp (Lisp_Object path, Lisp_Object str, char *suffix, Lisp_Object *storeptr, int exec_only)
 {
   register int fd;
   int fn_size = 100;
@@ -349,18 +342,14 @@ openp (path, str, suffix, storeptr, exec_only)
 
 
 Lisp_Object
-unreadpure ()	/* Used as unwind-protect function in readevalloop */
+unreadpure (void)	/* Used as unwind-protect function in readevalloop */
 {
   read_pure = 0;
   return Qnil;
 }
 
 static void
-readevalloop (readcharfun, stream, evalfun, printflag)
-     Lisp_Object readcharfun;
-     FILE *stream;     
-     Lisp_Object (*evalfun) (Lisp_Object);
-     int printflag;
+readevalloop (Lisp_Object readcharfun, FILE *stream, Lisp_Object (*evalfun)(Lisp_Object), int printflag)
 {
   register int c;
   register Lisp_Object val;
@@ -418,8 +407,7 @@ DEFUN ("eval-current-buffer", Feval_current_buffer, Seval_current_buffer, 0, 1, 
   "Execute the current buffer as Lisp code.\n\
 Programs can pass argument PRINTFLAG which controls printing of output:\n\
 nil means discard it; anything else is stream for print.")
-  (printflag)
-     Lisp_Object printflag;
+  (Lisp_Object printflag)
 {
   int count = specpdl_ptr - specpdl;
   Lisp_Object tem;
@@ -442,8 +430,7 @@ giving starting and ending indices in the current buffer\n\
 of the text to be executed.\n\
 Programs can pass third argument PRINTFLAG which controls printing of output:\n\
 nil means discard it; anything else is stream for print.")
-  (b, e, printflag)
-     Lisp_Object b, e, printflag;
+  (Lisp_Object b, Lisp_Object e, Lisp_Object printflag)
 {
   int count = specpdl_ptr - specpdl;
   Lisp_Object tem;
@@ -475,8 +462,7 @@ STREAM or standard-input may be:\n\
  a function (call it with no arguments for each character)\n\
  a string (takes text from string, starting at the beginning)\n\
  t (read text line using minibuffer and use it).")
-  (readcharfun)
-     Lisp_Object readcharfun;
+  (Lisp_Object readcharfun)
 {
 
   unrch = -1;	/* Allow buffering-back only within a read. */
@@ -502,8 +488,7 @@ DEFUN ("read-from-string", Fread_from_string, Sread_from_string, 1, 3, 0,
 Returns a cons: (OBJECT-READ . FINAL-STRING-INDEX).\n\
 START and END optionally delimit a substring of STRING from which to read;\n\
  they default to 0 and (length STRING) respectively.")
-  (string, start, end)
-     Lisp_Object string, start, end;
+  (Lisp_Object string, Lisp_Object start, Lisp_Object end)
 {
   int startval, endval;
   Lisp_Object tem;
@@ -540,8 +525,7 @@ START and END optionally delimit a substring of STRING from which to read;\n\
 /* Use this for recursive reads, in contexts where internal tokens are not allowed. */
 
 static Lisp_Object
-read0 (readcharfun)
-     Lisp_Object readcharfun;
+read0 (Lisp_Object readcharfun)
 {
   register Lisp_Object val;
   char c;
@@ -560,8 +544,7 @@ static int read_buffer_size;
 static char *read_buffer;
 
 static Lisp_Object
-read1 (readcharfun)
-     register Lisp_Object readcharfun;
+read1 (register Lisp_Object readcharfun)
 {
   register int c;
 
@@ -720,8 +703,7 @@ read1 (readcharfun)
 }
 
 static Lisp_Object
-read_vector (readcharfun)
-     Lisp_Object readcharfun;
+read_vector (Lisp_Object readcharfun)
 {
   register int i;
   register int size;
@@ -752,9 +734,7 @@ read_vector (readcharfun)
     and make structure pure.  */
 
 static Lisp_Object
-read_list (flag, readcharfun)
-     int flag;
-     register Lisp_Object readcharfun;
+read_list (int flag, register Lisp_Object readcharfun)
 {
   /* -1 means check next element for defun,
      0 means don't check,
@@ -813,8 +793,7 @@ read_list (flag, readcharfun)
 }
 
 static int
-read_escape (readcharfun)
-     Lisp_Object readcharfun;
+read_escape (Lisp_Object readcharfun)
 {
   register int c = READCHAR;
   switch (c)
@@ -894,8 +873,7 @@ Lisp_Object Vobarray;
 Lisp_Object initial_obarray;
 
 Lisp_Object
-check_obarray (obarray)
-     Lisp_Object obarray;
+check_obarray (Lisp_Object obarray)
 {
   while (XTYPE (obarray) != Lisp_Vector || XVECTOR (obarray)->size == 0)
     {
@@ -910,8 +888,7 @@ check_obarray (obarray)
 static int hash_string (unsigned char *, int);
 
 Lisp_Object
-intern (str)
-     char *str;
+intern (char *str)
 {
   Lisp_Object tem;
   int len = strlen (str);
@@ -931,8 +908,7 @@ DEFUN ("intern", Fintern, Sintern, 1, 2, 0,
   "Return the symbol whose name is STRING.\n\
 A second optional argument specifies the obarray to use;\n\
 it defaults to the value of  obarray.")
-  (str, obarray)
-     Lisp_Object str, obarray;
+  (Lisp_Object str, Lisp_Object obarray)
 {
   register Lisp_Object tem, sym, *ptr;
 
@@ -962,8 +938,7 @@ DEFUN ("intern-soft", Fintern_soft, Sintern_soft, 1, 2, 0,
   "Return the symbol whose name is STRING, or nil if none exists yet.\n\
 A second optional argument specifies the obarray to use;\n\
 it defaults to the value of  obarray.")
-  (str, obarray)
-     Lisp_Object str, obarray;
+  (Lisp_Object str, Lisp_Object obarray)
 {
   register Lisp_Object tem;
 
@@ -979,10 +954,7 @@ it defaults to the value of  obarray.")
 }
 
 Lisp_Object
-oblookup (obarray, ptr, size)
-     Lisp_Object obarray;
-     register char *ptr;
-     register int size;
+oblookup (Lisp_Object obarray, register char *ptr, register int size)
 {
   int hash, obsize;
   register Lisp_Object tail;
@@ -1015,9 +987,7 @@ oblookup (obarray, ptr, size)
 }
 
 static int
-hash_string (ptr, len)
-     unsigned char *ptr;
-     int len;
+hash_string (unsigned char *ptr, int len)
 {
   register unsigned char *p = ptr;
   register unsigned char *end = p + len;
@@ -1034,10 +1004,7 @@ hash_string (ptr, len)
 }
 
 void
-map_obarray (obarray, fn, arg)
-     Lisp_Object obarray;
-     void (*fn) (Lisp_Object, Lisp_Object);
-     Lisp_Object arg;
+map_obarray (Lisp_Object obarray, void (*fn)(Lisp_Object, Lisp_Object), Lisp_Object arg)
 {
   register int i;
   register Lisp_Object tail;
@@ -1057,8 +1024,7 @@ map_obarray (obarray, fn, arg)
 }
 
 void
-mapatoms_1 (sym, function)
-     Lisp_Object sym, function;
+mapatoms_1 (Lisp_Object sym, Lisp_Object function)
 {
   call1 (function, sym);
 }
@@ -1066,8 +1032,7 @@ mapatoms_1 (sym, function)
 DEFUN ("mapatoms", Fmapatoms, Smapatoms, 1, 2, 0,
   "Call FUNCTION on every symbol in OBARRAY.\n\
 OBARRAY defaults to the value of  obarray.")
-  (function, obarray)
-     Lisp_Object function, obarray;
+  (Lisp_Object function, Lisp_Object obarray)
 {
   Lisp_Object tem;
 
@@ -1081,7 +1046,7 @@ OBARRAY defaults to the value of  obarray.")
 #define OBARRAY_SIZE 511
 
 void
-init_obarray ()
+init_obarray (void)
 {
   Lisp_Object oblength;
   int hash;
@@ -1121,8 +1086,7 @@ init_obarray ()
 }
 
 void
-defsubr (sname)
-     struct Lisp_Subr *sname;
+defsubr (struct Lisp_Subr *sname)
 {
   Lisp_Object sym;
   sym = intern (sname->symbol_name);
@@ -1131,9 +1095,7 @@ defsubr (sname)
 
 #ifdef NOTDEF /* use fset in subr.el now */
 void
-defalias (sname, string)
-     struct Lisp_Subr *sname;
-     char *string;
+defalias (struct Lisp_Subr *sname, char *string)
 {
   Lisp_Object sym;
   sym = intern (string);
@@ -1148,10 +1110,7 @@ defalias (sname, string)
   /* DEFVARINT ("indent-tabs-mode", &indent_tabs_mode, "Documentation");  */
 
 void
-defvar_int (namestring, address, doc)
-     char *namestring;
-     int *address;
-     char *doc;
+defvar_int (char *namestring, int *address, char *doc)
 {
   Lisp_Object sym;
   sym = intern (namestring);
@@ -1162,10 +1121,7 @@ defvar_int (namestring, address, doc)
  NIL if address contains 0 */
 
 void
-defvar_bool (namestring, address, doc)
-     char *namestring;
-     int *address;
-     char *doc;
+defvar_bool (char *namestring, int *address, char *doc)
 {
   Lisp_Object sym;
   sym = intern (namestring);
@@ -1175,10 +1131,7 @@ defvar_bool (namestring, address, doc)
 /* Similar but define a variable whose value is the Lisp Object stored at address. */
 
 void
-defvar_lisp (namestring, address, doc)
-     char *namestring;
-     Lisp_Object *address;
-     char *doc;
+defvar_lisp (char *namestring, Lisp_Object *address, char *doc)
 {
   Lisp_Object sym;
   sym = intern (namestring);
@@ -1191,10 +1144,7 @@ defvar_lisp (namestring, address, doc)
    since marking the same slot twice can cause trouble with strings.  */
 
 void
-defvar_lisp_nopro (namestring, address, doc)
-     char *namestring;
-     Lisp_Object *address;
-     char *doc;
+defvar_lisp_nopro (char *namestring, Lisp_Object *address, char *doc)
 {
   Lisp_Object sym;
   sym = intern (namestring);
@@ -1207,10 +1157,7 @@ defvar_lisp_nopro (namestring, address, doc)
  the current buffer.  address is the address of the slot in the buffer that is current now. */
 
 void
-defvar_per_buffer (namestring, address, doc)
-     char *namestring;
-     Lisp_Object *address;
-     char *doc;
+defvar_per_buffer (char *namestring, Lisp_Object *address, char *doc)
 {
   Lisp_Object sym;
   Lisp_Object_Int offset;
@@ -1231,7 +1178,7 @@ defvar_per_buffer (namestring, address, doc)
 #endif /* standalone */
 
 void
-init_read ()
+init_read (void)
 {
   char *normal = PATH_LOADSEARCH;
   Lisp_Object normal_path;
@@ -1278,7 +1225,7 @@ init_read ()
 }
 
 void
-syms_of_read ()
+syms_of_read (void)
 {
   defsubr (&Sread);
   defsubr (&Sread_from_string);

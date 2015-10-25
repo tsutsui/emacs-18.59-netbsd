@@ -44,8 +44,7 @@ Use \\[end-kbd-macro] to finish recording and make the macro available.\n\
 Use \\[name-last-kbd-macro] to give it a permanent name.\n\
 Non-nil arg (prefix arg) means append to last macro defined;\n\
  This begins by re-executing that macro as if you typed it again.")
-  (append)
-     Lisp_Object append;
+  (Lisp_Object append)
 {
   if (defining_kbd_macro)
     error ("Already defining kbd macro");
@@ -76,8 +75,7 @@ or it can be given a name with \\[name-last-kbd-macro] and then invoked\n\
 under that name.\n\
 With numeric arg, repeat macro now that many times,\n\
 counting the definition just completed as the first repetition.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   if (!defining_kbd_macro)
       error ("Not defining kbd macro.");
@@ -110,8 +108,7 @@ counting the definition just completed as the first repetition.")
 /* Store character c into kbd macro being defined */
 
 void
-store_kbd_macro_char (c)
-     unsigned char c;
+store_kbd_macro_char (unsigned char c)
 {
   if (defining_kbd_macro)
     {
@@ -130,7 +127,7 @@ store_kbd_macro_char (c)
  really belong to it.  This is done in between editor commands.  */
 
 void
-finalize_kbd_macro_chars ()
+finalize_kbd_macro_chars (void)
 {
   kbd_macro_end = kbd_macro_ptr;
 }
@@ -140,8 +137,7 @@ DEFUN ("call-last-kbd-macro", Fcall_last_kbd_macro, Scall_last_kbd_macro,
   "Call the last keyboard macro that you defined with \\[start-kbd-macro].\n\
 To make a macro permanent so you can call it even after\n\
 defining others, use \\[name-last-kbd-macro].")
-  (prefix)
-     Lisp_Object prefix;
+  (Lisp_Object prefix)
 {
   if (defining_kbd_macro)
     error ("Can't execute anonymous macro while defining one");
@@ -153,8 +149,7 @@ defining others, use \\[name-last-kbd-macro].")
 }
 
 static Lisp_Object
-pop_kbd_macro (info)
-     Lisp_Object info;
+pop_kbd_macro (Lisp_Object info)
 {
   Lisp_Object tem;
   Vexecuting_macro = Fcar (info);
@@ -167,8 +162,7 @@ DEFUN ("execute-kbd-macro", Fexecute_kbd_macro, Sexecute_kbd_macro, 1, 2, 0,
   "Execute MACRO as string of editor command characters.\n\
 If MACRO is a symbol, its function definition is used.\n\
 COUNT is a repeat count, or nil for once, or 0 for infinite loop.")
-  (macro, prefixarg)
-     Lisp_Object macro, prefixarg;
+  (Lisp_Object macro, Lisp_Object prefixarg)
 {
   Lisp_Object final;
   Lisp_Object tem;
@@ -206,7 +200,7 @@ COUNT is a repeat count, or nil for once, or 0 for infinite loop.")
 }
 
 void
-init_macros ()
+init_macros (void)
 {
   Vlast_kbd_macro = Qnil;
   defining_kbd_macro = 0;
@@ -215,7 +209,7 @@ init_macros ()
 }
 
 void
-syms_of_macros ()
+syms_of_macros (void)
 {
   kbd_macro_bufsize = 100;
   kbd_macro_buffer = (char *) malloc (kbd_macro_bufsize);
@@ -239,7 +233,7 @@ syms_of_macros ()
 }
 
 void
-keys_of_macros ()
+keys_of_macros (void)
 {
   ndefkey (Vctl_x_map, ('e'), "call-last-kbd-macro");
   ndefkey (Vctl_x_map, ('('), "start-kbd-macro");

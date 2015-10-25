@@ -79,8 +79,7 @@ DEFUN ("directory-files", Fdirectory_files, Sdirectory_files, 1, 3, 0,
   "Return a list of names of files in DIRECTORY.\n\
 If FULL is non-NIL, absolute pathnames of the files are returned.\n\
 If MATCH is non-NIL, only pathnames containing that regexp are returned.")
-  (dirname, full, match)
-     Lisp_Object dirname, full, match;
+  (Lisp_Object dirname, Lisp_Object full, Lisp_Object match)
 {
   DIR *d;
   char slashfilename[MAXNAMLEN+2];
@@ -148,8 +147,7 @@ Returns the longest string common to all filenames in DIR\n\
 that start with FILE.\n\
 If there is only one and FILE matches it exactly, returns t.\n\
 Returns nil if DIR contains no name starting with FILE.")
-  (file, dirname)
-     Lisp_Object file, dirname;
+  (Lisp_Object file, Lisp_Object dirname)
 {
   /* Don't waste time trying to complete a null string.
      Besides, this case happens when user is being asked for
@@ -164,8 +162,7 @@ Returns nil if DIR contains no name starting with FILE.")
 DEFUN ("file-name-all-completions", Ffile_name_all_completions,
   Sfile_name_all_completions, 2, 2, 0,
   "Return a list of all completions of file name FILE in directory DIR.")
-  (file, dirname)
-     Lisp_Object file, dirname;
+  (Lisp_Object file, Lisp_Object dirname)
 {
   return file_name_completion (file, dirname, 1, 0);
 }
@@ -175,8 +172,7 @@ DEFUN ("file-name-all-completions", Ffile_name_all_completions,
 DEFUN ("file-name-all-versions", Ffile_name_all_versions,
   Sfile_name_all_versions, 2, 2, 0,
   "Return a list of all versions of file name FILE in directory DIR.")
-  (file, dirname)
-     Lisp_Object file, dirname;
+  (Lisp_Object file, Lisp_Object dirname)
 {
   return file_name_completion (file, dirname, 1, 1);
 }
@@ -184,9 +180,7 @@ DEFUN ("file-name-all-versions", Ffile_name_all_versions,
 #endif /* VMS */
 
 Lisp_Object
-file_name_completion (file, dirname, all_flag, ver_flag)
-     Lisp_Object file, dirname;
-     int all_flag, ver_flag;
+file_name_completion (Lisp_Object file, Lisp_Object dirname, int all_flag, int ver_flag)
 {
   DIR *d;
   int bestmatchsize, skip;
@@ -379,10 +373,7 @@ file_name_completion (file, dirname, all_flag, ver_flag)
 }
 
 int
-file_name_completion_stat (dirname, dp, st_addr)
-     Lisp_Object dirname;
-     DIRENTRY *dp;
-     struct stat *st_addr;
+file_name_completion_stat (Lisp_Object dirname, DIRENTRY *dp, struct stat *st_addr)
 {
   int len = NAMLEN (dp);
   int pos = XSTRING (dirname)->size;
@@ -411,8 +402,7 @@ file_name_completion_stat (dirname, dp, st_addr)
 }
 
 Lisp_Object
-make_time (time)
-     int time;
+make_time (int time)
 {
   return Fcons (make_number (time >> 16),
 		Fcons (make_number (time & 0177777), Qnil));
@@ -436,8 +426,7 @@ Otherwise, list elements are:\n\
 10. inode number.\n\
 \n\
 If file does not exists, returns nil.")
-  (filename)
-     Lisp_Object filename;
+  (Lisp_Object filename)
 {
   Lisp_Object values[11];
   Lisp_Object dirname;
@@ -490,7 +479,7 @@ If file does not exists, returns nil.")
 }
 
 void
-syms_of_dired ()
+syms_of_dired (void)
 {
   defsubr (&Sdirectory_files);
   defsubr (&Sfile_name_completion);

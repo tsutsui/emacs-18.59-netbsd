@@ -32,8 +32,7 @@ Lisp_Object Venvironment_alist;
 extern char **environ;
 
 void
-set_environment_alist (str, val)
-     register Lisp_Object str, val;
+set_environment_alist (register Lisp_Object str, register Lisp_Object val)
 {
   register Lisp_Object tem;
 
@@ -53,7 +52,7 @@ set_environment_alist (str, val)
 
 
 static void
-initialize_environment_alist ()
+initialize_environment_alist (void)
 {
   register unsigned char **e, *s;
   extern char *index ();
@@ -69,9 +68,10 @@ initialize_environment_alist ()
 
 
 unsigned char *
-getenv_1 (str, ephemeral)
-     register unsigned char *str;
-     int ephemeral;		/* if ephmeral, don't need to gc-proof */
+getenv_1 (
+    register unsigned char *str,
+    int ephemeral		/* if ephmeral, don't need to gc-proof */
+)
 {
   register Lisp_Object env;
   int len = strlen (str);
@@ -127,8 +127,7 @@ getenv_1 (str, ephemeral)
 }
 
 /* unsigned  -- stupid delcaration in lisp.h */ char *
-getenv (str)
-     register unsigned char *str;
+getenv (register unsigned char *str)
 {
   return ((char *) getenv_1 (str, 0));
 }
@@ -143,7 +142,7 @@ egetenv (str)
 
 #if (1 == 1) /* use caller-alloca versions, rather than callee-malloc */
 int
-size_of_current_environ ()
+size_of_current_environ (void)
 {
   register int size;
   Lisp_Object tem;
@@ -168,8 +167,7 @@ size_of_current_environ ()
 }
 
 void
-get_current_environ (memory_block)
-     unsigned char **memory_block;
+get_current_environ (unsigned char **memory_block)
 {
   register unsigned char **e, *s;
   register int len;
@@ -205,7 +203,7 @@ get_current_environ (memory_block)
 #else
 /* dead code (this function mallocs, caller frees) superseded by above (which allows caller to use alloca) */
 unsigned char **
-current_environ ()
+current_environ (void)
 {
   unsigned char **env;
   register unsigned char **e, *s;
@@ -261,8 +259,7 @@ When invoked interactively, print the value in the echo area.\n\
 VAR is a string, the name of the variable,\n\
  or the symbol t, meaning to return an alist representing the\n\
  current environment.")
-  (str, interactivep)
-     Lisp_Object str, interactivep;
+  (Lisp_Object str, Lisp_Object interactivep)
 {
   Lisp_Object val;
   
@@ -286,9 +283,7 @@ DEFUN ("setenv", Fsetenv, Ssetenv, 1, 2,
   "Return the value of environment variable VAR, as a string.\n\
 When invoked interactively, print the value in the echo area.\n\
 VAR is a string, the name of the variable.")
-  (str, val)
-     Lisp_Object str;
-     Lisp_Object val;
+  (Lisp_Object str, Lisp_Object val)
 {
   Lisp_Object tem;
 
@@ -301,14 +296,16 @@ VAR is a string, the name of the variable.")
 }
 
 
-syms_of_environ ()
+int
+syms_of_environ (void)
 {
   staticpro (&Venvironment_alist);
   defsubr (&Ssetenv);
   defsubr (&Sgetenv);
 }
 
-init_environ ()
+int
+init_environ (void)
 {
   Venvironment_alist = Qnil;
   initialize_environment_alist ();

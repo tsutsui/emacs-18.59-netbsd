@@ -32,8 +32,7 @@ int char_quoted (int);
 DEFUN ("syntax-table-p", Fsyntax_table_p, Ssyntax_table_p, 1, 1, 0,
   "Return t if ARG is a syntax table.\n\
 Any vector of 256 elements will do.")
-  (obj)
-     Lisp_Object obj;
+  (Lisp_Object obj)
 {
   if (XTYPE (obj) == Lisp_Vector && XVECTOR (obj)->size == 0400)
     return Qt;
@@ -41,8 +40,7 @@ Any vector of 256 elements will do.")
 }
 
 Lisp_Object
-check_syntax_table (obj)
-     Lisp_Object obj;
+check_syntax_table (Lisp_Object obj)
 {
   register Lisp_Object tem;
   while (tem = Fsyntax_table_p (obj),
@@ -55,7 +53,7 @@ check_syntax_table (obj)
 DEFUN ("syntax-table", Fsyntax_table, Ssyntax_table, 0, 0, 0,
   "Return the current syntax table.\n\
 This is the one specified by the current buffer.")
-  ()
+  (void)
 {
   return current_buffer->syntax_table;
 }
@@ -64,7 +62,7 @@ DEFUN ("standard-syntax-table", Fstandard_syntax_table,
    Sstandard_syntax_table, 0, 0, 0,
   "Return the standard syntax table.\n\
 This is the one used for new buffers.")
-  ()
+  (void)
 {
   return Vstandard_syntax_table;
 }
@@ -72,8 +70,7 @@ This is the one used for new buffers.")
 DEFUN ("copy-syntax-table", Fcopy_syntax_table, Scopy_syntax_table, 0, 1, 0,
   "Construct a new syntax table and return it.\n\
 It is a copy of the TABLE, which defaults to the standard syntax table.")
-  (table)
-     Lisp_Object table;
+  (Lisp_Object table)
 {
   Lisp_Object size, val;
   XFASTINT (size) = 0400;
@@ -94,8 +91,7 @@ It is a copy of the TABLE, which defaults to the standard syntax table.")
 DEFUN ("set-syntax-table", Fset_syntax_table, Sset_syntax_table, 1, 1, 0,
   "Select a new syntax table for the current buffer.\n\
 One argument, a syntax table.")
-  (table)
-     Lisp_Object table;
+  (Lisp_Object table)
 {
   table = check_syntax_table (table);
   current_buffer->syntax_table = table;
@@ -142,8 +138,7 @@ DEFUN ("char-syntax", Fchar_syntax, Schar_syntax, 1, 1, 0,
 For example, if CHAR is a word constituent, ?w is returned.\n\
 The characters that correspond to various syntax codes\n\
 are listed in the documentation of  modify-syntax-entry.")
-  (ch)
-     Lisp_Object ch;
+  (Lisp_Object ch)
 {
   CHECK_NUMBER (ch, 0);
   return make_number (syntax_code_spec[(int) SYNTAX (0xFF & XINT (ch))]);
@@ -184,8 +179,7 @@ DEFUN ("modify-syntax-entry", Fmodify_syntax_entry, Smodify_syntax_entry, 2, 3,
    */
   "cSet syntax for character: \nsSet syntax for %s to: ",
   0 /* See immediately above */)
-  (c, newentry, syntax_table)
-     Lisp_Object c, newentry, syntax_table;
+  (Lisp_Object c, Lisp_Object newentry, Lisp_Object syntax_table)
 {
   register unsigned char *p, match;
   register enum syntaxcode code;
@@ -236,8 +230,7 @@ DEFUN ("modify-syntax-entry", Fmodify_syntax_entry, Smodify_syntax_entry, 2, 3,
 /* Dump syntax table to buffer in human-readable format */
 
 void
-describe_syntax (value)
-    Lisp_Object value;
+describe_syntax (Lisp_Object value)
 {
   register enum syntaxcode code;
   char desc, match, start1, start2, end1, end2;
@@ -343,8 +336,7 @@ describe_syntax (value)
 }
 
 Lisp_Object
-describe_syntax_1 (vector)
-     Lisp_Object vector;
+describe_syntax_1 (Lisp_Object vector)
 {
   struct buffer *old = current_buffer;
   set_buffer_internal (XBUFFER (Vstandard_output));
@@ -356,7 +348,7 @@ describe_syntax_1 (vector)
 DEFUN ("describe-syntax", Fdescribe_syntax, Sdescribe_syntax, 0, 0, "",
   "Describe the syntax specifications in the syntax table.\n\
 The descriptions are inserted in a buffer, which is selected so you can see it.")
-  ()
+  (void)
 {
   internal_with_output_to_temp_buffer
      ("*Help*", describe_syntax_1, current_buffer->syntax_table);
@@ -369,8 +361,7 @@ The descriptions are inserted in a buffer, which is selected so you can see it."
    `count' negative means scan backward and stop at word beginning.  */
 
 int
-scan_words (from, count)
-     register int from, count;
+scan_words (register int from, register int count)
 {
   register int beg = BEGV;
   register int end = ZV;
@@ -433,8 +424,7 @@ DEFUN ("forward-word", Fforward_word, Sforward_word, 1, 1, "p",
 Normally returns t.\n\
 If an edge of the buffer is reached, point is left there\n\
 and nil is returned.")
-  (count)
-     Lisp_Object count;
+  (Lisp_Object count)
 {
   int val;
   CHECK_NUMBER (count, 0);
@@ -451,9 +441,7 @@ and nil is returned.")
 int parse_sexp_ignore_comments;
 
 Lisp_Object
-scan_lists (from, count, depth, sexpflag)
-     register int from;
-     int count, depth, sexpflag;
+scan_lists (register int from, int count, int depth, int sexpflag)
 {
   Lisp_Object val;
   register int stop;
@@ -707,8 +695,7 @@ scan_lists (from, count, depth, sexpflag)
 }
 
 int
-char_quoted (pos)
-     register int pos;
+char_quoted (register int pos)
 {
   register enum syntaxcode code;
   register int beg = BEGV;
@@ -735,8 +722,7 @@ Comments are ignored if parse-sexp-ignore-comments is non-nil.\n\
 If the beginning or end of (the visible part of) the buffer is reached\n\
 and the depth is wrong, an error is signaled.\n\
 If the depth is right but the count is not used up, nil is returned.")
-  (from, count, depth)
-     Lisp_Object from, count, depth;
+  (Lisp_Object from, Lisp_Object count, Lisp_Object depth)
 {
   CHECK_NUMBER (from, 0);
   CHECK_NUMBER (count, 1);
@@ -755,8 +741,7 @@ If the beginning or end of (the visible part of) the buffer is reached\n\
 in the middle of a parenthetical grouping, an error is signaled.\n\
 If the beginning or end is reached between groupings but before count is used up,\n\
 nil is returned.")
-  (from, count)
-     Lisp_Object from, count;
+  (Lisp_Object from, Lisp_Object count)
 {
   CHECK_NUMBER (from, 0);
   CHECK_NUMBER (count, 1);
@@ -767,7 +752,7 @@ nil is returned.")
 DEFUN ("backward-prefix-chars", Fbackward_prefix_chars, Sbackward_prefix_chars,
   0, 0, 0,
   "Move point backward over any number of chars with syntax \"prefix\".")
-  ()
+  (void)
 {
   int beg = BEGV;
   int pos = point;
@@ -799,10 +784,7 @@ struct lisp_parse_state
 struct lisp_parse_state val_scan_sexps_forward;
 
 struct lisp_parse_state *
-scan_sexps_forward (from, end, targetdepth, stopbefore, oldstate)
-     register int from;
-     int end, targetdepth, stopbefore;
-     Lisp_Object oldstate;
+scan_sexps_forward (register int from, int end, int targetdepth, int stopbefore, Lisp_Object oldstate)
 {
   struct lisp_parse_state state;
 
@@ -1040,8 +1022,7 @@ It is used to initialize the state of the parse.")
 
 DEFUN ("parse-partial-sexp", Fparse_partial_sexp, Sparse_partial_sexp, 2, 5, 0,
   0 /* See immediately above */)
-  (from, to, targetdepth, stopbefore, oldstate)
-     Lisp_Object from, to, targetdepth, stopbefore, oldstate;
+  (Lisp_Object from, Lisp_Object to, Lisp_Object targetdepth, Lisp_Object stopbefore, Lisp_Object oldstate)
 {
   struct lisp_parse_state state;
   int target;
@@ -1070,7 +1051,7 @@ DEFUN ("parse-partial-sexp", Fparse_partial_sexp, Sparse_partial_sexp, 2, 5, 0,
 }
 
 void
-init_syntax_once ()
+init_syntax_once (void)
 {
   register int i;
   register struct Lisp_Vector *v;
@@ -1109,7 +1090,7 @@ init_syntax_once ()
 }
 
 void
-syms_of_syntax ()
+syms_of_syntax (void)
 {
   Qsyntax_table_p = intern ("syntax-table-p");
   staticpro (&Qsyntax_table_p);

@@ -129,7 +129,7 @@ typedef Lisp_Object (*func5_t) (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Obje
 typedef Lisp_Object (*funcmany_t) (int, Lisp_Object *);
 
 void
-init_eval_once ()
+init_eval_once (void)
 {
   specpdl_size = 50;
   specpdl = (struct specbinding *) malloc (specpdl_size * sizeof (struct specbinding));
@@ -138,7 +138,7 @@ init_eval_once ()
 }
 
 void
-init_eval ()
+init_eval (void)
 {
   specpdl_ptr = specpdl;
   catchlist = 0;
@@ -150,8 +150,7 @@ init_eval ()
 }
 
 Lisp_Object
-call_debugger (arg)
-     Lisp_Object arg;
+call_debugger (Lisp_Object arg)
 {
   if (lisp_eval_depth + 20 > max_lisp_eval_depth)
     max_lisp_eval_depth = lisp_eval_depth + 20;
@@ -162,8 +161,7 @@ call_debugger (arg)
 }
 
 void
-do_debug_on_call (code)
-     Lisp_Object code;
+do_debug_on_call (Lisp_Object code)
 {
   debug_on_next_call = 0;
   backtrace_list->debug_on_exit = 1;
@@ -178,8 +176,7 @@ DEFUN ("or", For, Sor, 0, UNEVALLED, 0,
   "Eval args until one of them yields non-NIL, then return that value.\n\
 The remaining args are not evalled at all.\n\
 If all args return NIL, return NIL.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object val;
   Lisp_Object args_left;
@@ -208,8 +205,7 @@ DEFUN ("and", Fand, Sand, 0, UNEVALLED, 0,
   "Eval args until one of them yields NIL, then return NIL.\n\
 The remaining args are not evalled at all.\n\
 If no arg yields NIL, return the last arg's value.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object val;
   Lisp_Object args_left;
@@ -238,8 +234,7 @@ DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0,
   "(if C T E...) if C yields non-NIL do T, else do E...\n\
 Returns the value of T or the value of the last of the E's.\n\
 There may be no E's; then if C yields NIL, the value is NIL.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object cond;
   struct gcpro gcpro1;
@@ -261,8 +256,7 @@ then the expressions in BODY are evaluated and the last one's\n\
 value is the value of the cond expression.\n\
 If a clause looks like (C), C's value if non-nil is returned from cond.\n\
 If no clause succeeds, cond returns nil.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object clause, val;
   struct gcpro gcpro1;
@@ -287,8 +281,7 @@ If no clause succeeds, cond returns nil.")
 
 DEFUN ("progn", Fprogn, Sprogn, 0, UNEVALLED, 0,
   "Eval arguments in sequence, and return the value of the last one.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object val, tem;
   Lisp_Object args_left;
@@ -327,8 +320,7 @@ DEFUN ("prog1", Fprog1, Sprog1, 1, UNEVALLED, 0,
   "Eval arguments in sequence, then return the FIRST arg's value.\n\
 This value is saved during the evaluation of the remaining args,\n\
 whose values are discarded.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object val;
   register Lisp_Object args_left;
@@ -360,8 +352,7 @@ DEFUN ("prog2", Fprog2, Sprog2, 2, UNEVALLED, 0,
   "Eval arguments in sequence, then return the SECOND arg's value.\n\
 This value is saved during the evaluation of the remaining args,\n\
 whose values are discarded.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object val;
   register Lisp_Object args_left;
@@ -395,8 +386,7 @@ DEFUN ("setq", Fsetq, Ssetq, 0, UNEVALLED, 0,
   "(setq SYM VAL SYM VAL ...) sets each SYM to the value of its VAL.\n\
 The SYMs are not evaluated.  Thus (setq x y) sets x to the value of y.\n\
 Each SYM is set before the next VAL is computed.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object args_left;
   register Lisp_Object val, sym;
@@ -423,8 +413,7 @@ Each SYM is set before the next VAL is computed.")
      
 DEFUN ("quote", Fquote, Squote, 1, UNEVALLED, 0,
   "Return the argument, without evaluating it.  (quote x)  yields  x.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   return Fcar (args);
 }
@@ -434,8 +423,7 @@ DEFUN ("function", Ffunction, Sfunction, 1, UNEVALLED, 0,
 Equivalent to the quote function in the interpreter,\n\
 but causes the compiler to compile the argument as a function\n\
 if it is not a symbol.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   return Fcar (args);
 }
@@ -445,7 +433,7 @@ DEFUN ("interactive-p", Finteractive_p, Sinteractive_p, 0, 0, 0,
 This means that the function was called with call-interactively (which\n\
 includes being called as the binding of a key)\n\
 and input is currently coming from the keyboard (not in keyboard macro).")
-  ()
+  (void)
 {
   register struct backtrace *btp;
   register Lisp_Object fun;
@@ -482,8 +470,7 @@ DEFUN ("defun", Fdefun, Sdefun, 2, UNEVALLED, 0,
   "(defun NAME ARGLIST [DOCSTRING] BODY...) defines NAME as a function.\n\
 The definition is (lambda ARGLIST [DOCSTRING] BODY...).\n\
 See also the function  interactive .")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object fn_name;
   register Lisp_Object defn;
@@ -503,8 +490,7 @@ When the macro is called, as in (NAME ARGS...),\n\
 the function (lambda ARGLIST BODY...) is applied to\n\
 the list ARGS... as it appears in the expression,\n\
 and the result should be a form to be evaluated instead of the original.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object fn_name;
   register Lisp_Object defn;
@@ -524,8 +510,7 @@ INITVALUE and DOCSTRING are optional.\n\
 If DOCSTRING starts with *, this variable is identified as a user option.\n\
  This means that M-x set-variable and M-x edit-options recognize it.\n\
 If INITVALUE is missing, SYMBOL's value is not set.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object sym, tem;
 
@@ -554,8 +539,7 @@ Always sets the value of SYMBOL to the result of evalling INITVALUE.\n\
 DOCSTRING is optional.\n\
 If DOCSTRING starts with *, this variable is identified as a user option.\n\
  This means that M-x set-variable and M-x edit-options recognize it.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object sym, tem;
 
@@ -576,8 +560,7 @@ DEFUN ("user-variable-p", Fuser_variable_p, Suser_variable_p, 1, 1, 0,
 as opposed to by programs.\n\
 Determined by whether the first character of the documentation\n\
 for the variable is \"*\"")
-  (variable)
-     Lisp_Object variable;
+  (Lisp_Object variable)
 {
   Lisp_Object documentation;
   
@@ -596,8 +579,7 @@ The value of the last form in BODY is returned.\n\
 Each element of VARLIST is a symbol (which is bound to NIL)\n\
 or a list (SYMBOL VALUEFORM) (which binds SYMBOL to the value of VALUEFORM).\n\
 Each VALUEFORM can refer to the symbols already bound by this VARLIST.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object varlist, val, elt;
   int count = specpdl_ptr - specpdl;
@@ -631,8 +613,7 @@ The value of the last form in BODY is returned.\n\
 Each element of VARLIST is a symbol (which is bound to NIL)\n\
 or a list (SYMBOL VALUEFORM) (which binds SYMBOL to the value of VALUEFORM).\n\
 All the VALUEFORMs are evalled before any symbols are bound.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object *temps, tem;
   register Lisp_Object elt, varlist;
@@ -681,8 +662,7 @@ All the VALUEFORMs are evalled before any symbols are bound.")
 
 DEFUN ("while", Fwhile, Swhile, 1, UNEVALLED, 0,
   "(while TEST BODY...) if TEST yields non-NIL, execute the BODY forms and repeat.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object test, body, tem;
   struct gcpro gcpro1, gcpro2;
@@ -707,9 +687,7 @@ If the result of expansion is another macro call, expand it, etc.\n\
 Return the ultimate expansion.\n\
 The second optional arg ENVIRONMENT species an environment of macro\n\
 definitions to shadow the loaded ones for use in file byte-compilation.")
-  (form, env)
-     register Lisp_Object form;
-     Lisp_Object env;
+  (register Lisp_Object form, Lisp_Object env)
 {
   register Lisp_Object expander, sym, def, tem;
 
@@ -786,8 +764,7 @@ TAG is evalled to get the tag to use.  throw  to that tag exits this catch.\n\
 Then the BODY is executed.  If no  throw  happens, the value of the last BODY\n\
 form is returned from  catch.  If a  throw  happens, it specifies the value to\n\
 return from  catch.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   register Lisp_Object tag;
   struct gcpro gcpro1;
@@ -803,10 +780,7 @@ return from  catch.")
    This is how catches are done from within C code. */
 
 Lisp_Object
-internal_catch (tag, func, arg)
-     Lisp_Object tag;
-     Lisp_Object (*func) (Lisp_Object);
-     Lisp_Object arg;
+internal_catch (Lisp_Object tag, Lisp_Object (*func)(Lisp_Object), Lisp_Object arg)
 {
   /* This structure is made part of the chain `catchlist'.  */
   struct catchtag c;
@@ -844,8 +818,7 @@ internal_catch (tag, func, arg)
    in which these handlers and catches reside.  */
 
 static void
-unbind_catch (catch)
-     struct catchtag *catch;
+unbind_catch (struct catchtag *catch)
 {
   register int last_time;
 
@@ -866,8 +839,7 @@ unbind_catch (catch)
 DEFUN ("throw", Fthrow, Sthrow, 2, 2, 0,
   "(throw TAG VALUE): throw to the catch for TAG and return VALUE from it.\n\
 Both TAG and VALUE are evalled.")
-  (tag, val)
-     register Lisp_Object tag, val;
+  (register Lisp_Object tag, register Lisp_Object val)
 {
   register struct catchtag *c;
 
@@ -899,8 +871,7 @@ Usage looks like (unwind-protect BODYFORM UNWINDFORMS...) \n\
 If BODYFORM completes normally, its value is returned\n\
 after executing the UNWINDFORMS.\n\
 If BODYFORM exits nonlocally, the UNWINDFORMS are executed anyway.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object val;
   int count = specpdl_ptr - specpdl;
@@ -935,8 +906,7 @@ control returns to the condition-case and the handler BODY... is executed\n\
 with VAR bound to (SIGNALED-CONDITIONS . SIGNAL-DATA).\n\
 The value of the last BODY form is returned from the condition-case.\n\
 See SIGNAL for more info.")
-  (args)
-     Lisp_Object args;
+  (Lisp_Object args)
 {
   Lisp_Object val;
   struct catchtag c;
@@ -987,10 +957,7 @@ See SIGNAL for more info.")
 }
 
 Lisp_Object
-internal_condition_case (bfun, handlers, hfun)
-     Lisp_Object (*bfun) (void);
-     Lisp_Object handlers;
-     Lisp_Object (*hfun) (Lisp_Object);
+internal_condition_case (Lisp_Object (*bfun)(void), Lisp_Object handlers, Lisp_Object (*hfun)(Lisp_Object))
 {
   Lisp_Object val;
   struct catchtag c;
@@ -1035,8 +1002,7 @@ The symbol  error  should always be one of them.\n\
 DATA should be a list.  Its elements are printed as part of the error message.\n\
 If the signal is handled, DATA is made available to the handler.\n\
 See  condition-case.")
-  (sig, data)
-     Lisp_Object sig, data;
+  (Lisp_Object sig, Lisp_Object data)
 {
   register struct handler *allhandlers = handlerlist;
   Lisp_Object conditions;
@@ -1089,9 +1055,7 @@ See  condition-case.")
    into *debugger_value_ptr */
 
 static Lisp_Object
-find_handler_clause (handlers, conditions, sig, data, debugger_value_ptr)
-     Lisp_Object handlers, conditions, sig, data;
-     Lisp_Object *debugger_value_ptr;
+find_handler_clause (Lisp_Object handlers, Lisp_Object conditions, Lisp_Object sig, Lisp_Object data, Lisp_Object *debugger_value_ptr)
 {
   register Lisp_Object h;
   register Lisp_Object tem;
@@ -1145,7 +1109,7 @@ error (const char *fmt, ...)
 void
 error (m, a1, a2, a3)
      char *m;
-     Lisp_Object_Int a1, a2, a3;
+     Lisp_Object_Int a1,a2, a3;
 {
   char buf[200];
   sprintf (buf, m, a1, a2, a3);
@@ -1165,8 +1129,7 @@ autoload definitions made by  autoload  with non-nil fourth argument,\n\
 and some of the built-in functions of Lisp.\n\
 \n\
 Also, a symbol is commandp if its function definition is commandp.")
-  (function)
-     Lisp_Object function;
+  (Lisp_Object function)
 {
   register Lisp_Object fun;
   register Lisp_Object funcar;
@@ -1214,8 +1177,7 @@ Third through fifth args give info about the real definition.\n\
 They default to nil.\n\
 If FUNCTION is already defined other than as an autoload,\n\
 this does nothing and returns nil.")
-  (function, file, docstring, interactive, macro)
-     Lisp_Object function, file, docstring, interactive, macro;
+  (Lisp_Object function, Lisp_Object file, Lisp_Object docstring, Lisp_Object interactive, Lisp_Object macro)
 {
 #ifdef NO_ARG_ARRAY
   Lisp_Object args[4];
@@ -1243,8 +1205,7 @@ this does nothing and returns nil.")
 }
 
 Lisp_Object
-un_autoload (oldqueue)
-     Lisp_Object oldqueue;
+un_autoload (Lisp_Object oldqueue)
 {
   register Lisp_Object queue, first, second;
 
@@ -1267,8 +1228,7 @@ un_autoload (oldqueue)
 }
 
 void
-do_autoload (fundef, funname)
-     Lisp_Object fundef, funname;
+do_autoload (Lisp_Object fundef, Lisp_Object funname)
 {
   int count = specpdl_ptr - specpdl;
   Lisp_Object fun, val;
@@ -1299,8 +1259,7 @@ do_autoload (fundef, funname)
 
 DEFUN ("eval", Feval, Seval, 1, 1, 0,
   "Evaluate FORM and return its value.")
-  (form)
-     Lisp_Object form;
+  (Lisp_Object form)
 {
   Lisp_Object fun, val, original_fun, original_args;
   Lisp_Object funcar;
@@ -1511,9 +1470,7 @@ DEFUN ("apply", Fapply, Sapply, 2, MANY, 0,
   "Call FUNCTION, passing remaining arguments to it.  The last argument\n\
 is a list of arguments to pass.\n\
 Thus, (apply '+ 1 2 '(3 4)) returns 10.")
-  (nargs, args)
-     int nargs;
-     Lisp_Object *args;
+  (int nargs, Lisp_Object *args)
 {
   register int i, numargs;
   register Lisp_Object spread_arg;
@@ -1593,8 +1550,7 @@ Thus, (apply '+ 1 2 '(3 4)) returns 10.")
 
 /* Apply fn to arg */
 Lisp_Object
-apply1 (fn, arg)
-     Lisp_Object fn, arg;
+apply1 (Lisp_Object fn, Lisp_Object arg)
 {
   register Lisp_Object val;
   struct gcpro gcpro1;
@@ -1626,8 +1582,7 @@ apply1 (fn, arg)
 
 /* Call function fn on no arguments */
 Lisp_Object
-call0 (fn)
-     Lisp_Object fn;
+call0 (Lisp_Object fn)
 {
   return Ffuncall (1, &fn);
 }
@@ -1635,8 +1590,7 @@ call0 (fn)
 /* Call function fn with argument arg */
 /* ARGSUSED */
 Lisp_Object
-call1 (fn, arg)
-     Lisp_Object fn, arg;
+call1 (Lisp_Object fn, Lisp_Object arg)
 {
   Lisp_Object val;
   struct gcpro gcpro1;
@@ -1660,8 +1614,7 @@ call1 (fn, arg)
 /* Call function fn with arguments arg, arg1 */
 /* ARGSUSED */
 Lisp_Object
-call2 (fn, arg, arg1)
-     Lisp_Object fn, arg, arg1;
+call2 (Lisp_Object fn, Lisp_Object arg, Lisp_Object arg1)
 {
   Lisp_Object val;
   struct gcpro gcpro1;
@@ -1686,8 +1639,7 @@ call2 (fn, arg, arg1)
 /* Call function fn with arguments arg, arg1, arg2 */
 /* ARGSUSED */
 Lisp_Object
-call3 (fn, arg, arg1, arg2)
-     Lisp_Object fn, arg, arg1, arg2;
+call3 (Lisp_Object fn, Lisp_Object arg, Lisp_Object arg1, Lisp_Object arg2)
 {
   Lisp_Object val;
   struct gcpro gcpro1;
@@ -1713,9 +1665,7 @@ call3 (fn, arg, arg1, arg2)
 DEFUN ("funcall", Ffuncall, Sfuncall, 1, MANY, 0,
   "Call first argument as a function, passing remaining arguments to it.\n\
 Thus,  (funcall 'cons 'x 'y)  returns  (x . y).")
-  (nargs, args)
-     int nargs;
-     Lisp_Object *args;
+  (int nargs, Lisp_Object *args)
 {
   Lisp_Object fun;
   Lisp_Object funcar;
@@ -1860,9 +1810,7 @@ Thus,  (funcall 'cons 'x 'y)  returns  (x . y).")
 }
 
 Lisp_Object
-apply_lambda (fun, args, eval_flag)
-     Lisp_Object fun, args;
-     int eval_flag;
+apply_lambda (Lisp_Object fun, Lisp_Object args, int eval_flag)
 {
   Lisp_Object args_left;
   Lisp_Object numargs;
@@ -1905,10 +1853,7 @@ apply_lambda (fun, args, eval_flag)
 }
 
 Lisp_Object
-funcall_lambda (fun, nargs, arg_vector)
-     Lisp_Object fun;
-     int nargs;
-     register Lisp_Object *arg_vector;
+funcall_lambda (Lisp_Object fun, int nargs, register Lisp_Object *arg_vector)
 {
   Lisp_Object val, tem;
   register Lisp_Object syms_left;
@@ -1958,7 +1903,7 @@ funcall_lambda (fun, nargs, arg_vector)
 }
 
 void
-grow_specpdl ()
+grow_specpdl (void)
 {
   register int count = specpdl_ptr - specpdl;
   if (specpdl_size >= max_specpdl_size)
@@ -1980,8 +1925,7 @@ grow_specpdl ()
 }
 
 void
-specbind (symbol, value)
-     Lisp_Object symbol, value;
+specbind (Lisp_Object symbol, Lisp_Object value)
 {
   Lisp_Object ovalue;
 
@@ -2001,9 +1945,7 @@ specbind (symbol, value)
 }
 
 void
-record_unwind_protect (function, arg)
-     Lisp_Object (*function)(Lisp_Object);
-     Lisp_Object arg;
+record_unwind_protect (Lisp_Object (*function)(Lisp_Object), Lisp_Object arg)
 {
   if (specpdl_ptr == specpdl + specpdl_size)
     grow_specpdl ();
@@ -2014,8 +1956,7 @@ record_unwind_protect (function, arg)
 }
 
 void
-unbind_to (count)
-     int count;
+unbind_to (int count)
 {
   int quitf = !NILP (Vquit_flag);
 
@@ -2042,8 +1983,7 @@ unbind_to (count)
  is not now dynamically visible.  */
 
 Lisp_Object
-top_level_value (symbol)
-     Lisp_Object symbol;
+top_level_value (Lisp_Object symbol)
 {
   register struct specbinding *ptr = specpdl;
 
@@ -2057,8 +1997,7 @@ top_level_value (symbol)
 }
 
 Lisp_Object
-top_level_set (symbol, newval)
-     Lisp_Object symbol, newval;
+top_level_set (Lisp_Object symbol, Lisp_Object newval)
 {
   register struct specbinding *ptr = specpdl;
 
@@ -2079,8 +2018,7 @@ top_level_set (symbol, newval)
 DEFUN ("backtrace-debug", Fbacktrace_debug, Sbacktrace_debug, 2, 2, 0,
   "Set the debug-on-exit flag of eval frame LEVEL levels down to FLAG.\n\
 The debugger is entered when that frame exits, if the flag is non-nil.")
-  (level, flag)
-     Lisp_Object level, flag;
+  (Lisp_Object level, Lisp_Object flag)
 {
   register struct backtrace *backlist = backtrace_list;
   register int i;
@@ -2101,7 +2039,7 @@ The debugger is entered when that frame exits, if the flag is non-nil.")
 DEFUN ("backtrace", Fbacktrace, Sbacktrace, 0, 0, "",
   "Print a trace of Lisp function calls currently active.\n\
 Output stream used is value of standard-output.")
-  ()
+  (void)
 {
   register struct backtrace *backlist = backtrace_list;
   register int i;
@@ -2153,7 +2091,7 @@ Output stream used is value of standard-output.")
 }
 
 void
-syms_of_eval ()
+syms_of_eval (void)
 {
   DEFVAR_INT ("max-specpdl-size", &max_specpdl_size,
     "Limit on number of Lisp variable bindings & unwind-protects before error.");

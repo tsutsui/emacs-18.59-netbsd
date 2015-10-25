@@ -67,8 +67,7 @@ static dummy () {}
 #endif
 
 static Lisp_Object
-lock_file_owner_name (lfname)
-     char *lfname;
+lock_file_owner_name (char *lfname)
 {
   struct stat s;
   struct passwd *the_pw;
@@ -122,8 +121,7 @@ lock_file_owner_name (lfname)
 
 
 void
-lock_file (fn)
-     register Lisp_Object fn;
+lock_file (register Lisp_Object fn)
 {
   register Lisp_Object attack;
   register char *lfname;
@@ -160,9 +158,7 @@ lock_file (fn)
 }
 
 void
-fill_in_lock_file_name (lockfile, fn)
-     register char *lockfile;
-     register Lisp_Object fn;
+fill_in_lock_file_name (register char *lockfile, register Lisp_Object fn)
 {
   register char *p;
 
@@ -180,9 +176,8 @@ fill_in_lock_file_name (lockfile, fn)
 }
 
 #ifdef SHORT_FILE_NAMES
-fill_in_lock_short_file_name (lockfile, fn)
-     register char *lockfile;
-     register Lisp_Object fn;
+int
+fill_in_lock_short_file_name (register char *lockfile, register Lisp_Object fn)
 {
   register union
     {
@@ -220,8 +215,7 @@ fill_in_lock_short_file_name (lockfile, fn)
    Return 1 if successful, 0 if not.  */
 
 int
-lock_file_1 (lfname, mode)
-     int mode; char *lfname; 
+lock_file_1 (char *lfname, int mode)
 {
   register int fd;
   char buf[20];
@@ -248,8 +242,7 @@ lock_file_1 (lfname, mode)
    Return -1 if cannot lock for any other reason.  */
 
 int
-lock_if_free (lfname)
-     register char *lfname; 
+lock_if_free (register char *lfname)
 {
   register int clasher;
 
@@ -272,8 +265,7 @@ lock_if_free (lfname)
    or -1 if something is wrong with the locking mechanism.  */
 
 int
-current_lock_owner (lfname)
-     char *lfname;
+current_lock_owner (char *lfname)
 {
   int owner = current_lock_owner_1 (lfname);
   if (owner == 0 && errno == ENOENT)
@@ -287,8 +279,7 @@ current_lock_owner (lfname)
 }
 
 int
-current_lock_owner_1 (lfname)
-     char *lfname;
+current_lock_owner_1 (char *lfname)
 {
   register int fd;
   char buf[20];
@@ -304,8 +295,7 @@ current_lock_owner_1 (lfname)
 
 
 void
-unlock_file (fn)
-     register Lisp_Object fn;
+unlock_file (register Lisp_Object fn)
 {
   register char *lfname;
 
@@ -320,8 +310,7 @@ unlock_file (fn)
 }
 
 void
-lock_superlock (lfname)
-     char *lfname;
+lock_superlock (char *lfname)
 {
   register int i, fd;
 
@@ -346,7 +335,7 @@ lock_superlock (lfname)
 }
 
 void
-unlock_all_files ()
+unlock_all_files (void)
 {
   register Lisp_Object tail;
   register struct buffer *b;
@@ -367,8 +356,7 @@ DEFUN ("lock-buffer", Flock_buffer, Slock_buffer,
   "Locks FILE, if current buffer is modified.\n\
 FILE defaults to current buffer's visited file,\n\
 or else nothing is done if current buffer isn't visiting a file.")
-  (fn)
-     Lisp_Object fn;
+  (Lisp_Object fn)
 {
   if (NILP (fn))
     fn = current_buffer->filename;
@@ -384,7 +372,7 @@ DEFUN ("unlock-buffer", Funlock_buffer, Sunlock_buffer,
   0, 0, 0,
  "Unlocks the file visited in the current buffer,\n\
 if it should normally be locked.")
-  ()
+  (void)
 {
   if (current_buffer->save_modified < MODIFF &&
       XTYPE (current_buffer->filename) == Lisp_String)
@@ -396,8 +384,7 @@ if it should normally be locked.")
 /* Unlock the file visited in buffer BUFFER.  */
 
 void
-unlock_buffer (buffer)
-     struct buffer *buffer;
+unlock_buffer (struct buffer *buffer)
 {
   if (buffer->save_modified < BUF_MODIFF (buffer)
       && XTYPE (buffer->filename) == Lisp_String)
@@ -407,8 +394,7 @@ unlock_buffer (buffer)
 DEFUN ("file-locked-p", Ffile_locked_p, Sfile_locked_p, 0, 1, 0,
   "Returns nil if the FILENAME is not locked,\n\
 t if it is locked by you, else a string of the name of the locker.")
-  (fn)
-  Lisp_Object fn;
+  (Lisp_Object fn)
 {
   register char *lfname;
   int owner;
@@ -428,7 +414,7 @@ t if it is locked by you, else a string of the name of the locker.")
 }
 
 void
-syms_of_filelock ()
+syms_of_filelock (void)
 {
   defsubr (&Sunlock_buffer);
   defsubr (&Slock_buffer);

@@ -80,8 +80,7 @@ const char *synch_process_death;
 int synch_process_retcode;
 
 Lisp_Object
-call_process_cleanup (fdpid)
-     Lisp_Object fdpid;
+call_process_cleanup (Lisp_Object fdpid)
 {
   register Lisp_Object fd, pid;
   fd = Fcar (fdpid);
@@ -112,9 +111,7 @@ Remaining arguments are strings passed as command arguments to PROGRAM.\n\
 Returns nil if BUFFER is 0; otherwise waits for PROGRAM to terminate\n\
 and returns a numeric exit status or a signal description string.\n\
 If you quit, the process is killed with SIGKILL.")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   Lisp_Object display, buffer, path;
   int fd[2];
@@ -300,9 +297,7 @@ Remaining arguments are strings passed as command arguments to PROGRAM.\n\
 Returns nil if BUFFER is 0; otherwise waits for PROGRAM to terminate\n\
 and returns a numeric exit status or a signal description string.\n\
 If you quit, the process is killed with SIGKILL.")
-  (nargs, args)
-     int nargs;
-     register Lisp_Object *args;
+  (int nargs, register Lisp_Object *args)
 {
   register Lisp_Object filename_string, start, end, status;
   char tempfile[20];
@@ -337,10 +332,7 @@ If you quit, the process is killed with SIGKILL.")
    ENV is the environment */
 
 void
-child_setup (in, out, err, new_argv, env)
-     int in, out, err;
-     register char **new_argv;
-     char **env;
+child_setup (int in, int out, int err, register char **new_argv, char **env)
 {
   register int pid = getpid();
 
@@ -433,7 +425,7 @@ child_setup (in, out, err, new_argv, env)
 }
 
 void
-init_callproc ()
+init_callproc (void)
 {
   register char * sh;
   extern char **environ;
@@ -470,7 +462,7 @@ init_callproc ()
 }
 
 void
-syms_of_callproc ()
+syms_of_callproc (void)
 {
   DEFVAR_LISP ("shell-file-name", &Vshell_file_name,
     "*File name to load inferior shells from.\n\
