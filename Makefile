@@ -18,7 +18,8 @@ SHELL = /bin/sh
 # but there was no explanation of why, so it seems better to keep this stable.
 LIBDIR= /usr/local/emacs
 BINDIR= /usr/local/bin
-MANDIR= /usr/local/man/man1
+MANDIR= /usr/local/man
+MAN1DIR= ${MANDIR}/man1
 
 # Flags passed down to subdirectory makefiles.
 MFLAGS=
@@ -126,7 +127,7 @@ install.aix: all mkdir lockdir
 	mv ${BINDIR}/xemacs ${BINDIR}/emacs
 
 mkdir: FRC
-	-mkdir ${LIBDIR} ${BINDIR} ${MANDIR}
+	-mkdir -p ${LIBDIR} ${BINDIR} ${MANDIR} ${MAN1DIR}
 
 distclean:
 	for i in ${SUBDIR}; do (cd $$i; make ${MFLAGS} distclean); done
@@ -141,7 +142,7 @@ clean:
 	fi
 
 lockdir:
-	-mkdir ${LIBDIR}/lock
+	-mkdir -p ${LIBDIR}/lock
 	-chmod 777 ${LIBDIR}/lock
 
 FRC:
