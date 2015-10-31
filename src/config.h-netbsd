@@ -50,7 +50,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-netbsd_sparc.h"
 #elif defined(__sparc__) && defined(__sparc_v9__)
 #include "m-netbsd_sparc64.h"
-#elif 0 /* defined(__vax__) */
+#elif defined(__vax__)
 #include "m-netbsd_vax.h"
 #elif defined(__x86_64__)
 #include "m-netbsd_x86_64.h"
