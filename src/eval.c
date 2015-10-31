@@ -28,6 +28,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 
 #include <setjmp.h>
+#ifdef __STDC__
+#include <stdarg.h>
+#endif
 
 /* This definition is duplicated in alloc.c and keyboard.c */
 /* Putting it in lisp.h makes cc bomb out! */
@@ -1125,6 +1128,20 @@ find_handler_clause (handlers, conditions, sig, data, debugger_value_ptr)
 /* dump an error message; called like printf */
 
 /* VARARGS 1 */
+#ifdef __STDC__
+void
+error (const char *fmt, ...)
+{
+  char buf[200];
+  va_list va;
+
+  va_start(va, fmt);
+  sprintf (buf, fmt, va);
+  va_end(va);
+  while (1)
+    Fsignal (Qerror, Fcons (build_string (buf), Qnil));
+}
+#else
 void
 error (m, a1, a2, a3)
      char *m;
@@ -1135,6 +1152,7 @@ error (m, a1, a2, a3)
   while (1)
     Fsignal (Qerror, Fcons (build_string (buf), Qnil));
 }
+#endif
 
 DEFUN ("commandp", Fcommandp, Scommandp, 1, 1, 0,
   "T if FUNCTION makes provisions for interactive calling.\n\

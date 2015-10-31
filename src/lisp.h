@@ -1043,7 +1043,11 @@ extern Lisp_Object apply_lambda (Lisp_Object, Lisp_Object, int);
 extern Lisp_Object internal_catch (Lisp_Object, Lisp_Object (*)(Lisp_Object), Lisp_Object);
 extern Lisp_Object internal_condition_case (Lisp_Object (*)(void), Lisp_Object, Lisp_Object (*)(Lisp_Object));
 extern void unbind_to (int);
+#ifdef __STDC__
+extern void error (const char *, ...);
+#else
 extern void error ();
+#endif
 extern Lisp_Object un_autoload (Lisp_Object);
 
 extern void specbind (Lisp_Object, Lisp_Object);
