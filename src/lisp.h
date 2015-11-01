@@ -1103,7 +1103,7 @@ extern Lisp_Object Feobp (void);
 extern Lisp_Object Fbolp (void);
 extern Lisp_Object Fbobp (void);
 extern Lisp_Object Fformat (int, Lisp_Object *);
-extern Lisp_Object format1 ();
+extern Lisp_Object format2 (char *, Lisp_Object, Lisp_Object);
 extern Lisp_Object Fbuffer_substring (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fbuffer_string (void);
 extern Lisp_Object Fbufsize (void);

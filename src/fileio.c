@@ -1035,8 +1035,8 @@ barf_or_query_if_file_exists (absname, querystring, interactive)
 		 Fcons (build_string ("File already exists"),
 			Fcons (absname, Qnil)));
       GCPRO1 (absname);
-      tem = Fyes_or_no_p (format1 ("File %s already exists; %s anyway? ",
-				   XSTRING (absname)->data, querystring));
+      tem = Fyes_or_no_p (format2 ("File %s already exists; %s anyway? ",
+				   absname, build_string (querystring)));
       UNGCPRO;
       if (NILP (tem))
 	Fsignal (Qfile_already_exists,

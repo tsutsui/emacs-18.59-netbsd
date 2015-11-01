@@ -563,8 +563,8 @@ with `delete-process'.")
       && BUF_MODIFF (b) > b->save_modified)
     {
       GCPRO2 (buf, bufname);
-      tem = Fyes_or_no_p (format1 ("Buffer %s modified; kill anyway? ",
-				   XSTRING (b->name)->data));
+      tem = Fyes_or_no_p (format2 ("Buffer %s modified; kill anyway? ",
+				   b->name, make_number (0)));
       UNGCPRO;
       if (NILP (tem))
 	return Qnil;
