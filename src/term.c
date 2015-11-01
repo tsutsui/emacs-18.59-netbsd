@@ -1032,7 +1032,9 @@ term_init (terminal_type)
   register char *p;
   int status;
 
-  extern char *tgetstr ();
+#ifndef LIBS_TERMCAP
+  extern char *tgetstr (char *, char **);
+#endif
 
   Wcm_clear ();
   dont_calculate_costs = 0;

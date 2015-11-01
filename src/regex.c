@@ -1016,7 +1016,7 @@ re_match (pbufp, string, size, pos, regs)
 
 int re_max_failures = 2000;
 
-static int bcmp_translate();
+static int bcmp_translate (unsigned char *, unsigned char *, register int, unsigned char *);
 /* Match the pattern described by PBUFP
    against data which is the virtual concatenation of STRING1 and STRING2.
    SIZE1 and SIZE2 are the sizes of the two data strings.

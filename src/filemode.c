@@ -71,8 +71,9 @@ from 0.  Their meanings are:
 
 #define VOID void
 
-static char ftypelet ();
-static VOID rwx (), setst ();
+static char ftypelet (struct stat *);
+static VOID rwx (unsigned short, char []);
+static VOID setst (unsigned short, char []);
 
 VOID
 filemodestring (s,a)

@@ -970,6 +970,7 @@ extern Lisp_Object Fprin1_to_string (Lisp_Object);
 extern Lisp_Object Fprinc (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fterpri (Lisp_Object);
 extern Lisp_Object Fprint (Lisp_Object, Lisp_Object);
+extern Lisp_Object Fwith_output_to_temp_buffer (Lisp_Object);
 extern Lisp_Object Fwrite_char (Lisp_Object, Lisp_Object);
 extern Lisp_Object Vstandard_output, Qstandard_output;
 extern void temp_output_buffer_setup (char *);
@@ -1065,6 +1066,7 @@ extern void do_autoload (Lisp_Object, Lisp_Object);
 extern Lisp_Object Vprefix_arg, Qminus, Vcurrent_prefix_arg;
 extern Lisp_Object Fchar_equal (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fdelete_region (Lisp_Object, Lisp_Object);
+extern Lisp_Object Fgetenv (Lisp_Object);
 extern Lisp_Object Fgoto_char (Lisp_Object);
 extern Lisp_Object Fcurrent_time_string (void);
 extern Lisp_Object Finsert_before_markers (int, Lisp_Object *);
@@ -1362,6 +1364,7 @@ extern Lisp_Object Fnext_window (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fother_window (Lisp_Object);
 extern Lisp_Object Fpos_visible_in_window_p (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fprevious_window (Lisp_Object);
+extern Lisp_Object Frecenter (Lisp_Object);
 extern Lisp_Object Freplace_buffer_in_windows (Lisp_Object);
 extern Lisp_Object Fsave_window_excursion (Lisp_Object);
 extern Lisp_Object Fscroll_down (Lisp_Object);
@@ -1476,6 +1479,7 @@ extern void insert_from_string_before_markers (Lisp_Object, int, int);
 
 /* defined in macros.c */
 extern Lisp_Object Fcall_last_kbd_macro (Lisp_Object);
+extern Lisp_Object Fend_kbd_macro (Lisp_Object);
 extern Lisp_Object Fexecute_kbd_macro (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fstart_kbd_macro (Lisp_Object);
 
@@ -1511,6 +1515,7 @@ extern Lisp_Object truncate_undo_list (Lisp_Object, int, int);
 extern Lisp_Object Fredraw_display (void);
 
 /* defined in xfns.c or x11fns.c */
+extern Lisp_Object Fcoordinates_in_window_p (Lisp_Object, Lisp_Object);
 extern Lisp_Object Fx_color_p (void);
 extern Lisp_Object Fx_debug (Lisp_Object);
 extern Lisp_Object Fx_flip_color (void);
