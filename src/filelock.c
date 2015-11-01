@@ -45,8 +45,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "filetypes.h"
 
-extern int errno;
-
 void fill_in_lock_file_name (char *l, Lisp_Object);
 int lock_if_free (char *);
 void lock_superlock (char *);

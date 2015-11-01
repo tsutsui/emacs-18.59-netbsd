@@ -1281,7 +1281,6 @@ void
 window_change_signal ()
 {
   int width, height;
-  extern int errno;
   int old_errno = errno;
 
   get_screen_size (&width, &height);

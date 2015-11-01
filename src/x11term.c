@@ -129,8 +129,6 @@ static KeySym XMOD_ShiftCtrlAlt[] = { XK_Control_L, XK_Alt_L, XK_Shift_L };
 #define min(a,b) ((a)<(b) ? (a) : (b))
 #define max(a,b) ((a)>(b) ? (a) : (b))
 
-extern int errno;
-
 #define sigunblockx(sig) sigblock (SIGEMPTYMASK)
 #define sigblockx(sig) sigblock (sigmask ((sig)))
 

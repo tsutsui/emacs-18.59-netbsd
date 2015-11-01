@@ -57,7 +57,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <sys/stat.h>
 #include <errno.h>
 
-extern int errno;
 #if !defined(VMS) && (defined(LINUX) && \
 			!(defined (__GLIBC__) && (__GLIBC__ >= 2)))
 extern char *sys_errlist[];

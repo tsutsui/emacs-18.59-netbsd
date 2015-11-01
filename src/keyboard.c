@@ -38,8 +38,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <setjmp.h>
 #include <errno.h>
 
-extern int errno;
-
 /* Get FIONREAD, if it is available.  */
 #ifdef USG
 #include <termio.h>
