@@ -137,7 +137,15 @@ extern void setpgrp_of_tty (int);
 extern void setup_pty (int);
 extern void set_exclusive_use (int);
 extern void stuff_char (char);
+extern int sys_close (int);
+#ifdef __STDC__
+extern int sys_open (const char *, int, ...);
+#else
+extern int sys_open ();
+#endif
+extern ssize_t sys_read (int, void *, size_t);
 extern int sys_suspend (void);
+extern ssize_t sys_write (int, const void *, size_t);
 extern int tabs_safe_p (void);
 extern void unrequest_sigio (void);
 extern void wait_for_termination (int);

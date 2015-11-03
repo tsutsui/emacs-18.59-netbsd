@@ -22,6 +22,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <sys/types.h>
 #include <signal.h>
 #include <setjmp.h>
+#ifdef __STDC__
+#include <stdarg.h>
+#endif
 
 #include "config.h"
 #include "lisp.h"
@@ -2361,6 +2364,20 @@ char *sys_errlist[] =
 
 #ifdef INTERRUPTABLE_OPEN
 
+#ifdef __STDC__
+int
+sys_open (const char *path, int oflag, ...)
+{
+  register int rtnval;
+  va_list va;
+
+  va_start(va, oflag);
+  while ((rtnval = open (path, oflag, va)) == -1
+	 && (errno == EINTR));
+  va_end(va);
+  return (rtnval);
+}
+#else
 int
 /* VARARGS 2 */
 sys_open (char *path, int oflag, int mode)
@@ -2371,6 +2388,7 @@ sys_open (char *path, int oflag, int mode)
 	 && (errno == EINTR));
   return (rtnval);
 }
+#endif
 
 #endif /* INTERRUPTABLE_OPEN */
 
@@ -2390,20 +2408,20 @@ sys_close (int fd)
 
 #ifdef INTERRUPTABLE_IO
 
-int
-sys_read (int fildes, char *buf, unsigned int nbyte)
+ssize_t
+sys_read (int fildes, void *buf, size_t nbyte)
 {
-  register int rtnval;
+  register ssize_t rtnval;
   
   while ((rtnval = read (fildes, buf, nbyte)) == -1
 	 && (errno == EINTR));
   return (rtnval);
 }
 
-int
-sys_write (int fildes, char *buf, unsigned int nbyte)
+ssize_t
+sys_write (int fildes, const void *buf, size_t nbyte)
 {
-  register int rtnval;
+  register ssize_t rtnval;
 
   while ((rtnval = write (fildes, buf, nbyte)) == -1
 	 && (errno == EINTR));
@@ -2552,12 +2570,15 @@ rename (
 }
 #endif /* not HAVE_RENAME */
 
+#ifndef HAVE_SETPRIORITY
+
 /* VARARGS */
 int
-setpriority (void)
+setpriority (int which, int who, int prio)
 {
   return (0);
 }
+#endif /* not HAVE_SETPRIORITY */
 
 #ifndef HAVE_VFORK
 

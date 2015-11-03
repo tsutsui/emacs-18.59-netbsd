@@ -162,6 +162,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define HAVE_GETTIMEOFDAY	/* is builtin */
 #define HAVE_RENAME		/* is builtin */
 #define HAVE_RANDOM		/* is builtin */
+#define HAVE_SETPRIORITY	/* is builtin */
 #define HAVE_CLOSEDIR		/* we have a closedir */
 #define HAVE_GETPAGESIZE	/* we now have getpagesize (0.96) */
 #define HAVE_VFORK		/* we now have vfork (0.96) */

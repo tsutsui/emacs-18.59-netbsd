@@ -25,11 +25,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "config.h"
 
-#ifdef BSD
+#if defined(BSD) || defined(HAVE_SETPRIORITY)
 #include <sys/resource.h>
 #endif
 
+#ifndef PRIO_PROCESS
 #define PRIO_PROCESS 0
+#endif
 #include <sys/file.h>
 #ifdef USG5
 #include <fcntl.h>
