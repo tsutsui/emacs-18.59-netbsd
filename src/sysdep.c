@@ -1979,9 +1979,7 @@ setpriority (void)
  */
 
 int
-sys_open (path, oflag, mode)
-     char *path;
-     int oflag, mode;
+sys_open (char *path, int oflag, int mode)
 {
   if (oflag & O_CREAT) 
     return creat (path, mode);
@@ -2151,9 +2149,7 @@ sys_sigsetmask (sigset_t new_mask)
 #ifndef BSTRING
 
 void
-bzero (b, length)
-     register char *b;
-     register int length;
+bzero (register char *b, register int length)
 {
 #ifdef VMS
   short zero = 0;
@@ -2174,10 +2170,7 @@ bzero (b, length)
 
 /* Saying `void' requires a declaration, above, where bcopy is used
    and that declaration causes pain for systems where bcopy is a macro.  */
-bcopy (b1, b2, length)
-     register char *b1;
-     register char *b2;
-     register int length;
+bcopy (register char *b1, register char *b2, register int length)
 {
 #ifdef VMS
   long max_str = 65535;
@@ -2370,9 +2363,7 @@ char *sys_errlist[] =
 
 int
 /* VARARGS 2 */
-sys_open (path, oflag, mode)
-     char *path;
-     int oflag, mode;
+sys_open (char *path, int oflag, int mode)
 {
   register int rtnval;
   
@@ -2385,8 +2376,8 @@ sys_open (path, oflag, mode)
 
 #ifdef INTERRUPTABLE_CLOSE
 
-sys_close (fd)
-     int fd;
+int
+sys_close (int fd)
 {
   register int rtnval;
 
@@ -2400,10 +2391,7 @@ sys_close (fd)
 #ifdef INTERRUPTABLE_IO
 
 int
-sys_read (fildes, buf, nbyte)
-     int fildes;
-     char *buf;
-     unsigned int nbyte;
+sys_read (int fildes, char *buf, unsigned int nbyte)
 {
   register int rtnval;
   
@@ -2413,10 +2401,7 @@ sys_read (fildes, buf, nbyte)
 }
 
 int
-sys_write (fildes, buf, nbyte)
-     int fildes;
-     char *buf;
-     unsigned int nbyte;
+sys_write (int fildes, char *buf, unsigned int nbyte)
 {
   register int rtnval;
 
@@ -2786,8 +2771,9 @@ char *sys_siglist[NSIG + 1] =
 
 #ifndef HAVE_CLOSEDIR
 int
-closedir (dirp)
-     register DIR *dirp;              /* stream from opendir */
+closedir (
+     register DIR *dirp               /* stream from opendir */
+)
 {
   sys_close (dirp->dd_fd);
   free ((char *) dirp->dd_buf);       /* directory block defined in <dirent.h> */
@@ -3375,20 +3361,14 @@ sys_getuid (void)
 }
 
 int
-sys_read (fildes, buf, nbyte)
-     int fildes;
-     char *buf;
-     unsigned int nbyte;
+sys_read (int fildes, char *buf, unsigned int nbyte)
 {
   return read (fildes, buf, (nbyte < MAXIOSIZE ? nbyte : MAXIOSIZE));
 }
 
 #if 0
 int
-sys_write (fildes, buf, nbyte)
-     int fildes;
-     char *buf;
-     unsigned int nbyte;
+sys_write (int fildes, char *buf, unsigned int nbyte)
 {
   register int nwrote, rtnval = 0;
 
@@ -3414,10 +3394,7 @@ sys_write (fildes, buf, nbyte)
  */
 
 int
-sys_write (fildes, buf, nbytes)
-     int fildes;
-     char *buf;
-     unsigned int nbytes;
+sys_write (int fildes, char *buf, unsigned int nbytes)
 {
   register char *p;
   register char *e;
@@ -3544,8 +3521,8 @@ creat_copy_attrs (char *old, char *new)
 #endif
 #endif
 
-sys_creat (va_alist)
-     va_dcl
+int
+sys_creat (va_dcl va_alist)
 {
   va_list list_incrementor;
   char *name;
