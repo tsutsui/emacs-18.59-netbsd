@@ -1285,9 +1285,7 @@ DEFUN ("define-logical-name", Fdefine_logical_name, Sdefine_logical_name,
        "sDefine logical name: \nsDefine logical name %s as: ",
        "Define the job-wide logical name NAME to have the value STRING.\n\
 If STRING is nil or a null string, the logical name NAME is deleted.")
-  (varname, string)
-     Lisp_Object varname;
-     Lisp_Object string;
+  (Lisp_Object varname, Lisp_Object string)
 {
   CHECK_STRING (varname, 0);
   if (NILP (string))
@@ -1310,8 +1308,7 @@ If STRING is nil or a null string, the logical name NAME is deleted.")
 
 DEFUN ("sysnetunam", Fsysnetunam, Ssysnetunam, 2, 2, 0,
        "Open a network connection to PATH using LOGIN as the login string.")
-     (path, login)
-     Lisp_Object path, login;
+     (Lisp_Object path, Lisp_Object login)
 {
   int netresult;
   

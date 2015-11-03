@@ -133,8 +133,7 @@ getenv (register unsigned char *str)
 }
 
 unsigned char *
-egetenv (str)
-     register unsigned char *str;
+egetenv (register unsigned char *str)
 {
   return (getenv_1 (str, 1));
 }

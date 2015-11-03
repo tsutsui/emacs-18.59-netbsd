@@ -599,8 +599,7 @@ DEFUN ("kill-emacs", Fkill_emacs, Skill_emacs, 0, 1, "P",
   "Exit the Emacs job and kill it.  ARG means no query.\n\
 If emacs is running noninteractively and ARG is an integer,\n\
 return ARG as the exit program code.")
-  (arg)
-     Lisp_Object arg;
+  (Lisp_Object arg)
 {
   Lisp_Object answer;
   int i;
@@ -663,8 +662,7 @@ return ARG as the exit program code.")
 DEFUN ("dump-emacs-data", Fdump_emacs_data, Sdump_emacs_data, 1, 1, 0,
   "Dump current state of Emacs into data file FILENAME.\n\
 This function exists on systems that use HAVE_SHM.")
-  (intoname)
-     Lisp_Object intoname;
+  (Lisp_Object intoname)
 {
   extern int my_edata;
   Lisp_Object tem;
@@ -693,8 +691,7 @@ This function exists on systems that use HAVE_SHM.")
 DEFUN ("dump-emacs", Fdump_emacs, Sdump_emacs, 2, 2, 0,
   "Dump current state of Emacs into executable file FILENAME.\n\
 Take symbols from SYMFILE (presumably the file you executed to run Emacs).")
-  (intoname, symname)
-     Lisp_Object intoname, symname;
+  (Lisp_Object intoname, Lisp_Object symname)
 {
   extern int my_edata;
   Lisp_Object tem;
@@ -740,8 +737,7 @@ Take symbols from SYMFILE (presumably the file you executed to run Emacs).")
 #endif
 
 Lisp_Object
-decode_env_path (evarname, defalt)
-     char *evarname, *defalt;
+decode_env_path (char *evarname, char *defalt)
 {
   register char *path, *p;
 

@@ -1198,8 +1198,7 @@ DEFUN ("open-termscript", Fopen_termscript, Sopen_termscript,
   1, 1, "FOpen termscript file: ",
   "Start writing all terminal output to FILE as well as the terminal.\n\
 FILE = nil means just close any termscript file currently open.")
-  (file)
-     Lisp_Object file;
+  (Lisp_Object file)
 {
   if (termscript != 0) fclose (termscript);
   termscript = 0;
@@ -1218,8 +1217,7 @@ DEFUN ("set-screen-height", Fset_screen_height, Sset_screen_height, 1, 2, 0,
   "Tell redisplay that the screen has LINES lines.\n\
 Optional second arg non-nil means that redisplay should use LINES lines\n\
 but that the idea of the actual height of the screen should not be changed.")
-  (n, pretend)
-     Lisp_Object n, pretend;
+  (Lisp_Object n, Lisp_Object pretend)
 {
   CHECK_NUMBER (n, 0);
   change_screen_size (XINT (n), 0, !NILP (pretend), 0, 0);
@@ -1230,8 +1228,7 @@ DEFUN ("set-screen-width", Fset_screen_width, Sset_screen_width, 1, 2, 0,
   "Tell redisplay that the screen has COLS columns.\n\
 Optional second arg non-nil means that redisplay should use COLS columns\n\
 but that the idea of the actual width of the screen should not be changed.")
-  (n, pretend)
-     Lisp_Object n, pretend;
+  (Lisp_Object n, Lisp_Object pretend)
 {
   CHECK_NUMBER (n, 0);
   change_screen_size (0, XINT (n), !NILP (pretend), 0, 0);
@@ -1365,8 +1362,7 @@ DEFUN ("send-string-to-terminal", Fsend_string_to_terminal,
   Ssend_string_to_terminal, 1, 1, 0,
   "Send STRING to the terminal without alteration.\n\
 Control characters in STRING will have terminal-dependent effects.")
-  (str)
-     Lisp_Object str;
+  (Lisp_Object str)
 {
   CHECK_STRING (str, 0);
   fwrite (XSTRING (str)->data, 1, XSTRING (str)->size, stdout);
@@ -1413,8 +1409,7 @@ bell (void)
 
 DEFUN ("sleep-for", Fsleep_for, Ssleep_for, 1, 1, 0,
   "Pause, without updating display, for ARG seconds.")
-  (n)
-     Lisp_Object n;
+  (Lisp_Object n)
 {
   register int t;
 #ifndef subprocesses
@@ -1511,8 +1506,7 @@ Optional second arg non-nil means don't redisplay.\n\
 Redisplay is preempted as always if input arrives, and does not happen\n\
 if input is available before it starts.\n\
 Value is t if waited the full time with no input arriving.")
-  (n, nodisp)
-     Lisp_Object n, nodisp;
+  (Lisp_Object n, Lisp_Object nodisp)
 {
 #ifndef subprocesses
 #ifdef HAVE_TIMEVAL
