@@ -578,7 +578,7 @@ for this variable.")
     {
       register int idx = XUINT (valcontents);
 
-      if (*(Lisp_Object *) (idx + (char *) &buffer_local_flags) != 0)
+      if (*(Lisp_Object_Int *) (idx + (char *) &buffer_local_flags) != 0)
 	return *(Lisp_Object *)(idx + (char *) &buffer_defaults);
     }
 

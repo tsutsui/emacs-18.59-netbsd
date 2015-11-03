@@ -264,8 +264,8 @@ reset_buffer_local_variables (register struct buffer *b)
   for (offset = (char *)&buffer_local_flags.name - (char *)&buffer_local_flags;
        offset < sizeof (struct buffer);
        offset += sizeof (Lisp_Object))
-    if (*(Lisp_Object *)(offset + (char *) &buffer_local_flags) > 0
-	|| *(Lisp_Object *)(offset + (char *) &buffer_local_flags) == -2)
+    if (*(Lisp_Object_Int *)(offset + (char *) &buffer_local_flags) > 0
+	|| *(Lisp_Object_Int *)(offset + (char *) &buffer_local_flags) == -2)
       *(Lisp_Object *)(offset + (char *)b) =
 		*(Lisp_Object *)(offset + (char *)&buffer_defaults);
 }
