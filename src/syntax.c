@@ -1097,7 +1097,7 @@ syms_of_syntax (void)
 
   DEFVAR_BOOL ("parse-sexp-ignore-comments", &parse_sexp_ignore_comments,
     "Non-nil means forward-sexp, etc., should treat comments as whitespace.\n\
-Non-nil works only when the comment terminator is something like *\/,\n\
+Non-nil works only when the comment terminator is something like */,\n\
 and appears only when it ends a comment.\n\
 If comments are terminated by newlines,\n\
 you must make this variable nil.");
