@@ -44,7 +44,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-netbsd_mips.h"
 #elif 0 /* defined(__powerpc__) */
 #include "m-netbsd_powerpc.h"
-#elif 0 /* defined(__sh__) */
+#elif defined(__sh__)
 #include "m-netbsd_sh3.h"
 #elif defined(__sparc__) && !defined(_LP64)
 #include "m-netbsd_sparc.h"
