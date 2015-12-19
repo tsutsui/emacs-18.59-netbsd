@@ -23,6 +23,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    See the file ../etc/MACHINES for a list of systems and
    the names of the s- files to use for them.
    See s-template.h for documentation on writing s- files.  */
+/* define USE_X11R6 for ports which still use X11FLAVOUR=XFree86 */
+/* #define USE_X11R6 */
 #include "s-netbsd.h"
 
 /* Include here a m- file that describes the machine and system you use.
@@ -30,7 +32,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    the names of the m- files to use for them.
    See m-template.h for info on what m- files should define.
    */
-#if 0 /* defined(__alpha__) */
+#if defined(__alpha__)
 #include "m-netbsd_alpha.h"
 #elif defined(__arm__)
 #include "m-netbsd_arm.h"

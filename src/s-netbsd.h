@@ -89,7 +89,11 @@
 
 #define ORDINARY_LINK
 
+#ifdef USE_X11R6
+#define LIB_X11_LIB -L/usr/X11R6/lib -Wl,-R/usr/X11R6/lib -lX11
+#else
 #define LIB_X11_LIB -L/usr/X11R7/lib -Wl,-R/usr/X11R7/lib -lX11
+#endif
 
 /* For mem-limits.h.  */
 #define BSD4_2
@@ -113,6 +117,10 @@
 
 #define LD_SWITCH_SYSTEM
 #define C_SWITCH_SYSTEM
+#ifdef USE_X11R6
+#define C_SWITCH_X_SYSTEM -I/usr/X11R6/include
+#else
 #define C_SWITCH_X_SYSTEM -I/usr/X11R7/include
+#endif
 #define C_DEBUG_SWITCH -O -g
 #define C_OPTIMIZE_SWITCH -Wall -Wno-pointer-sign -g -O -fno-strict-aliasing
