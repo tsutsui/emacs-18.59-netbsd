@@ -517,16 +517,6 @@ typedef struct {
 #  define SHN_COMMON	Elf_eshn_common
 # endif /* !PT_LOAD */
 
-# ifdef __alpha__
-#  include <sys/exec_ecoff.h>
-#  define HDRR		struct ecoff_symhdr
-#  define pHDRR		HDRR *
-# endif /* __alpha__ */
-
-#ifdef __mips__			/* was in pkgsrc patches for 20.7 */
-# define SHT_MIPS_DEBUG	DT_MIPS_FLAGS
-# define HDRR		struct Elf_Shdr
-#endif /* __mips__ */
 #endif /* __NetBSD__ */
 
 #ifdef __OpenBSD__
@@ -1062,7 +1052,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
       memcpy (NEW_SECTION_H (nn).sh_offset + new_base, src,
 	      NEW_SECTION_H (nn).sh_size);
 
-#ifdef __alpha__
+#if defined(__alpha__) && !defined(__NetBSD__)
       /* Update Alpha COFF symbol table: */
       if (strcmp (old_section_names + OLD_SECTION_H (n).sh_name, ".mdebug")
 	  == 0)
