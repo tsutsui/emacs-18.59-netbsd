@@ -673,7 +673,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
   ElfW(Off)  new_data2_offset;
   ElfW(Addr) new_data2_addr;
   ElfW(Off) old_bss_offset;
-  ElfW(Word) new_data2_incr;
+  ElfW(Word) new_data2_incr, new_data2_shincr;
 
   int n, nn;
   int old_bss_index, old_sbss_index;
@@ -774,6 +774,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
      the end of the old .data section (and thus the offset of the .bss
      section) was unaligned.  */
   new_data2_incr = new_data2_size + (new_data2_offset - old_bss_offset);
+  new_data2_shincr = round_up(new_data2_incr, old_program_h->p_align);
 
 #ifdef DEBUG
   fprintf (stderr, "old_bss_index %d\n", old_bss_index);
@@ -799,7 +800,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
   if (new_file < 0)
     fatal ("Can't creat (%s): errno %d\n", new_name, errno);
 
-  new_file_size = stat_buf.st_size + old_file_h->e_shentsize + new_data2_incr;
+  new_file_size = stat_buf.st_size + old_file_h->e_shentsize + new_data2_shincr;
 
   if (ftruncate (new_file, new_file_size))
     fatal ("Can't ftruncate (%s): errno %d\n", new_name, errno);
@@ -812,7 +813,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
   new_file_h = (ElfW(Ehdr) *) new_base;
   new_program_h = (ElfW(Phdr) *) ((byte *) new_base + old_file_h->e_phoff);
   new_section_h = (ElfW(Shdr) *)
-    ((byte *) new_base + old_file_h->e_shoff + new_data2_incr);
+    ((byte *) new_base + old_file_h->e_shoff + new_data2_shincr);
 
   /* Make our new file, program and section headers as copies of the
    * originals.
@@ -829,7 +830,7 @@ unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start,
    * further away now.
    */
 
-  new_file_h->e_shoff += new_data2_incr;
+  new_file_h->e_shoff += new_data2_shincr;
   new_file_h->e_shnum += 1;
 
 #ifdef DEBUG
