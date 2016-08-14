@@ -104,10 +104,10 @@ int sign_extend_temp;
 int
 sign_extend_lisp_int (Lisp_Object_Int num)
 {
-  if (num & (1 << (VALBITS - 1)))
-    return num | ((-1) << VALBITS);
+  if (num & (((Lisp_Object_Int)1) << (VALBITS - 1)))
+    return num | (((Lisp_Object_Int)-1) << VALBITS);
   else
-    return num & ((1 << VALBITS) - 1);
+    return num & ((((Lisp_Object_Int)1) << VALBITS) - 1);
 }
 
 /* Data type predicates */
