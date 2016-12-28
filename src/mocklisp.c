@@ -98,8 +98,8 @@ ml_apply (Lisp_Object function, Lisp_Object args)
 
   specbind (Qmocklisp_arguments, args);
   val = Fprogn (Fcdr (function));
-  unbind_to (count);
-  return val;
+
+  return unbind_to (count, val);
 }
 
 DEFUN ("ml-nargs", Fml_nargs, Sml_nargs, 0, 0, 0, "# arguments to this mocklisp function")

@@ -391,8 +391,7 @@ to begin editing.")
 
   recursive_edit_1 ();
 
-  unbind_to (count);
-  return Qnil;
+  return unbind_to (count, Qnil);
 }
 
 Lisp_Object
@@ -411,8 +410,7 @@ recursive_edit_1 (void)
   if (EQ (val, Qt))
     Fsignal (Qquit, Qnil);
 
-  unbind_to (count);
-  return Qnil;
+  return unbind_to (count, Qnil);
 }
 
 Lisp_Object
@@ -635,7 +633,7 @@ command_loop_1 (void)
 	  int count = specpdl_ptr - specpdl;
 	  specbind (Qinhibit_quit, Qt);
 	  Fsit_for (make_number (2), Qnil);
-	  unbind_to (count);
+	  unbind_to (count, Qnil);
 
 	  echo_area_contents = 0;
 	  no_direct = 1;
@@ -1054,7 +1052,7 @@ read_command_char (int commandflag)
       cancel_echoing ();
       c = read_command_char (0);
       /* Remove the help from the screen */
-      unbind_to (count);
+      unbind_to (count, Qnil);
       redisplay ();
       if (c == 040)
 	{
@@ -1891,7 +1889,7 @@ Otherwise, suspend normally and after resumption call\n\
   record_unwind_protect (init_sys_modes, 0);
   stuff_buffered_input (stuffstring);
   sys_suspend ();
-  unbind_to (count);
+  unbind_to (count, Qnil);
 
   /* Check if terminal/window size has changed.
      Note that this is not useful when we are running directly

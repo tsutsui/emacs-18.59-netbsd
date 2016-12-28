@@ -603,8 +603,7 @@ Each VALUEFORM can refer to the symbols already bound by this VARLIST.")
     }
   UNGCPRO;
   val = Fprogn (Fcdr (args));
-  unbind_to (count);
-  return val;
+  return unbind_to (count, val);
 }
 
 DEFUN ("let", Flet, Slet, 1, UNEVALLED, 0,
@@ -656,8 +655,7 @@ All the VALUEFORMs are evalled before any symbols are bound.")
     }
 
   elt = Fprogn (Fcdr (args));
-  unbind_to (count);
-  return elt;
+  return unbind_to (count, elt);
 }
 
 DEFUN ("while", Fwhile, Swhile, 1, UNEVALLED, 0,
@@ -825,7 +823,10 @@ unbind_catch (struct catchtag *catch)
   do
     {
       last_time = catchlist == catch;
-      unbind_to (catchlist->pdlcount);
+
+      /* Unwind the specpdl stack, and then restore the proper set of
+         handlers.  */
+      unbind_to (catchlist->pdlcount, Qnil);
       handlerlist = catchlist->handlerlist;
       catchlist = catchlist->next;
     }
@@ -875,14 +876,10 @@ If BODYFORM exits nonlocally, the UNWINDFORMS are executed anyway.")
 {
   Lisp_Object val;
   int count = specpdl_ptr - specpdl;
-  struct gcpro gcpro1;
 
   record_unwind_protect (0, Fcdr (args));
   val = Feval (Fcar (args));
-  GCPRO1 (val);
-  unbind_to (count);  
-  UNGCPRO;
-  return val;
+  return unbind_to (count, val);  
 }
 
 /* Chain of condition handlers currently in effect.
@@ -929,7 +926,11 @@ See SIGNAL for more info.")
       if (!NILP (h.var))
         specbind (h.var, Fcdr (c.val));
       val = Fprogn (Fcdr (Fcar (c.val)));
-      unbind_to (c.pdlcount);
+
+      /* Note that this just undoes the binding of h.var; whoever
+	 longjumped to us unwound the stack to c.pdlcount before
+	 throwing. */
+      unbind_to (c.pdlcount, Qnil);
       return val;
     }
   c.next = catchlist;
@@ -1241,7 +1242,7 @@ do_autoload (Lisp_Object fundef, Lisp_Object funname)
   Fload (Fcar (Fcdr (fundef)), Qnil, noninteractive ? Qt : Qnil, Qnil);
   /* Once loading finishes, don't undo it.  */
   Vautoload_queue = Qt;
-  unbind_to (count);
+  unbind_to (count, Qnil);
 
   while (XTYPE (fun) == Lisp_Symbol)
     {
@@ -1898,8 +1899,7 @@ funcall_lambda (Lisp_Object fun, int nargs, register Lisp_Object *arg_vector)
     return Fsignal (Qwrong_number_of_arguments, Fcons (fun, Fcons (numargs, Qnil)));
 
   val = Fprogn (Fcdr (Fcdr (fun)));
-  unbind_to (count);
-  return val;
+  return unbind_to (count, val);
 }
 
 void
@@ -1955,10 +1955,13 @@ record_unwind_protect (Lisp_Object (*function)(Lisp_Object), Lisp_Object arg)
   specpdl_ptr++;
 }
 
-void
-unbind_to (int count)
+Lisp_Object
+unbind_to (int count, Lisp_Object value)
 {
   int quitf = !NILP (Vquit_flag);
+  struct gcpro gcpro1;
+
+  GCPRO1 (value);
 
   Vquit_flag = Qnil;
 
@@ -1975,6 +1978,10 @@ unbind_to (int count)
         Fset (specpdl_ptr->symbol, specpdl_ptr->old_value);
     }
   if (NILP (Vquit_flag) && quitf) Vquit_flag = Qt;
+
+  UNGCPRO;
+
+  return value;
 }
 
 #if 0

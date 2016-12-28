@@ -288,7 +288,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	case Bunbind+4: case Bunbind+5:
 	  op -= Bunbind;
 	dounbind:
-	  unbind_to (specpdl_ptr - specpdl - op);
+	  unbind_to (specpdl_ptr - specpdl - op, Qnil);
 	  break;
 
 	case Bgoto:
@@ -386,7 +386,7 @@ DEFUN ("byte-code", Fbyte_code, Sbyte_code, 3, 3, 0,
 	  temp_output_buffer_show (TOP);
 	  TOP = v1;
 	  /* pop binding of standard-output */
-	  unbind_to (specpdl_ptr - specpdl - 1);
+	  unbind_to (specpdl_ptr - specpdl - 1, Qnil);
 	  break;
 
 	case Bnth:

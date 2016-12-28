@@ -194,9 +194,7 @@ COUNT is a repeat count, or nil for once, or 0 for infinite loop.")
   while (--repeat && XTYPE (Vexecuting_macro) == Lisp_String);
 
   UNGCPRO;
-  unbind_to (count);
-
-  return Qnil;
+  return unbind_to (count, Qnil);
 }
 
 void

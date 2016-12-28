@@ -281,7 +281,7 @@ If you quit, the process is killed with SIGKILL.")
 
   set_buffer_internal (old);
 
-  unbind_to (count);
+  unbind_to (count, Qnil);
 
   if (synch_process_death)
     return build_string (synch_process_death);

@@ -264,8 +264,7 @@ internal_with_output_to_temp_buffer (char *bufname, Lisp_Object (*function)(Lisp
 
   temp_output_buffer_show (buf);
 
-  unbind_to (count);
-  return val;
+  return unbind_to (count, val);
 }
 
 DEFUN ("with-output-to-temp-buffer", Fwith_output_to_temp_buffer, Swith_output_to_temp_buffer,
@@ -296,8 +295,7 @@ to get the buffer displayed.  It gets one argument, the buffer to display.")
 
   temp_output_buffer_show (buf);
 
-  unbind_to (count);
-  return val;
+  return unbind_to (count, val);
 }
 #endif /* not standalone */
 

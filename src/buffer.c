@@ -218,8 +218,7 @@ DEFUN ("get-buffer-create", Fget_buffer_create, Sget_buffer_create, 1, 1, 0,
   Fset_buffer (buf);
   call0 (function);
 
-  unbind_to (count);
-  return buf;
+  return unbind_to (count, buf);
 }
 
 /* Reinitialize everything about a buffer except its name and contents.  */

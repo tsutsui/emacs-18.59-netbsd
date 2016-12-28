@@ -1949,8 +1949,8 @@ read_process_output (Lisp_Object proc, register int channel)
       filter_string = make_string (chars, nchars);
       call2 (this_filter, filter_process, filter_string);
       /*   internal_condition_case (run_filter, Qerror, Fidentity);  */
-      unbind_to (count);
-      return nchars;
+
+      return unbind_to (count, nchars);
     }
 
   /* If no filter, write into buffer if it isn't dead.  */
@@ -2655,7 +2655,7 @@ exec_sentinel (Lisp_Object proc, Lisp_Object reason)
   filter_string = reason;
   call2 (this_filter, filter_process, filter_string);
 /*   internal_condition_case (run_filter, Qerror, Fidentity);  */
-  unbind_to (count);
+  unbind_to (count, Qnil);
   p->sentinel = sentinel;
 }
 

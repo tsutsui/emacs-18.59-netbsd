@@ -347,7 +347,7 @@ file_name_completion (Lisp_Object file, Lisp_Object dirname, int all_flag, int v
       closedir (d);
     }
 
-  unbind_to (count);
+  unbind_to (count, Qnil);
 
   if (all_flag || NILP (bestmatch))
     return bestmatch;

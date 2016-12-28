@@ -2226,7 +2226,7 @@ DIR defaults to current buffer's directory default.")
 			  insert_default_directory ? insdef : Qnil);
 
 #ifdef VMS
-  unbind_to (count);
+  unbind_to (count, Qnil);
 #endif
 
   UNGCPRO;
