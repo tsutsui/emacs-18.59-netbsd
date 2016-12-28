@@ -42,15 +42,15 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 #include <errno.h>
 
-#if !defined(vax11c) && !defined(__NetBSD__)
+#if !defined(vax11c) && !defined(HAVE_STRERROR)
 extern int errno;
-#if defined(LINUX) && !(defined (__GLIBC__) && (__GLIBC__ >= 2))
 extern char *sys_errlist[];
-#endif
 extern int sys_nerr;
+#define err_str(a) ((a) < sys_nerr ? sys_errlist[a] : "unknown error")
+#else
+#define err_str(a) strerror(a)
 #endif
 
-#define err_str(a) ((a) < sys_nerr ? sys_errlist[a] : "unknown error")
 
 #ifdef APOLLO
 #include <sys/time.h>
@@ -113,10 +113,14 @@ report_file_error (char *string, Lisp_Object data)
 {
   Lisp_Object errstring;
 
+#if !defined(vax11c) && !defined(HAVE_STRERROR)
   if (errno >= 0 && errno < sys_nerr)
     errstring = build_string (sys_errlist[errno]);
   else
     errstring = build_string ("undocumented error code");
+#else
+    errstring = build_string (strerror(errno));
+#endif
 
   /* System error messages are capitalized.  Downcase the initial
      unless it is followed by a slash.  */

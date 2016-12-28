@@ -170,12 +170,10 @@ extern Lisp_Object Qexit;
 #undef WRETCODE
 #define WRETCODE(w) WEXITSTATUS (w)
 
-#if !defined(__NetBSD__)
+#if !defined(HAVE_STRERROR)
 extern errno;
 extern sys_nerr;
-#if defined(LINUX) && !(defined (__GLIBC__) && (__GLIBC__ >= 2))
 extern char *sys_errlist[];
-#endif
 #endif
 
 #ifndef BSD4_1
@@ -1742,7 +1740,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
 	    abort ();
 #endif /* not AIX */
 	  else
-	    error("select error: %s", sys_errlist[xerrno]);
+	    error("select error: %s", strerror(xerrno));
 	}
 #ifdef SIGIO
 #if defined (sun) || defined (APOLLO)
