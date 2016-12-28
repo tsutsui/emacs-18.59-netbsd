@@ -174,6 +174,9 @@ extern Lisp_Object Qexit;
 extern errno;
 extern sys_nerr;
 extern char *sys_errlist[];
+#define err_str(a) ((a) < sys_nerr ? sys_errlist[a] : "unknown error")
+#else
+#define err_str(a) strerror(a)
 #endif
 
 #ifndef BSD4_1
@@ -1740,7 +1743,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
 	    abort ();
 #endif /* not AIX */
 	  else
-	    error("select error: %s", strerror(xerrno));
+	    error("select error: %s", err_str(xerrno));
 	}
 #ifdef SIGIO
 #if defined (sun) || defined (APOLLO)
