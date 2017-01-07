@@ -22,6 +22,13 @@
 
 #define C_COMPILER gcc
 
+#define HAVE_ALLOCA
+
+/* If compiling with GCC, let GCC implement alloca.  */
+#if defined(__GNUC__) && !defined(alloca)
+#define alloca(n) __builtin_alloca(n)
+#endif
+
 /* NetBSD is nominally a POSIX.1 OS and has setsid.  */
 
 #define HAVE_SETSID

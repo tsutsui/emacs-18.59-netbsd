@@ -79,10 +79,3 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* #define VIRT_ADDR_VARIES */
 
 #define DATA_SEG_BITS 0x08000000
-
-#define HAVE_ALLOCA
-
-/* If compiling with GCC, let GCC implement alloca.  */
-#if defined(__GNUC__) && !defined(alloca)
-#define alloca(n) __builtin_alloca(n)
-#endif
