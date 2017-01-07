@@ -983,6 +983,7 @@ duplicates what expand-file-name does.")
 
   /* NOTREACHED */
 #endif /* not VMS */
+  return Qnil;
 }
 
 Lisp_Object

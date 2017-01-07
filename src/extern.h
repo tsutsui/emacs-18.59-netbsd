@@ -144,7 +144,7 @@ extern int sys_open (const char *, int, ...);
 extern int sys_open ();
 #endif
 extern ssize_t sys_read (int, void *, size_t);
-extern int sys_suspend (void);
+extern void sys_suspend (void);
 extern ssize_t sys_write (int, const void *, size_t);
 extern int tabs_safe_p (void);
 extern void unrequest_sigio (void);

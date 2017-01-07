@@ -702,7 +702,7 @@ struct save_signal
 
 /* Suspend the Emacs process; give terminal to its superior.  */
 
-int
+void
 sys_suspend (void)
 {
 #ifdef VMS

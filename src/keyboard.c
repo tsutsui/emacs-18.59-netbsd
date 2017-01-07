@@ -560,7 +560,7 @@ DEFUN ("top-level", Ftop_level, Stop_level, 0, 0, "",
   "Exit all recursive editing levels.")
   (void)
 {
-  Fthrow (Qtop_level, Qnil);
+  return Fthrow (Qtop_level, Qnil);
 }
 
 DEFUN ("exit-recursive-edit", Fexit_recursive_edit, Sexit_recursive_edit, 0, 0, "",
@@ -570,6 +570,7 @@ DEFUN ("exit-recursive-edit", Fexit_recursive_edit, Sexit_recursive_edit, 0, 0, 
   if (command_loop_level > 0 || minibuf_level > 0)
     Fthrow (Qexit, Qnil);
   error ("No recursive edit is in progress");
+  return Qnil;
 }
 
 DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 0, "",
@@ -579,6 +580,7 @@ DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 
   if (command_loop_level > 0 || minibuf_level > 0)
     Fthrow (Qexit, Qt);
   error ("No recursive edit is in progress");
+  return Qnil;
 }
 
 /* This is the actual command reading loop,

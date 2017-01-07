@@ -836,7 +836,7 @@ a repetition of this command will exit.")
       return Qnil;
     }
  exit:
-  Fthrow (Qexit, Qnil);
+  return Fthrow (Qexit, Qnil);
   /* NOTREACHED */
 }
 
@@ -1022,14 +1022,14 @@ DEFUN ("self-insert-and-exit", Fself_insert_and_exit, Sself_insert_and_exit, 0, 
   (void)
 {
   self_insert_internal (last_command_char, 0);
-  Fthrow (Qexit, Qnil);
+  return Fthrow (Qexit, Qnil);
 }
 
 DEFUN ("exit-minibuffer", Fexit_minibuffer, Sexit_minibuffer, 0, 0, "",
   "Terminate this minibuffer argument.")
   (void)
 {
-  Fthrow (Qexit, Qnil);
+  return Fthrow (Qexit, Qnil);
 }
 
 DEFUN ("minibuffer-depth", Fminibuffer_depth, Sminibuffer_depth, 0, 0, 0,
