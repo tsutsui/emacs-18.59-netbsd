@@ -180,8 +180,6 @@ int preemption_index;
 /* Set these variables in the debugger to force a display preemption.  */
 int debug_preemption_vpos = -1;
 int debug_preemption_char_count = -1;
-
-extern int num_input_chars;
 
 /* Free and reallocate current_screen and new_screen.  */
 

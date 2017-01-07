@@ -80,6 +80,7 @@ extern void prepare_to_modify_buffer (void);
 /* keyboard.c */
 extern int input_pending;
 extern int kbd_count;
+extern int num_input_chars;
 extern void clear_input_pending (void);
 extern void clear_waiting_for_input (void);
 extern void consume_available_input (void);

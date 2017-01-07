@@ -26,8 +26,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 extern Lisp_Object global_map;
 
-extern int num_input_chars;
-
 Lisp_Object Vprefix_arg, Vcurrent_prefix_arg, Qminus;
 Lisp_Object Qcall_interactively;
 Lisp_Object Vcommand_history;

@@ -20,6 +20,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include "config.h"
 #include "lisp.h"
+#include "dispextern.h"
 
 #ifndef standalone
 #include "commands.h"
@@ -1008,7 +1009,6 @@ See  condition-case.")
   register struct handler *allhandlers = handlerlist;
   Lisp_Object conditions;
   extern int gc_in_progress;
-  extern int waiting_for_input;
   Lisp_Object debugger_value;
 
   quit_error_check ();
