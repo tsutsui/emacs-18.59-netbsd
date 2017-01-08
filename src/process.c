@@ -2140,16 +2140,16 @@ process_send_signal (Lisp_Object process, int signo, Lisp_Object current_group, 
 	case SIGINT:
 	  ioctl (XFASTINT (p->infd), TIOCGETC, &c);
 	  send_process (proc, &c.t_intrc, 1);
-	  return Qnil;
+	  return;
 	case SIGQUIT:
 	  ioctl (XFASTINT (p->infd), TIOCGETC, &c);
 	  send_process (proc, &c.t_quitc, 1);
-	  return Qnil;
+	  return;
 #ifdef SIGTSTP
 	case SIGTSTP:
 	  ioctl (XFASTINT (p->infd), TIOCGLTC, &lc);
 	  send_process (proc, &lc.t_suspc, 1);
-	  return Qnil;
+	  return;
 #endif
 	}
 #endif /* have TIOCGLTC and have TIOCGETC */
@@ -2192,16 +2192,16 @@ process_send_signal (Lisp_Object process, int signo, Lisp_Object current_group, 
 	case SIGINT:
 	  ioctl (XFASTINT (p->infd), TCGETA, &t);
 	  send_process (proc, &t.c_cc[VINTR], 1);
-	  return Qnil;
+	  return;
 	case SIGQUIT:
 	  ioctl (XFASTINT (p->infd), TCGETA, &t);
 	  send_process (proc, &t.c_cc[VQUIT], 1);
-	  return Qnil;
+	  return;
 #ifdef SIGTSTP
 	case SIGTSTP:
 	  ioctl (XFASTINT (p->infd), TCGETA, &t);
 	  send_process (proc, &t.c_cc[VSWTCH], 1);
-	  return Qnil;
+	  return;
 #endif
 	}
 #endif /* HAVE_TERMIOS */
