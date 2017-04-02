@@ -36,7 +36,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-netbsd_alpha.h"
 #elif defined(__arm__)
 #include "m-netbsd_arm.h"
-#elif 0 /* defined(__hppa__) */
+#elif defined(__hppa__)
 #include "m-netbsd_hppa.h"
 #elif defined(__i386__)
 #include "m-netbsd_i386.h"
