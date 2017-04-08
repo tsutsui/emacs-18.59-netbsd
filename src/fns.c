@@ -1082,6 +1082,22 @@ in a list (all floating point load average values are multiplied by 100\n\
 and then turned into integers).")
   (void)
 {
+#ifdef HAVE_GETLOADAVG
+  double load_ave[3];
+  int loads = getloadavg (load_ave, 3);
+  Lisp_Object ret = Qnil;
+
+  if (loads < 0)
+    error ("load-average not implemented for this operating system");
+
+  while (loads-- > 0)
+    {
+      Lisp_Object load = make_number ((int) (100.0 * load_ave[loads]));
+      ret = Fcons (load, ret);
+    }
+
+  return ret;
+#else /* not HAVE_GETLOADAVG */
 #ifdef DGUX
   /* perhaps there should be a "sys_load_avg" call in sysdep.c?! - DJB */
   load_info.one_minute     = 0.0;	/* just in case there is an error */
@@ -1227,6 +1243,7 @@ and then turned into integers).")
 			      Qnil)));
 #endif /* LOAD_AVE_TYPE */
 #endif /* not DGUX */
+#endif /* not HAVE_GETLOADAVG */
 }
 
 #undef channel

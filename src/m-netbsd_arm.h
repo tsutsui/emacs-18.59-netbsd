@@ -53,12 +53,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define NO_UNION_TYPE
 
-/* Data type of load average, as read out of kmem.  */
-#define LOAD_AVE_TYPE unsigned long
-
-/* Convert that into an integer that is 100 for a load average of 1.0  */
-#define LOAD_AVE_CVT(x) ((int)(((double) (x)) * 100.0 / FSCALE))
-  
 /* Define CANNOT_DUMP on machines where unexec does not work.
    Then the function dump-emacs will not be defined
    and temacs will do (load "loadup") automatically unless told otherwise.  */

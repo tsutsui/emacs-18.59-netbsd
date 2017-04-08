@@ -43,11 +43,3 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* XINT must explicitly sign-extend */
 
 #define EXPLICIT_SIGN_EXTEND
-
-/* Data type of load average, as read out of kmem.  */
-
-#define LOAD_AVE_TYPE unsigned long
-
-/* Convert that into an integer that is 100 for a load average of 1.0  */
-
-#define LOAD_AVE_CVT(x) (int) (((double) (x)) * 100.0 / FSCALE)
