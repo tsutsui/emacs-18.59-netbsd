@@ -56,11 +56,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define NO_ARG_ARRAY
 
-/* Define WORD_MACHINE if addresses and such have
- * to be corrected before they can be used as byte counts.  */
-
-/* #define WORD_MACHINE */
-
 /* Define how to take a char and sign-extend into an int.
    On machines where char is signed, this is a no-op.  */
 
