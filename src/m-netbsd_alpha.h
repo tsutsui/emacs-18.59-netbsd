@@ -67,12 +67,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define NO_UNION_TYPE
 
-/* Define CANNOT_DUMP on machines where unexec does not work.
-   Then the function dump-emacs will not be defined
-   and temacs will do (load "loadup") automatically unless told otherwise.  */
-
-/* #define CANNOT_DUMP */
-
 /* Define VIRT_ADDR_VARIES if the virtual addresses of
    pure and impure space as loaded can vary, and even their
    relative order cannot be relied on.
