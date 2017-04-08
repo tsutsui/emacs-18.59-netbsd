@@ -42,7 +42,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-netbsd_i386.h"
 #elif defined(__m68k__)
 #include "m-netbsd_m68k.h"
-#elif 0 /* defined(__mips__) */
+#elif defined(__mips__)
 #include "m-netbsd_mips.h"
 #elif defined(__powerpc__)
 #include "m-netbsd_powerpc.h"
