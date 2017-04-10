@@ -68,7 +68,7 @@ install: all mkdir lockdir
 	$(INSTALL) -c etc/etags ${BINDIR}/etags
 	$(INSTALL) -c etc/ctags ${BINDIR}/ctags
 	$(INSTALL) -c -m 1755 src/xemacs ${BINDIR}/xemacs
-	$(INSTALL) -c -m 444 etc/emacs.1 ${MANDIR}/emacs.1
+	$(INSTALL) -c -m 444 etc/emacs.1 ${MAN1DIR}/emacs.1
 	-rm -f ${BINDIR}/emacs
 	mv ${BINDIR}/xemacs ${BINDIR}/emacs
 
