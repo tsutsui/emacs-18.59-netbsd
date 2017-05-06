@@ -171,6 +171,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define HAVE_GETWD		/* cure conflict with getcwd? */
 #define HAVE_PERSONALITY_LINUX32 /* personality LINUX32 can be set */
 #define HAVE_STRERROR
+#define HAVE_GETLOADAVG
 
 #define NO_SIOCTL_H		/* don't have sioctl.h */
 #define SYSV_SYSTEM_DIR		/* use dirent.h */
