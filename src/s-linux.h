@@ -241,8 +241,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define MAXNAMLEN NAME_MAX	/* missing SYSV-ism */
 #endif
 
+#ifdef SIGUNUSED
 #undef SIGSYS
 #define SIGSYS SIGUNUSED	/* rename to harmless work-alike */
+#endif
 #define VSWTCH VSWTC		/* mis-spelling in termios.h? */
 
 /* we have non-standard standard I/O (iostream) ... */
@@ -276,5 +278,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define LIBS_DEBUG		/* override in config.h to include -lg */
 #define LIBS_TERMCAP -lncurses
 #define LIB_X11_LIB -lX11
+#define LD_SWITCH_SYSTEM -no-pie
 
 /* s-linux.h ends here */
