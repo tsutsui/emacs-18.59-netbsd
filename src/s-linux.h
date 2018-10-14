@@ -278,6 +278,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define LIBS_DEBUG		/* override in config.h to include -lg */
 #define LIBS_TERMCAP -lncurses
 #define LIB_X11_LIB -lX11
+#if defined(__PIE__)
 #define LD_SWITCH_SYSTEM -no-pie
+#endif
 
 /* s-linux.h ends here */
