@@ -32,7 +32,9 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    the names of the m- files to use for them.
    See m-template.h for info on what m- files should define.
    */
-#if defined(__alpha__)
+#if defined(__aarch64__)
+#include "m-netbsd_aarch64.h"
+#elif defined(__alpha__)
 #include "m-netbsd_alpha.h"
 #elif defined(__arm__)
 #include "m-netbsd_arm.h"
