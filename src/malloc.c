@@ -132,8 +132,8 @@ extern char etext;
 
 /* These two are for user programs to look at, when they are interested.  */
 
-unsigned int malloc_sbrk_used;       /* amount of data space used now */
-unsigned int malloc_sbrk_unused;     /* amount more we can have */
+unsigned long malloc_sbrk_used;       /* amount of data space used now */
+unsigned long malloc_sbrk_unused;     /* amount more we can have */
 
 /* start of data space; can be changed by calling init_malloc */
 static char *data_space_start;
@@ -197,7 +197,7 @@ static struct mhead *nextf[30];
 static char busy[30];
 
 /* Number of bytes of writable memory we can expect to be able to get */
-static unsigned int lim_data;
+static unsigned long lim_data;
 
 /* Level number of warnings already issued.
   0 -- no warnings issued.
@@ -249,7 +249,7 @@ morecore (register int nu)	/* ask system for more memory */
 {
   register char *cp;
   register int nblks;
-  register unsigned int siz;
+  register unsigned long siz;
   int oldmask;
 
 #ifdef BSD
