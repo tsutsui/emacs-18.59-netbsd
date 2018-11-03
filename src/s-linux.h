@@ -268,7 +268,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef __ELF__
 #define UNEXEC unexelf.o
 #define ORDINARY_LINK
-#define DATA_SEG_BITS 0x08000000
 #endif
 
 #define C_COMPILER gcc

@@ -1,4 +1,4 @@
-/* m- file for x86_64.
+/* m- file for Linux/ARM
    Copyright (C) 1987 Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
@@ -25,28 +25,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define INTBITS 32		/* Number of bits in an int */
 
-#define LONGBITS 64		/* Number of bits in a long */
-
-/* Define LONG_LISP_OBJECT if you define LISP_OBJECT as long. */
-
-#define LONG_LISP_OBJECT
-
-/* Define the number of bits compose Lisp_Object. The default is 32. */
-
-#define LISP_OBJECT_BITS 64
-
-#define PNTR_COMPARISON_TYPE unsigned long
-
-/*
- * Undefine some constants defined in s-*.h so that lisp.h
- * picks up appropriate one.
- */
-#undef VALBITS
-#undef GCTYPEBITS
-
-/* x86_64 is not big-endian: lowest numbered byte is least significant. */
-
-/* #undef BIG_ENDIAN */
+#define LONGBITS 32		/* Number of bits in a long */
 
 /* Define NO_ARG_ARRAY if you cannot take the address of the first of a
  * group of arguments and treat it as an array of the arguments.  */
@@ -56,26 +35,18 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* Define how to take a char and sign-extend into an int.
    On machines where char is signed, this is a no-op.  */
 
-#define SIGN_EXTEND_CHAR(c) (c)
+#define SIGN_EXTEND_CHAR(c) (((int)(c) << 24) >> 24)
+
+/* Now define a symbol for the cpu type, if your compiler
+   does not define it automatically:
+   Ones defined so far include vax, m68000, ns16000, pyramid,
+   orion, tahoe, APOLLO and many others */
 
 /* Use type int rather than a union, to represent Lisp_Object */
 
 #define NO_UNION_TYPE
 
-/* Define CANNOT_DUMP on machines where unexec does not work.
-   Then the function dump-emacs will not be defined
-   and temacs will do (load "loadup") automatically unless told otherwise.  */
-
-/* #define CANNOT_DUMP */
-
-/* Define VIRT_ADDR_VARIES if the virtual addresses of
-   pure and impure space as loaded can vary, and even their
-   relative order cannot be relied on.
-
-   Otherwise Emacs assumes that text space precedes data space,
-   numerically.  */
-
-/* #define VIRT_ADDR_VARIES */
+#define EXPLICIT_SIGN_EXTEND
 
 #define HAVE_ALLOCA
 

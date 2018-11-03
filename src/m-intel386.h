@@ -184,4 +184,5 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define ULIMIT_BREAK_VALUE (32*1024*1024)
 
 #define SEGMENT_MASK ((SEGMENT_SIZE)-1)
+#define DATA_SEG_BITS 0x08000000
 #endif

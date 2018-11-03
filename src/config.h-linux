@@ -35,6 +35,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-intel386.h"
 #elif defined(__x86_64__)
 #include "m-x86-x64.h"
+#elif defined(__arm__)
+#include "m-linux_arm.h"
 #endif
 
 /* Load in the conversion definitions if this system
