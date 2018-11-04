@@ -99,11 +99,17 @@ what you give them.   Help stamp out software-hoarding!  */
 #else /* if 4.2 or newer */
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <limits.h>
 #endif /* if 4.2 or newer */
 #endif
 
 #ifdef VMS
 #include "vlimit.h"
+#endif
+
+#ifdef linux
+#include <sys/resource.h>
+#include <limits.h>
 #endif
 
 #ifdef BSD
@@ -738,7 +744,7 @@ malloc_mem_free (void)
  *	data.  On USG systems this is the data space only.
  */
 
-#ifdef USG
+#if defined(USG) && !defined(linux)
 
 void
 get_lim_data (void)
@@ -752,7 +758,7 @@ get_lim_data (void)
   lim_data -= (long) data_space_start;
 }
 
-#else /* not USG */
+#else /* not USG || linux */
 #if defined (BSD4_1) || defined (VMS)
 
 void
@@ -767,13 +773,17 @@ void
 get_lim_data (void)
 {
   struct rlimit XXrlimit;
+  rlim_t rlim_cur;
 
   getrlimit (RLIMIT_DATA, &XXrlimit);
 #ifdef RLIM_INFINITY
-  lim_data = XXrlimit.rlim_cur & RLIM_INFINITY; /* soft limit */
+  rlim_cur = XXrlimit.rlim_cur & RLIM_INFINITY; /* soft limit */
 #else
-  lim_data = XXrlimit.rlim_cur;	/* soft limit */
+  rlim_cur = XXrlimit.rlim_cur;	/* soft limit */
 #endif
+  if (rlim_cur > ULONG_MAX)
+    rlim_cur = ULONG_MAX;
+  lim_data = rlim_cur;
 }
 
 #endif /* not BSD4_1 and not VMS */
