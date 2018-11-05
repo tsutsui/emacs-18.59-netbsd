@@ -112,9 +112,9 @@ DEFUN ("documentation", Fdocumentation, Sdocumentation, 1, 1, 0,
   if (XTYPE (fun) == Lisp_Subr)
     {
       if (XSUBR (fun)->doc == 0) return Qnil;
-      if ((PNTR_COMPARISON_TYPE) XSUBR (fun)->doc >= 0)
+      if ((int) XSUBR (fun)->doc >= 0)
 	return Fsubstitute_command_keys (build_string (XSUBR (fun)->doc));
-      return Fsubstitute_command_keys (get_doc_string (- (PNTR_COMPARISON_TYPE) XSUBR (fun)->doc));
+      return Fsubstitute_command_keys (get_doc_string (- (int) XSUBR (fun)->doc));
     }
   if (XTYPE (fun) == Lisp_Vector)
     return build_string ("Prefix command (definition is a Lisp vector of subcommands).");
