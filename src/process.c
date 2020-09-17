@@ -179,6 +179,7 @@ extern char *sys_errlist[];
 #define err_str(a) strerror(a)
 #endif
 
+#if !defined(HAVE_STRSIGNAL)
 #ifndef BSD4_1
 #ifndef SYS_SIGLIST_DECLARED
 extern char *sys_siglist[];
@@ -213,6 +214,8 @@ char *sys_siglist[] =
     "exceeded CPU time limit",
     "exceeded file size limit"
     };
+#endif
+#define strsignal(code)	sys_siglist[(code)]
 #endif
 
 #ifdef vipc
@@ -360,7 +363,7 @@ status_message (Lisp_Object status)
 
   if (EQ (symbol, Qsignal) || EQ (symbol, Qstop))
     {
-      string = build_string (code < NSIG ? sys_siglist[code] : "unknown");
+      string = build_string (code < NSIG ? strsignal(code) : "unknown");
       string2 = build_string (coredump ? " (core dumped)\n" : "\n");
       XSTRING (string)->data[0] = DOWNCASE (XSTRING (string)->data[0]);
       return concat2 (string, string2);
@@ -850,7 +853,7 @@ Proc         Status   Buffer         Command\n\
 	  Lisp_Object tem;
 	  tem = Fcar (Fcdr (p->status));
 	  if (XINT (tem) < NSIG)
-	    write_string (sys_siglist [XINT (tem)], -1);
+	    write_string (strsignal(XINT (tem)), -1);
 	  else
 	    Fprinc (symbol, Qnil);
 	}
@@ -2514,7 +2517,7 @@ sigchld_handler (int signo)
 	  if (WIFEXITED (w))
 	    synch_process_retcode = WRETCODE (w);
 	  else if (WIFSIGNALED (w))
-	    synch_process_death = sys_siglist[WTERMSIG (w)];
+	    synch_process_death = strsignal(WTERMSIG (w));
 	}
 
       /* On some systems, we must return right away.

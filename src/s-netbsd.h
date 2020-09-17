@@ -83,6 +83,7 @@
 #define HAVE_GETWD
 #define HAVE_SYS_WAIT_H
 #define HAVE_STRERROR
+#define HAVE_STRSIGNAL
 #define HAVE_GETLOADAVG
 
 #define SYSV_STREAMS

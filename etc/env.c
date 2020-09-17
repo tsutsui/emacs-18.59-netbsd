@@ -84,8 +84,8 @@
 
 #ifdef EMACS
 #define NO_SHORTNAMES
-#include "../src/config.h"
 #endif /* EMACS */
+#include "../src/config.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -199,7 +199,7 @@ main (argc, argv, envp)
     }
   else
     {
-#if defined(LINUX) && !(defined (__GLIBC__) && (__GLIBC__ >= 2))
+#if !defined(HAVE_STRERROR)
       extern char *sys_errlist[];
 #endif
 
@@ -208,10 +208,14 @@ main (argc, argv, envp)
 
       fprintf (stderr, "%s: Cannot execute \"%s\"",
 	       progname, *argv);
+#if !defined(HAVE_STRERROR)
       if (errno < sys_nerr)
 	fprintf (stderr, ": %s\n" , sys_errlist[errno]);
       else
 	putc ('\n', stderr);
+#else
+      fprintf (stderr, ": %s\n" , strerror(errno));
+#endif
       exit (errno != 0 ? errno : 1);
     }
 }
