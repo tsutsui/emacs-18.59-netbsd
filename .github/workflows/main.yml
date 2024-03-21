@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: install packages
+        run: |
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y make gcc libx11-dev ncurses-dev
+
+      - uses: actions/checkout@v4
+        with:
+          #repository: tsutsui/emacs-18.59-netbsd
+          fetch-depth: 200
+
+      - name: configure and make
+        run: |
+          sudo sh -c "echo 0 > /proc/sys/kernel/randomize_va_space"
+          cp src/config.h-linux src/config.h
+          make
+          sudo make install
+
+  build-netbsd:
+    name: "build-netbsd (NetBSD/amd64 9.3 with pkgsrc)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packages and run configure and make (on the NetBSD VM)
+        uses: vmactions/netbsd-vm@v1
+        with:
+          usesh: true
+          copyback: false
+          # Check https://github.com/NetBSD/pkgsrc/blob/trunk/net/sayaka/Makefile to check dependencies
+          prepare: |
+            PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
+            export PATH
+            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xbase.tar.xz | tar -C / -zxpf - ./usr/X11R7/bin ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
+            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xcomp.tar.xz | tar -C / -zxpf - ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
+
+          run: |
+            PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
+            export PATH
+            cp src/config.h-netbsd src/config.h
+            make
+            make install
