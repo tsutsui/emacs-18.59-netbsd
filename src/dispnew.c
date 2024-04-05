@@ -1249,7 +1249,7 @@ DEFUN ("screen-width", Fscreen_width, Sscreen_width, 0, 0, 0,
 
 #ifdef SIGWINCH
 void
-window_change_signal (void)
+window_change_signal (int sig)
 {
   int width, height;
   int old_errno = errno;

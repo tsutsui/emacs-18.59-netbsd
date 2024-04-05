@@ -244,7 +244,7 @@ void echo (void);
 int read_key_sequence (char *, int, unsigned char *, int);
 int kbd_buffer_read_command_char (void);
 void input_available_signal (int);
-void interrupt_signal (void);
+void interrupt_signal (int);
 
 Lisp_Object command_loop_2 (void);
 Lisp_Object cmd_error (Lisp_Object);
@@ -803,7 +803,7 @@ int echo_now;
 
 /* Alarm interrupt calls this and requests echoing at earliest safe time. */
 void
-request_echo (void)
+request_echo (int sig)
 {
   int old_errno = errno;
 
@@ -1089,7 +1089,7 @@ kbd_buffer_store_char (register int c)
   if (c == quit_char
       || ((c == (0200 | quit_char)) && !meta_key))
     {
-      interrupt_signal ();
+      interrupt_signal (0);
       return;
     }
 
@@ -1988,7 +1988,7 @@ clear_waiting_for_input (void)
  If  quit-flag  is already non-nil, it stops the job right away.  */
 
 void
-interrupt_signal (void)
+interrupt_signal (int sig)
 {
   char c;
   /* Must preserve main program's value of errno.  */

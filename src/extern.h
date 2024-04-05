@@ -85,7 +85,6 @@ extern void clear_input_pending (void);
 extern void clear_waiting_for_input (void);
 extern void consume_available_input (void);
 extern int detect_input_pending (void);
-extern void interrupt_signal (void);
 extern void gobble_input (void);
 extern void quit_throw_to_read_command_char (void);
 extern int read_command_char (int);

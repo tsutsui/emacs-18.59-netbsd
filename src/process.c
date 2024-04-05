@@ -2001,7 +2001,7 @@ This is intended for use by asynchronous process output filters and sentinels.")
 jmp_buf send_process_frame;
 
 void
-send_process_trap (void)
+send_process_trap (int sig)
 {
 #ifdef BSD4_1
   sigrelse (SIGPIPE);
