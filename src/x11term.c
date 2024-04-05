@@ -279,8 +279,6 @@ void x_io_error_handler (int);
 void
 HLmode (int new)
 {
-	extern int inverse_video;
-	
 	CurHL = new;
 }
 
@@ -314,13 +312,11 @@ XTchange_line_highlight (int new_highlight, int vpos, int first_unused_hpos)
 void
 XTset_terminal_modes (void)
 {
-	int stuffpending;
 #ifdef XDEBUG
 	fprintf (stderr, "XTset_terminal_modes\n");
 #endif
 
 	InUpdate = 0;
-	stuffpending = 0;
 	if (!initialized) {
 		CursorExists = 0;
 		CursorOutline = 1;
@@ -655,7 +651,7 @@ XTflash (void)
 #ifdef HAVE_TIMEVAL
 #ifdef HAVE_SELECT
 	XGCValues gcv_temp;
-	struct timeval wakeup, now;
+	struct timeval wakeup;
 	BLOCK_INPUT_DECLARE ();
 
 #ifdef XDEBUG
@@ -1027,8 +1023,6 @@ XTinsert_chars (register char *start, register int len)
 static void
 XTdelete_chars (register int n)
 {
-	char *msg = "Major foobars!  This shouldn't show up!";
-	
 #ifdef XDEBUG
 	fprintf (stderr, "XTdelete_chars (num %d local_cursor_hpos %d)\n",n,local_cursor_hpos);
 #endif
@@ -1299,7 +1293,6 @@ internal_socket_read (register unsigned char *bufp, register int numchars)
   BLOCK_INPUT_DECLARE ();
   XEvent event;
   /* Must be static since data is saved between calls.  */
-  static XComposeStatus status;
   KeySym keysym;
   SIGMASKTYPE oldmask;
 
@@ -1715,7 +1708,7 @@ x_term_init (void)
 	char *ptr;
 	XColor cdef;
 
-	extern Lisp_Object Vxterm, Vxterm1, Qt;
+	extern Lisp_Object Vxterm, Qt;
 	int  ix;
 	
 
@@ -2222,7 +2215,6 @@ XFlipColor (void)
 {
 	Lisp_Object_Int tempcolor;
 	char *tempname;
-	XColor forec, backc;
 	BLOCK_INPUT_DECLARE ();
 
 	BLOCK_INPUT ();
@@ -2597,7 +2589,6 @@ XInitWindow (void)
   int x, y, width, height, pr;
   char  *dp;
   Window  desktop;
-  XColor forec, backc;
 
 
  retry:

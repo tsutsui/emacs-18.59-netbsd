@@ -73,7 +73,7 @@ record_insert (Lisp_Object beg, Lisp_Object length)
 void
 record_delete (int beg, int length)
 {
-  Lisp_Object lbeg, llength, lend, sbeg;
+  Lisp_Object lbeg, lend, sbeg;
 
   if (current_buffer != XBUFFER (last_undo_buffer))
     Fundo_boundary ();
@@ -89,7 +89,6 @@ record_delete (int beg, int length)
   else
     XFASTINT (sbeg) = beg;
   XFASTINT (lbeg) = beg;
-  XFASTINT (llength) = length;
   XFASTINT (lend) = beg + length;
   current_buffer->undo_list = Fcons (Fcons (Fbuffer_substring (lbeg, lend), sbeg),
 			     current_buffer->undo_list);
@@ -243,7 +242,6 @@ Return what remains of the list.")
 	    }
 	  else if (XTYPE (car) == Lisp_Int && XTYPE (cdr) == Lisp_Int)
 	    {
-	      Lisp_Object end;
 	      if (XINT (car) < BEGV
 		  || XINT (cdr) > ZV)
 		error ("Changes to be undone are outside visible portion of buffer");

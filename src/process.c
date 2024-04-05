@@ -393,7 +393,9 @@ char pty_name[24];
 int
 allocate_pty (void)
 {
+#ifndef PTY_OPEN
   struct stat stb;
+#endif
   register int c, i;
   int fd;
 
@@ -402,7 +404,9 @@ allocate_pty (void)
      are no pseudoterminals with names ending in 'f'.  So we wait for
      three failures in a row before deciding that we've reached the
      end of the ptys.  */
+#ifndef PTY_OPEN
   int failed_count = 0;
+#endif
 
 #ifdef PTY_ITERATION
   PTY_ITERATION
@@ -814,9 +818,7 @@ list_processes_1 (void)
 {
   register Lisp_Object tail, tem;
   Lisp_Object proc, minspace, tem1;
-  register struct buffer *old = current_buffer;
   register struct Lisp_Process *p;
-  register int state;
   char tembuf[80];
 
   XFASTINT (minspace) = 1;
@@ -1034,7 +1036,9 @@ create_process (Lisp_Object process, char **new_argv)
   int pid, inchannel, outchannel, forkin, forkout;
   int sv[2];
 #ifdef SIGCHLD
+#if 0
   int (*sigchld)();
+#endif
 #endif
   char **env;
   int pty_flag = 0;
@@ -1352,12 +1356,10 @@ Fourth arg SERVICE is name of the service desired, or an integer\n\
    (Lisp_Object name, Lisp_Object buffer, Lisp_Object host, Lisp_Object service)
 {
   Lisp_Object proc;
-  register int i;
   struct sockaddr_in address;
   struct servent *svc_info;
   struct hostent *host_info;
   int s, outch, inch;
-  char errstring[80];
   int port;
   struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
 
@@ -1549,7 +1551,7 @@ static int waiting_for_user_input_p;
 void
 wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_display)
 {
-  register int channel, nfds, m;
+  register int channel, nfds;
   SELECT_TYPE Available;
   SELECT_TYPE Exception;
   int xerrno;
@@ -2596,7 +2598,6 @@ status_notify (void)
 	     when a process becomes runnable.  */
 	  else if (!EQ (symbol, Qrun) && !NILP (buffer))
 	    {
-	      Lisp_Object ro = XBUFFER (buffer)->read_only;
 	      Lisp_Object tem;
 	      struct buffer *old = current_buffer;
 	      int opoint;

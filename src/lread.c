@@ -1033,8 +1033,6 @@ DEFUN ("mapatoms", Fmapatoms, Smapatoms, 1, 2, 0,
 OBARRAY defaults to the value of  obarray.")
   (Lisp_Object function, Lisp_Object obarray)
 {
-  Lisp_Object tem;
-
   if (NILP (obarray)) obarray = Vobarray;
   obarray = check_obarray (obarray);
 

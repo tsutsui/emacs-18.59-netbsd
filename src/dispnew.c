@@ -357,8 +357,6 @@ cancel_line (int vpos)
 void
 clear_screen_records (void)
 {
-  int i;
-
   bzero (current_screen->enable, screen_height);
 }
 
@@ -668,8 +666,6 @@ direct_output_forward_char (int n)
 int
 update_screen (int force, int inhibit_hairy_id)
 {
-  register struct display_line **p;
-  register struct display_line *l, *lnew;
   register int i;
   int pause;
   int preempt_count = baud_rate / 2400 + 1;

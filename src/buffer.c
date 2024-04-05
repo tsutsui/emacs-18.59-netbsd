@@ -767,7 +767,9 @@ extern int last_known_column_point;
 void
 set_buffer_internal (register struct buffer *b)
 {
+#if 0
   register struct buffer *swb = 0;
+#endif
   register struct buffer *old_buf;
   register Lisp_Object tail, valcontents;
   enum Lisp_Type tem;
@@ -911,7 +913,9 @@ list_buffers_1 (Lisp_Object files)
   register Lisp_Object tail, tem, buf;
   Lisp_Object col1, col2, col3, minspace;
   register struct buffer *old = current_buffer, *b;
+#if 0
   int desired_point = 0;
+#endif
 
   XFASTINT (col1) = 19;
   XFASTINT (col2) = 25;
@@ -942,8 +946,10 @@ list_buffers_1 (Lisp_Object files)
       if (!NILP (files) && NILP (b->filename))
 	continue;
       /* Identify the current buffer. */
+#if 0
       if (b == old)
 	desired_point = point;
+#endif
       write_string (b == old ? "." : " ", -1);
       /* Identify modified buffers */
       write_string (BUF_MODIFF (b) > b->save_modified ? "*" : " ", -1);
@@ -962,10 +968,12 @@ list_buffers_1 (Lisp_Object files)
 
   current_buffer->read_only = Qt;
   set_buffer_internal (old);
-/* Foo.  This doesn't work since temp_output_buffer_show sets point to 1
+#if 0
+/* Foo.  This doesn't work since temp_output_buffer_show sets point to 1 */
   if (desired_point)
     BUF_PT (XBUFFER (Vstandard_output)) = desired_point;
- */
+#endif
+
   return Qnil;
 }
 
@@ -1019,8 +1027,6 @@ extern Lisp_Object Vprin1_to_string_buffer;	/* in print.c */
 void
 init_buffer_once (void)
 {
-  register Lisp_Object tem;
-
   /* Make sure all markable slots in buffer_defaults
      are initialized reasonably, so mark_buffer won't choke.  */
   reset_buffer (&buffer_defaults);

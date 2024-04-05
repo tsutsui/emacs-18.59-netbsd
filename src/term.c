@@ -606,7 +606,6 @@ void
 output_chars (register char *string, int len)
 {
   register char *p;
-  register int n;
   register char *buf;
   register int c;
   char *first_check;

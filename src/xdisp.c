@@ -311,12 +311,10 @@ redisplay (void)
 {
   register struct window *w = XWINDOW (selected_window);
   register int pause;
-  int inhibit_hairy_id = 0;
   int must_finish = 0;
   int all_windows;
   register Lisp_Object_Int tlbufpos, tlendpos;
   struct position pos;
-  extern int input_pending;
 
   if (noninteractive)
     return;
@@ -1798,7 +1796,6 @@ display_mode_element (struct window *w, int vpos, register int hpos, int depth, 
 			      minendcol, maxendcol));
     }
 
- end:
   if (minendcol > hpos)
     hpos = display_string (w, vpos, "", hpos, 0, minendcol, -1);
   return hpos;

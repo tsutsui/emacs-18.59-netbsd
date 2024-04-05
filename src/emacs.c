@@ -602,8 +602,6 @@ If emacs is running noninteractively and ARG is an integer,\n\
 return ARG as the exit program code.")
   (Lisp_Object arg)
 {
-  Lisp_Object answer;
-  int i;
   struct gcpro gcpro1;
 
   GCPRO1 (arg);

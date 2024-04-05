@@ -2192,7 +2192,9 @@ DIR defaults to current buffer's directory default.")
   Lisp_Object val, insdef, tem;
   struct gcpro gcpro1, gcpro2;
   register char *homedir;
+#ifdef VMS
   int count;
+#endif
 
   if (NILP (dir))
     dir = current_buffer->directory;
