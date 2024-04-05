@@ -31,6 +31,37 @@ jobs:
           make
           sudo make install
 
+  build-linux-aarch64:
+    name: "build-linux (ubuntu aarch64)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - uses: actions/checkout@v4
+        with:
+          #repository: tsutsui/emacs-18.59-netbsd
+          fetch-depth: 200
+
+      - name: Run build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/grimbough/bioc-with-tinytex:devel-arm64
+          options: |
+            --platform linux/arm64
+            --volume ${{ github.workspace }}:/build
+            --workdir /build
+          run: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo apt install -y make gcc libx11-dev ncurses-dev
+            cp src/config.h-linux src/config.h
+            make
+            sudo make install
+
   build-netbsd:
     name: "build-netbsd (NetBSD/amd64 9.3 with pkgsrc)"
     runs-on: ubuntu-latest
