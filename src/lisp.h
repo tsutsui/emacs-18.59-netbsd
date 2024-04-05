@@ -1042,7 +1042,7 @@ extern Lisp_Object call2 (Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object call3 (Lisp_Object, Lisp_Object, Lisp_Object, Lisp_Object);
 extern Lisp_Object apply_lambda (Lisp_Object, Lisp_Object, int);
 extern Lisp_Object internal_catch (Lisp_Object, Lisp_Object (*)(Lisp_Object), Lisp_Object);
-extern Lisp_Object internal_condition_case (Lisp_Object (*)(void), Lisp_Object, Lisp_Object (*)(Lisp_Object));
+extern Lisp_Object internal_condition_case (Lisp_Object (*)(Lisp_Object), Lisp_Object, Lisp_Object (*)(Lisp_Object));
 extern Lisp_Object unbind_to (int, Lisp_Object);
 #ifdef __STDC__
 extern void error (const char *, ...);
@@ -1295,7 +1295,7 @@ extern Lisp_Object Fdiscard_input (void);
 extern Lisp_Object Frecursive_edit (void);
 extern Lisp_Object Fcommand_execute (Lisp_Object, Lisp_Object);
 extern Lisp_Object Finput_pending_p (void);
-extern Lisp_Object command_loop_1 (void);
+extern Lisp_Object command_loop_1 (Lisp_Object);
 extern void stuff_buffered_input (Lisp_Object);
 extern Lisp_Object recursive_edit_1 (void);
 extern int poll_suppress_count;

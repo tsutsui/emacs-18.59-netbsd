@@ -246,10 +246,10 @@ int kbd_buffer_read_command_char (void);
 void input_available_signal (int);
 void interrupt_signal (int);
 
-Lisp_Object command_loop_2 (void);
+Lisp_Object command_loop_2 (Lisp_Object);
 Lisp_Object cmd_error (Lisp_Object);
-Lisp_Object top_level_1 (void);
-Lisp_Object top_level_2 (void);
+Lisp_Object top_level_1 (Lisp_Object);
+Lisp_Object top_level_2 (Lisp_Object);
 
 /* Non-zero tells input_available_signal to call read_socket_hook
    even if FIONREAD returns zero.  */
@@ -528,7 +528,7 @@ command_loop (void)
    returned due to end of file (or end of kbd macro).  */
 
 Lisp_Object
-command_loop_2 (void)
+command_loop_2 (Lisp_Object dummy)
 {
   register Lisp_Object val;
   do
@@ -538,13 +538,13 @@ command_loop_2 (void)
 }
 
 Lisp_Object
-top_level_2 (void)
+top_level_2 (Lisp_Object dummy)
 {
   return Feval (Vtop_level);
 }
 
 Lisp_Object
-top_level_1 (void)
+top_level_1 (Lisp_Object dummy)
 {
   /* On entry to the outer level, run the startup file */
   if (!NILP (Vtop_level))
@@ -587,7 +587,7 @@ DEFUN ("abort-recursive-edit", Fabort_recursive_edit, Sabort_recursive_edit, 0, 
  sans error-handling encapsulation */
 
 Lisp_Object
-command_loop_1 (void)
+command_loop_1 (Lisp_Object dummy)
 {
   Lisp_Object cmd;
   int lose;
