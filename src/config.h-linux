@@ -37,6 +37,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "m-x86-x64.h"
 #elif defined(__arm__)
 #include "m-linux_arm.h"
+#elif defined(__aarch64__)
+#include "m-linux_aarch64.h"
 #endif
 
 /* Load in the conversion definitions if this system
