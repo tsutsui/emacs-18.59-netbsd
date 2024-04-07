@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: install packages
         run: |
+          uname -a
           sudo apt update
           sudo apt upgrade -y
           sudo apt install -y make gcc libx11-dev ncurses-dev
@@ -55,6 +56,7 @@ jobs:
             --volume ${{ github.workspace }}:/build
             --workdir /build
           run: |
+            uname -a
             sudo apt update
             sudo apt upgrade -y
             sudo apt install -y make gcc libx11-dev ncurses-dev
@@ -63,7 +65,7 @@ jobs:
             sudo make install
 
   build-netbsd:
-    name: "build-netbsd (NetBSD/amd64 9.3 with pkgsrc)"
+    name: "build-netbsd (NetBSD/amd64 10.0 with pkgsrc)"
     runs-on: ubuntu-latest
 
     steps:
@@ -71,10 +73,12 @@ jobs:
       - name: Install packages and run configure and make (on the NetBSD VM)
         uses: vmactions/netbsd-vm@v1
         with:
+          release: "10.0"
           usesh: true
           copyback: false
           # Check https://github.com/NetBSD/pkgsrc/blob/trunk/net/sayaka/Makefile to check dependencies
           prepare: |
+            uname -a
             PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
             export PATH
             ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xbase.tar.xz | tar -C / -zxpf - ./usr/X11R7/bin ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
