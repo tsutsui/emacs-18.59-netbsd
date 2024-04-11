@@ -32,6 +32,33 @@ jobs:
           make
           sudo make install
 
+  build-linux-i386:
+    name: "build-linux (ubuntu i386)"
+    runs-on: ubuntu-latest
+    container:
+      image: i386/ubuntu:latest
+      options: --privileged
+
+    steps:
+      - name: Prepare packages
+        run: |
+          uname -a
+          apt update
+          apt upgrade -y
+          apt install -y make gcc libx11-dev ncurses-dev
+
+      - uses: actions/checkout@v1
+        with:
+          #repository: tsutsui/emacs-18.59-netbsd
+          fetch-depth: 200
+
+      - name: Run build process
+        run: |
+          sysctl kernel.randomize_va_space=0
+          cp src/config.h-linux src/config.h
+          make
+          make install
+
   build-linux-aarch64:
     name: "build-linux (ubuntu aarch64)"
     runs-on: ubuntu-latest
