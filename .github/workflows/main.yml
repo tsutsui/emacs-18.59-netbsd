@@ -33,8 +33,11 @@ jobs:
           sudo make install
 
   build-linux-i386:
-    name: "build-linux (ubuntu i386)"
+    name: "build-linux (i386 ubuntu)"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
     container:
       image: i386/ubuntu:latest
       options: --privileged
@@ -58,6 +61,37 @@ jobs:
           cp src/config.h-linux src/config.h
           make
           make install
+
+  build-linux-arm:
+    name: "build-linux (ubuntu armv7)"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm
+
+      - name: Run build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: arm32v7/ubuntu:latest
+          options: |
+            --platform linux/arm/v7
+            --volume ${{ github.workspace }}:/build
+            --workdir /build
+          run: |
+            uname -a
+            apt update
+            apt upgrade -y
+            apt install -y make gcc libx11-dev ncurses-dev
+            cp src/config.h-linux src/config.h
+            make
+            make install
 
   build-linux-aarch64:
     name: "build-linux (ubuntu aarch64)"
