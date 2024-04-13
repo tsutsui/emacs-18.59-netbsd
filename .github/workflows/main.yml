@@ -21,9 +21,6 @@ jobs:
           sudo apt install -y make gcc libx11-dev ncurses-dev
 
       - uses: actions/checkout@v4
-        with:
-          #repository: tsutsui/emacs-18.59-netbsd
-          fetch-depth: 200
 
       - name: configure and make
         run: |
