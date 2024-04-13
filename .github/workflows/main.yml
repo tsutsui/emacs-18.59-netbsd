@@ -86,7 +86,6 @@ jobs:
           release: "10.0"
           usesh: true
           copyback: false
-          # Check https://github.com/NetBSD/pkgsrc/blob/trunk/net/sayaka/Makefile to check dependencies
           prepare: |
             uname -a
             PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
