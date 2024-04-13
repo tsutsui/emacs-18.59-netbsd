@@ -74,7 +74,7 @@ jobs:
             image: arm32v7/ubuntu:latest
             platform: linux/arm/v7
           - arch: arm64
-            image: ghcr.io/grimbough/bioc-with-tinytex:devel-arm64
+            image: arm64v8/ubuntu:latest
             platform: linux/arm64
 
     steps:
