@@ -63,10 +63,19 @@ jobs:
           make install
 
   build-linux-arm:
-    name: "build-linux (ubuntu armv7)"
+    name: "build-linux qemu"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        arch: [arm, arm64]
+        include:
+          - arch: arm
+            image: arm32v7/ubuntu:latest
+            platform: linux/arm/v7
+          - arch: arm64
+            image: ghcr.io/grimbough/bioc-with-tinytex:devel-arm64
+            platform: linux/arm64
 
     steps:
       - uses: actions/checkout@v4
@@ -74,14 +83,14 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm
+          platforms: ${{ matrix.arch }}
 
       - name: Run build process with Docker
         uses: addnab/docker-run-action@v3
         with:
-          image: arm32v7/ubuntu:latest
+          image: ${{ matrix.image }}
           options: |
-            --platform linux/arm/v7
+            --platform ${{ matrix.platform }}
             --volume ${{ github.workspace }}:/build
             --workdir /build
           run: |
@@ -92,38 +101,6 @@ jobs:
             cp src/config.h-linux src/config.h
             make
             make install
-
-  build-linux-aarch64:
-    name: "build-linux (ubuntu aarch64)"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
-      - uses: actions/checkout@v4
-        with:
-          #repository: tsutsui/emacs-18.59-netbsd
-          fetch-depth: 200
-
-      - name: Run build process with Docker
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/grimbough/bioc-with-tinytex:devel-arm64
-          options: |
-            --platform linux/arm64
-            --volume ${{ github.workspace }}:/build
-            --workdir /build
-          run: |
-            uname -a
-            sudo apt update
-            sudo apt upgrade -y
-            sudo apt install -y make gcc libx11-dev ncurses-dev
-            cp src/config.h-linux src/config.h
-            make
-            sudo make install
 
   build-netbsd:
     name: "build-netbsd (NetBSD/amd64 10.0 with pkgsrc)"
