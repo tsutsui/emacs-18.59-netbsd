@@ -32,44 +32,17 @@ jobs:
           make
           sudo make install
 
-  build-linux-i386:
-    name: "build-linux (i386 ubuntu)"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    container:
-      image: i386/ubuntu:latest
-      options: --privileged
-
-    steps:
-      - name: Prepare packages
-        run: |
-          uname -a
-          apt update
-          apt upgrade -y
-          apt install -y make gcc libx11-dev ncurses-dev
-
-      - uses: actions/checkout@v1
-        with:
-          #repository: tsutsui/emacs-18.59-netbsd
-          fetch-depth: 200
-
-      - name: Run build process
-        run: |
-          sysctl kernel.randomize_va_space=0
-          cp src/config.h-linux src/config.h
-          make
-          make install
-
-  build-linux-arm:
+  build-linux-qemu:
     name: "build-linux qemu"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        arch: [arm, arm64]
+        arch: [386, arm, arm64]
         include:
+          - arch: 386
+            image: i386/ubuntu:latest
+            platform: linux/386
           - arch: arm
             image: arm32v7/ubuntu:latest
             platform: linux/arm/v7
@@ -90,6 +63,7 @@ jobs:
         with:
           image: ${{ matrix.image }}
           options: |
+            --privileged
             --platform ${{ matrix.platform }}
             --volume ${{ github.workspace }}:/build
             --workdir /build
@@ -98,6 +72,7 @@ jobs:
             apt update
             apt upgrade -y
             apt install -y make gcc libx11-dev ncurses-dev
+            sysctl kernel.randomize_va_space=0
             cp src/config.h-linux src/config.h
             make
             make install
