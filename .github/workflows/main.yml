@@ -16,9 +16,9 @@ jobs:
       - name: install packages
         run: |
           uname -a
-          sudo apt update
-          sudo apt upgrade -y
-          sudo apt install -y make gcc libx11-dev ncurses-dev
+          sudo apt update -q
+          sudo apt upgrade -qy
+          sudo apt install -qy make gcc libx11-dev ncurses-dev
 
       - uses: actions/checkout@v4
 
@@ -66,9 +66,9 @@ jobs:
             --workdir /build
           run: |
             uname -a
-            apt update
-            apt upgrade -y
-            apt install -y make gcc libx11-dev ncurses-dev
+            apt update -q
+            apt upgrade -qy
+            apt install -qy make gcc libx11-dev ncurses-dev
             sysctl kernel.randomize_va_space=0
             cp src/config.h-linux src/config.h
             make
