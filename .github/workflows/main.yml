@@ -9,25 +9,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11" ]
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: ${{ matrix.container }}
+      options: --privileged
 
     steps:
       - name: install packages
         run: |
           uname -a
-          sudo apt-get update -q
-          sudo apt-get upgrade -qy
-          sudo apt-get install -qy make gcc libx11-dev ncurses-dev
+          apt-get update -q
+          apt-get upgrade -qy
+          apt-get install -qy make gcc libx11-dev ncurses-dev
 
       - uses: actions/checkout@v4
 
       - name: configure and make
         run: |
-          sudo sh -c "echo 0 > /proc/sys/kernel/randomize_va_space"
+          sh -c "echo 0 > /proc/sys/kernel/randomize_va_space"
           cp src/config.h-linux src/config.h
           make
-          sudo make install
+          make install
 
   build-linux-qemu:
     name: "build-linux qemu"
