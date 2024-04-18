@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11" ]
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base" ]
 
     runs-on: ubuntu-latest
 
@@ -21,9 +21,16 @@ jobs:
       - name: install packages
         run: |
           uname -a
-          apt-get update -q
-          apt-get upgrade -qy
-          apt-get install -qy make gcc libx11-dev ncurses-dev
+          case "${{ matrix.container }}" in
+          ubuntu*|debian*)
+            apt-get update -q
+            apt-get upgrade -qy
+            apt-get install -qy make gcc libx11-dev ncurses-dev
+            ;;
+          archlinux*)
+            pacman -Syyu --noconfirm make gcc libx11 ncurses
+            ;;
+          esac
 
       - uses: actions/checkout@v4
 
