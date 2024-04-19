@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
 
 /* Break string in two parts to avoid buggy C compilers that ignore characters
    after nulls in strings.  */
@@ -33,7 +36,10 @@ cool_read (fd, buf, size)
     }
 }
 
-main ()
+int
+main (argc, argv)
+     int argc;
+     char *argv[];
 {
   int fd = open ("testfile", 0);
 
