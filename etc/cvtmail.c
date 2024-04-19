@@ -39,11 +39,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdlib.h>
 #include <string.h>
 
-void *xmalloc(), *xrealloc();
+void *xmalloc(int), *xrealloc(char *, int);
+void skip_to_lf (FILE *);
+void fatal (char *, char *);
+void error (char *, char *);
 
-main (argc, argv)
-     int argc;
-     char *argv[];
+int
+main (int argc, char *argv[])
 {
   char *hd;
   char *md;
@@ -104,8 +106,8 @@ main (argc, argv)
   return 0;
 }
 
-skip_to_lf (stream)
-     FILE *stream;
+void
+skip_to_lf (FILE *stream)
 {
   register int c;
   while ((c = getc(stream)) != '\n')
@@ -113,8 +115,7 @@ skip_to_lf (stream)
 }
 
 void *
-xmalloc (size)
-     int size;
+xmalloc (int size)
 {
   void *result = malloc (size);
   if (!result)
@@ -123,27 +124,25 @@ xmalloc (size)
 }
 
 void *
-xrealloc (ptr, size)
-     char *ptr;
-     int size;
+xrealloc (char *ptr, int size)
 {
   void *result = realloc (ptr, size);
   if (!result)
-    fatal ("virtual memory exhausted");
+    fatal ("%s", "virtual memory exhausted");
   return result;
 }
 
 /* Print error message and exit.  */
 
-fatal (s1, s2)
-     char *s1, *s2;
+void
+fatal (char *s1, char *s2)
 {
   error (s1, s2);
   exit (1);
 }
 
-error (s1, s2)
-     char *s1, *s2;
+void
+error (char *s1, char *s2)
 {
   printf ("cvtmail: ");
   printf (s1, s2);
