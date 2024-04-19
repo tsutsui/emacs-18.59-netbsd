@@ -6,7 +6,9 @@
    but in texinfo format and sorted by function/variable name.  */
 
 #include <stdio.h>
-main ()
+
+int
+main (int argc, char *argv[])
 {
   register int ch;
   register int notfirst = 0;
