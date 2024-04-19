@@ -48,6 +48,7 @@ main (int argc, char *argv[])
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
 #include <pwd.h>
 
 /* Type definitions */
@@ -461,6 +462,7 @@ args_size (the_header)
   return size;
 }
 
+void
 parse_header (the_header, where)
      header the_header;
      register char *where;
