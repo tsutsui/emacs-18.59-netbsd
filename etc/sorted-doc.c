@@ -10,7 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *xmalloc ();
+void fatal (char *, char *);
+void error (char *, char *);
+char *xmalloc (int);
+char *strsav (char *);
+int cmpdoc (const void *, const void *);
 
 #define NUL	'\0'
 #define MARKER '\037'
@@ -38,8 +42,8 @@ struct docstr			/* Allocated thing for an entry. */
 
 /* Print error message and exit.  */
 
-fatal (s1, s2)
-     char *s1, *s2;
+void
+fatal (char *s1, char *s2)
 {
   error (s1, s2);
   exit (1);
@@ -47,8 +51,8 @@ fatal (s1, s2)
 
 /* Print error message.  `s1' is printf control string, `s2' is arg for it. */
 
-error (s1, s2)
-     char *s1, *s2;
+void
+error (char *s1, char *s2)
 {
   fprintf (stderr, "sorted-doc: ");
   fprintf (stderr, s1, s2);
@@ -58,8 +62,7 @@ error (s1, s2)
 /* Like malloc but get fatal error if memory is exhausted.  */
 
 char *
-xmalloc (size)
-     int size;
+xmalloc (int size)
 {
   char *result = malloc ((unsigned)size);
   if (result == NULL)
@@ -68,8 +71,7 @@ xmalloc (size)
 }
 
 char *
-strsav (str)
-     char * str;
+strsav (char * str)
 {
   char *buf = xmalloc (strlen (str) + 1);
   (void) strcpy (buf, str);
@@ -79,10 +81,9 @@ strsav (str)
 /* Comparison function for qsort to call.  */
 
 int
-cmpdoc (a, b)
-     DOCSTR **a;
-     DOCSTR **b;
+cmpdoc (const void *arga, const void *argb)
 {
+  DOCSTR * const *a = arga, * const *b = argb;
   register int val = strcmp ((*a)->name, (*b)->name);
   if (val) return val;
   return (*a)->type - (*b)->type;
@@ -99,7 +100,8 @@ char *states[] =
   "WAITING", "BEG_NAME", "NAME_GET", "BEG_DESC", "DESC_GET"
 };
     
-main ()
+int
+main (int argc, char *argv[])
 {
   register DOCSTR *dp = NULL;	/* allocated DOCSTR */
   register LINE *lp = NULL;	/* allocated line */
