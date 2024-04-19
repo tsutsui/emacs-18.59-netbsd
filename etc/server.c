@@ -38,11 +38,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #if !defined(HAVE_SOCKETS) && !defined(HAVE_SYSVIPC)
 #include <stdio.h>
 
-main ()
+int
+main (int argc, char *argv[])
 {
   fprintf (stderr, "Sorry, the Emacs server is supported only on Berkeley Unix\n");
   fprintf (stderr, "or System V systems with IPC\n");
@@ -56,14 +58,14 @@ main ()
 
 #include <sys/file.h>
 #include <sys/types.h>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdio.h>
 #include <errno.h>
 
-extern int errno;
-
-main ()
+int
+main (int argc, char *argv[])
 {
   char system_name[32];
   int s, infd, fromlen;
@@ -248,7 +250,8 @@ msgcatch ()
    Its stderr always exists--rms.  */
 #include <stdio.h>
 
-main ()
+int
+main (int argc, char *argv[])
 {
   int s, infd, fromlen;
   key_t key;
