@@ -55,12 +55,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
 #define NO_SHORTNAMES   /* Tell config not to load remap.h */
 #include "../src/config.h"
 
 #if defined(USG) || defined(BSD)
 #include <fcntl.h>
-#include <unistd.h>
 #ifndef F_OK
 #define F_OK 0
 #define X_OK 1
@@ -103,7 +104,7 @@ main (int argc, char **argv)
 
 #ifndef MAIL_USE_FLOCK
   struct stat st;
-  long now;
+  time_t now;
   int tem;
   char *lockname, *p;
   char *tempname;
