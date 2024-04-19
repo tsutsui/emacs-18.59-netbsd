@@ -37,9 +37,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 FILE *outfile;
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int scan_file (char *filename);
+int read_c_string (FILE *infile, int printflag);
+int scan_c_file (char *filename);
+int scan_lisp_file (char *filename);
+
+int
+main (int argc, char **argv)
 {
   int i;
   int err_count = 0;
@@ -69,8 +73,8 @@ main (argc, argv)
 /* Read file FILENAME and output its doc strings to stdout.  */
 /* Return 1 if file is not found, 0 if it is found.  */
 
-scan_file (filename)
-     char *filename;
+int
+scan_file (char *filename)
 {
   int len = strlen (filename);
   if (!strcmp (filename + len - 4, ".elc"))
@@ -90,9 +94,8 @@ char buf[128];
  Convert escape sequences \n and \t to newline and tab;
  discard \ followed by newline.  */
 
-read_c_string (infile, printflag)
-     FILE *infile;
-     int printflag;
+int
+read_c_string (FILE *infile, int printflag)
 {
   register int c;
   char *p = buf;
@@ -142,8 +145,8 @@ read_c_string (infile, printflag)
  Looks for DEFUN constructs such as are defined in ../src/lisp.h.
  Accepts any word starting DEF... so it finds DEFSIMPLE and DEFPRED.  */
 
-scan_c_file (filename)
-     char *filename;
+int
+scan_c_file (char *filename)
 {
   FILE *infile;
   register int c;
@@ -275,8 +278,8 @@ scan_c_file (filename)
  An entry is output only if DOCSTRING has \ newline just after the opening "
  */
 
-scan_lisp_file (filename)
-     char *filename;
+int
+scan_lisp_file (char *filename)
 {
   FILE *infile;
   register int c;
