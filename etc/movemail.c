@@ -58,7 +58,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define NO_SHORTNAMES   /* Tell config not to load remap.h */
 #include "../src/config.h"
 
-#ifdef USG
+#if defined(USG) || defined(BSD)
 #include <fcntl.h>
 #include <unistd.h>
 #ifndef F_OK
@@ -67,7 +67,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define W_OK 2
 #define R_OK 4
 #endif
-#endif /* USG */
+#endif /* USG || BSD */
 
 #ifdef XENIX
 #include <sys/locking.h>
@@ -83,15 +83,18 @@ extern int lk_open (), lk_close ();
 #undef write
 #undef close
 
-char *concat ();
-void *xmalloc ();
+void fatal (char *, char *);
+void error (char *, char *);
+void pfatal_with_name (char *);
+void pfatal_and_delete (char *);
+char *concat (char *, char *, char *);
+void *xmalloc (int);
 
 /* Nonzero means this is name of a lock file to delete on fatal error.  */
 char *delete_lockname;
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   char *inname, *outname;
   int indesc, outdesc;
@@ -110,7 +113,7 @@ main (argc, argv)
   delete_lockname = 0;
 
   if (argc < 3)
-    fatal ("two arguments required");
+    fatal ("%s", "two arguments required");
 
   inname = argv[1];
   outname = argv[2];
@@ -300,8 +303,8 @@ main (argc, argv)
 
 /* Print error message and exit.  */
 
-fatal (s1, s2)
-     char *s1, *s2;
+void
+fatal (char *s1, char *s2)
 {
   if (delete_lockname)
     unlink (delete_lockname);
@@ -311,16 +314,16 @@ fatal (s1, s2)
 
 /* Print error message.  `s1' is printf control string, `s2' is arg for it. */
 
-error (s1, s2, s3)
-     char *s1, *s2, *s3;
+void
+error (char *s1, char *s2)
 {
   printf ("movemail: ");
-  printf (s1, s2, s3);
+  printf (s1, s2);
   printf ("\n");
 }
 
-pfatal_with_name (name)
-     char *name;
+void
+pfatal_with_name (char *name)
 {
   char *s;
 
@@ -335,8 +338,8 @@ pfatal_with_name (name)
   fatal (s, name);
 }
 
-pfatal_and_delete (name)
-     char *name;
+void
+pfatal_and_delete (char *name)
 {
   char *s;
 
@@ -356,8 +359,7 @@ pfatal_and_delete (name)
 /* Return a newly-allocated string whose contents concatenate those of s1, s2, s3.  */
 
 char *
-concat (s1, s2, s3)
-     char *s1, *s2, *s3;
+concat (char *s1, char *s2, char *s3)
 {
   int len1 = strlen (s1), len2 = strlen (s2), len3 = strlen (s3);
   char *result = (char *) xmalloc (len1 + len2 + len3 + 1);
@@ -373,8 +375,7 @@ concat (s1, s2, s3)
 /* Like malloc but get fatal error if memory is exhausted.  */
 
 void *
-xmalloc (size)
-     int size;
+xmalloc (int size)
 {
   void *result = malloc (size);
   if (!result)
@@ -392,14 +393,14 @@ xmalloc (size)
 #include <stdio.h>
 #include <pwd.h>
 
-#ifdef USG
+#if defined(USG) || defined(BSD)
 #include <fcntl.h>
 /* Cancel substitutions made by config.h for Emacs.  */
 #undef open
 #undef read
 #undef write
 #undef close
-#endif /* USG */
+#endif /* USG || BSD */
 
 #define NOTOK (-1)
 #define OK 0
@@ -412,13 +413,11 @@ char Errmsg[80];
 
 static int debug = 0;
 
-char *get_errmsg ();
-char *getenv ();
-int mbx_write ();
+char *get_errmsg (void);
+void mbx_write (char *, FILE *);
 
-popmail (user, outfile)
-     char *user;
-     char *outfile;
+int
+popmail (char *user, char *outfile)
 {
   char *host;
   int nmsgs, nbytes;
@@ -517,8 +516,8 @@ popmail (user, outfile)
   return (0);
 }
 
-pop_init (host)
-     char *host;
+int
+pop_init (char *host)
 {
   register struct hostent *hp;
   register struct servent *sp;
@@ -569,8 +568,8 @@ pop_init (host)
   return OK;
 }
 
-pop_command (fmt, a, b, c, d)
-     char *fmt;
+int
+pop_command (char *fmt, int a, int b, int c, int d)
 {
   char buf[128];
   char errmsg[64];
@@ -600,8 +599,8 @@ pop_command (fmt, a, b, c, d)
 }
 
     
-pop_stat (nmsgs, nbytes)
-     int *nmsgs, *nbytes;
+int 
+pop_stat (int *nmsgs, int *nbytes)
 {
   char buf[128];
 
@@ -629,8 +628,8 @@ pop_stat (nmsgs, nbytes)
     }
 }
 
-pop_retr (msgno, action, arg)
-     int (*action)();
+int 
+pop_retr (int msgno, (*action(char *, int)), int arg)
 {
   char buf[128];
 
@@ -660,10 +659,8 @@ pop_retr (msgno, action, arg)
     }
 }
 
-getline (buf, n, f)
-     char *buf;
-     register int n;
-     FILE *f;
+int
+getline (char *buf, register int n, FILE *f)
 {
   register char *p;
   int c;
@@ -690,10 +687,8 @@ getline (buf, n, f)
   return OK;
 }
 
-multiline (buf, n, f)
-     char *buf;
-     register int n;
-     FILE *f;
+int
+multiline (char *buf, register int n, FILE *f)
 {
   if (getline (buf, n, f) != OK)
     return NOTOK;
@@ -708,7 +703,7 @@ multiline (buf, n, f)
 }
 
 char *
-get_errmsg ()
+get_errmsg (void)
 {
   char *s;
 
@@ -723,10 +718,8 @@ get_errmsg ()
   return (s);
 }
 
-putline (buf, err, f)
-     char *buf;
-     char *err;
-     FILE *f;
+int
+putline (char *buf, char *err, FILE *f)
 {
   fprintf (f, "%s\r\n", buf);
   fflush (f);
@@ -738,22 +731,21 @@ putline (buf, err, f)
   return OK;
 }
 
-mbx_write (line, mbf)
-     char *line;
-     FILE *mbf;
+void
+mbx_write (char *line, FILE *mbf)
 {
   fputs (line, mbf);
   fputc (0x0a, mbf);
 }
 
-mbx_delimit_begin (mbf)
-     FILE *mbf;
+void
+mbx_delimit_begin (FILE *mbf)
 {
   fputs ("\f\n0, unseen,,\n", mbf);
 }
 
-mbx_delimit_end (mbf)
-     FILE *mbf;
+void
+mbx_delimit_end (FILE *mbf)
 {
   putc ('\037', mbf);
 }
