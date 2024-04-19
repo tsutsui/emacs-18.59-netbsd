@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-struct tm *localtime ();
-
+int
 main (argc, argv)
      int argc;
      char **argv;
