@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "../src/paths.h"
 
 /* zippy.c
@@ -16,6 +17,7 @@
 #define SEP      '\0'
 #define YOW_FILE "yow.lines"
 
+int
 main (argc, argv)
      int argc;
      char *argv[];
