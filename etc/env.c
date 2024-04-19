@@ -107,6 +107,7 @@ char *progname;
 void xsetenv ();
 void fatal ();
 
+int
 main (argc, argv, envp)
      register int argc;
      register char **argv;
