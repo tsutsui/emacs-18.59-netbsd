@@ -96,18 +96,13 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           release: "10.0"
-          usesh: true
           copyback: false
           prepare: |
             uname -a
-            PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
-            export PATH
             ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xbase.tar.xz | tar -C / -zxpf - ./usr/X11R7/bin ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
             ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xcomp.tar.xz | tar -C / -zxpf - ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
 
           run: |
-            PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin
-            export PATH
             cp src/config.h-netbsd src/config.h
             make
             make install
