@@ -907,22 +907,34 @@ XExitWithCoreDump (void)
 	abort ();
 }
 
+int
+XExitError (Display *disp, XErrorEvent *event)
+{
+	XExitWithCoreDump();
+	return 0;
+}
+
+int
+XExitIOError (Display *display)
+{
+	XExitWithCoreDump();
+	return 0;
+}
+
 DEFUN ("x-debug", Fx_debug, Sx_debug, 1, 1, 0,
   "ARG non-nil means that X errors should generate a coredump.")
   (register Lisp_Object arg)
 {
-	int (*handler)();
-
 	check_xterm ();
-	if (!NILP (arg))
-		handler = XExitWithCoreDump;
+	if (!NILP (arg)) {
+		XSetErrorHandler(XExitError);
+		XSetIOErrorHandler(XExitIOError);
+	}
 	else
 	{
-		extern int XIgnoreError ();
-		handler = XIgnoreError;
+		XSetErrorHandler(XIgnoreError);
+		XSetIOErrorHandler(XIgnoreIOError);
 	}
-	XSetErrorHandler(handler);
-	XSetIOErrorHandler(handler);
 	return (Qnil);
 }
 

@@ -21,6 +21,8 @@
 extern char *black_color;
 extern char *white_color;
 
+extern int XIgnoreError (Display *, XErrorEvent *);
+extern int XIgnoreIOError (Display *);
 extern void xfixscreen (void);
 extern int x_set_cursor_colors (void);
 extern void x_term_init (void);
