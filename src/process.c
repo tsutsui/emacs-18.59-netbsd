@@ -1521,7 +1521,7 @@ from PROCESS.")
   else
     {
       proc = get_process (proc);
-      wait_reading_process_input (0, XPROCESS (proc), 0);
+      wait_reading_process_input (0, proc, 0);
     }
   return Qnil;
 }
@@ -1549,7 +1549,7 @@ static int waiting_for_user_input_p;
  subprocess output that arrives.  */
 
 void
-wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_display)
+wait_reading_process_input (int time_limit, Lisp_Object read_kbd, int do_display)
 {
   register int channel, nfds;
   SELECT_TYPE Available;
@@ -1567,13 +1567,13 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
   struct Lisp_Process *wait_proc = 0;
 
   /* Detect when read_kbd is really the address of a Lisp_Process.  */
-  if (read_kbd > 10 || read_kbd < -1)
+  if (XINT (read_kbd) > 10 || XINT (read_kbd) < -1)
     {
-      wait_proc = (struct Lisp_Process *) read_kbd;
+      wait_proc = XPROCESS (read_kbd);
       wait_channel = XFASTINT (wait_proc->infd);
       read_kbd = 0;
     }
-  waiting_for_user_input_p = read_kbd;
+  waiting_for_user_input_p = XINT (read_kbd);
 
   /* Since we may need to wait several times,
      compute the absolute time to return at.  */
@@ -1600,7 +1600,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
       /* If calling from keyboard input, do not quit
 	 since we want to return C-g as an input character.
 	 Otherwise, do pending quit if requested.  */
-      if (read_kbd >= 0)
+      if (XINT (read_kbd) >= 0)
 	{
 #if 0
 	  /* This is the same condition tested by QUIT.
@@ -1682,7 +1682,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
 
       /* Cause quitting and alarm signals to take immediate action,
 	 and cause input available signals to zero out timeout */
-      if (read_kbd < 0)
+      if (XINT (read_kbd) < 0)
 #ifdef HAVE_TIMEVAL
 	set_waiting_for_input (&timeout.tv_sec);
 #else
@@ -1692,10 +1692,10 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
       /* Wait till there is something to do */
 
       Available = Exception = input_wait_mask;
-      if (!read_kbd)
+      if (! XINT (read_kbd))
 	FD_CLR (0, &Available);
 
-      if (read_kbd && kbd_count)
+      if (XINT (read_kbd) && kbd_count)
 	nfds = 0;
       else
 	/* Since we don't do anything abt Exceptions,
@@ -1721,7 +1721,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
       clear_waiting_for_input ();
 
       /* If we woke up due to SIGWINCH, actually change size now.  */
-      if (read_kbd)
+      if (XINT (read_kbd) != 0)
 	do_pending_window_change ();
 
       if (time_limit && nfds == 0)	/* timeout elapsed */
@@ -1762,17 +1762,17 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
       /* If there is any, return immediately
 	 to give it higher priority than subprocesses */
 
-      if (read_kbd && detect_input_pending ())
+      if (XINT (read_kbd) && detect_input_pending ())
 	break;
 
       /* If checking input just got us a size-change event from X,
 	 obey it now if we should.  */
-      if (read_kbd)
+      if (XINT (read_kbd) != 0)
 	do_pending_window_change ();
 
       /* If screen size has changed, redisplay now
 	 for either sit-for or keyboard input.  */
-      if (read_kbd && screen_garbaged)
+      if (XINT (read_kbd) && screen_garbaged)
 	redisplay_preserve_echo_area ();
 
 #ifdef vipc
@@ -1894,7 +1894,7 @@ wait_reading_process_input (int time_limit, Lisp_Object_Int read_kbd, int do_dis
   /* If calling from keyboard input, do not quit
      since we want to return C-g as an input character.
      Otherwise, do pending quit if requested.  */
-  if (read_kbd >= 0)
+  if (XINT (read_kbd) >= 0)
     {
       /* Prevent input_pending from remaining set if we quit.  */
       clear_input_pending ();
