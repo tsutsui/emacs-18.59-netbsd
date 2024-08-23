@@ -1854,6 +1854,13 @@ Also flush any kbd macro definition in progress.")
   return Qnil;
 }
 
+static Lisp_Object
+init_sys_modes_unwind (Lisp_Object Obj)
+{
+  init_sys_modes();
+  return Qnil;
+}
+
 DEFUN ("suspend-emacs", Fsuspend_emacs, Ssuspend_emacs, 0, 1, "",
   "Stop Emacs and return to superior process.  You can resume.\n\
 If optional arg STUFFSTRING is non-nil, its characters are stuffed\n\
@@ -1888,7 +1895,7 @@ Otherwise, suspend normally and after resumption call\n\
   reset_sys_modes ();
   /* sys_suspend can get an error if it tries to fork a subshell
      and the system resources aren't available for that.  */
-  record_unwind_protect (init_sys_modes, 0);
+  record_unwind_protect (init_sys_modes_unwind, 0);
   stuff_buffered_input (stuffstring);
   sys_suspend ();
   unbind_to (count, Qnil);

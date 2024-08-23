@@ -342,7 +342,7 @@ openp (Lisp_Object path, Lisp_Object str, char *suffix, Lisp_Object *storeptr, i
 
 
 Lisp_Object
-unreadpure (void)	/* Used as unwind-protect function in readevalloop */
+unreadpure (Lisp_Object obj)	/* Used as unwind-protect function in readevalloop */
 {
   read_pure = 0;
   return Qnil;

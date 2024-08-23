@@ -814,7 +814,7 @@ Value is t if a query was formerly required.")
 }
 
 Lisp_Object
-list_processes_1 (void)
+list_processes_1 (Lisp_Object obj)
 {
   register Lisp_Object tail, tem;
   Lisp_Object proc, minspace, tem1;

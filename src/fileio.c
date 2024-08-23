@@ -105,7 +105,7 @@ int vms_stmlf_recfm;
 
 Lisp_Object Qfile_error, Qfile_already_exists;
 
-void close_file_unwind (Lisp_Object);
+Lisp_Object close_file_unwind (Lisp_Object);
 int e_write (int, char *, int);
 
 void
@@ -1542,10 +1542,11 @@ otherwise, if FILE2 does not exist, the answer is t.")
   return (mtime1 > st.st_mtime) ? Qt : Qnil;
 }
 
-void
+Lisp_Object
 close_file_unwind (Lisp_Object fd)
 {
   close (XFASTINT (fd));
+  return Qnil;
 }
 
 DEFUN ("insert-file-contents", Finsert_file_contents, Sinsert_file_contents,
@@ -1987,7 +1988,7 @@ Next attempt to save will certainly not complain of a discrepancy.")
 }
 
 Lisp_Object
-auto_save_error (void)
+auto_save_error (Lisp_Object obj)
 {
   unsigned char *name = XSTRING (current_buffer->name)->data;
 
@@ -2002,7 +2003,7 @@ auto_save_error (void)
 }
 
 Lisp_Object
-auto_save_1 (void)
+auto_save_1 (Lisp_Object obj)
 {
   return
     Fwrite_region (Qnil, Qnil,

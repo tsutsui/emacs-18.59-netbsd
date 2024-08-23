@@ -1051,6 +1051,12 @@ See  condition-case.")
   Fthrow (Qtop_level, Qt);
 }
 
+static Lisp_Object
+backtrace_on_error(Lisp_Object obj)
+{
+  return Fbacktrace();
+}
+
 /* Value of Qlambda means we have called debugger and
    user has continued.  Store value returned fromdebugger
    into *debugger_value_ptr */
@@ -1067,7 +1073,7 @@ find_handler_clause (Lisp_Object handlers, Lisp_Object conditions, Lisp_Object s
   if (EQ (handlers, Qerror))  /* error is used similarly, but means display a backtrace too */
     {
       if (stack_trace_on_error)
-	internal_with_output_to_temp_buffer ("*Backtrace*", Fbacktrace, Qnil);
+	internal_with_output_to_temp_buffer ("*Backtrace*", backtrace_on_error, Qnil);
       if (EQ (sig, Qquit) ? debug_on_quit : debug_on_error)
 	{
 	  *debugger_value_ptr =

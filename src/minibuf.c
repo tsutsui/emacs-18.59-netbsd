@@ -71,7 +71,7 @@ extern int minibuf_prompt_width;
 
 /* Actual minibuffer invocation. */
 
-void read_minibuf_unwind (void);
+Lisp_Object read_minibuf_unwind (Lisp_Object);
 
 Lisp_Object
 read_minibuf (Lisp_Object map, Lisp_Object initial, Lisp_Object prompt, int expflag)
@@ -189,8 +189,8 @@ get_minibuffer (int depth)
 /* This function is called on exiting minibuffer, whether normally or not,
  and it restores the current window, buffer, etc. */
 
-void
-read_minibuf_unwind (void)
+Lisp_Object
+read_minibuf_unwind (Lisp_Object obj)
 {
   /* Erase the minibuffer we were using at this level.  */
   Fset_buffer (XWINDOW (minibuf_window)->buffer);
@@ -210,6 +210,7 @@ read_minibuf_unwind (void)
   minibuf_prompt_width = minibuf_save_vector[minibuf_level].prompt_width;
   Vhelp_form = minibuf_save_vector[minibuf_level].help_form;
   Vcurrent_prefix_arg = minibuf_save_vector[minibuf_level].current_prefix_arg;
+  return Qnil;
 }
 
 DEFUN ("read-from-minibuffer", Fread_from_minibuffer, Sread_from_minibuffer, 1, 4, 0,
