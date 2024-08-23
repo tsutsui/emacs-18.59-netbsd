@@ -645,7 +645,7 @@ find_section (char *name, char *section_names, char *file_name, ElfW(Ehdr) *old_
  *
  */
 void
-unexec (char *new_name, char *old_name, unsigned data_start, unsigned bss_start, unsigned entry_address)
+unexec (char *new_name, char *old_name, unsigned long data_start, unsigned long bss_start, unsigned long entry_address)
 {
   int new_file, old_file, new_file_size;
 

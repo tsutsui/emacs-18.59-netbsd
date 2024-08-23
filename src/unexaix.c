@@ -33,7 +33,7 @@ what you give them.   Help stamp out software-hoarding!  */
  * Synopsis:
  *	unexec (new_name, a_name, data_start, bss_start, entry_address)
  *	char *new_name, *a_name;
- *	unsigned data_start, bss_start, entry_address;
+ *	unsigned long data_start, bss_start, entry_address;
  *
  * Takes a snapshot of the program and makes an a.out format file in the
  * file named by the string argument new_name.
@@ -279,7 +279,7 @@ report_error_1 (fd, msg, a1, a2)
  */
 unexec (new_name, a_name, data_start, bss_start, entry_address)
      char *new_name, *a_name;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
 {
   int new, a_out = -1;
 
@@ -323,12 +323,12 @@ unexec (new_name, a_name, data_start, bss_start, entry_address)
 static int
 make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
      int new, a_out;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
      char *a_name;
      char *new_name;
 {
   register int scns;
-  unsigned int bss_end;
+  unsigned long bss_end;
 
   struct scnhdr section[MAX_SECTIONS];
   struct scnhdr * f_thdr;		/* Text section header */
@@ -466,7 +466,7 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
   f_ohdr.tsize = data_start - f_ohdr.text_start;
   f_ohdr.text_start = (long) start_of_text ();
 #endif
-  f_ohdr.dsize = bss_start - ((unsigned) &_data);
+  f_ohdr.dsize = bss_start - ((unsigned long) &_data);
   f_ohdr.bsize = bss_end - bss_start;
 
   f_dhdr->s_size = f_ohdr.dsize;

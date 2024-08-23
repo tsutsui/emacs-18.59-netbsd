@@ -45,7 +45,7 @@ what you give them.   Help stamp out software-hoarding!  */
  * Synopsis:
  *	unexec (new_name, a_name, data_start, bss_start, entry_address)
  *	char *new_name, *a_name;
- *	unsigned data_start, bss_start, entry_address;
+ *	unsigned long data_start, bss_start, entry_address;
  *
  * Takes a snapshot of the program and makes an a.out format file in the
  * file named by the string argument new_name.
@@ -230,7 +230,7 @@ int a1, a2;
  */
 unexec (new_name, a_name, data_start, bss_start, entry_address)
 char *new_name, *a_name;
-unsigned data_start, bss_start, entry_address;
+unsigned long data_start, bss_start, entry_address;
 {
     int new, a_out = -1;
 
@@ -272,12 +272,12 @@ unsigned data_start, bss_start, entry_address;
 static int
 make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
      int new, a_out;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
      char *a_name;
      char *new_name;
 {
     register int scns;
-    unsigned int bss_end;
+    unsigned long bss_end;
     unsigned int eo_data;	/* End of initialized data in new exec file */
     int scntype;		/* Section type */
     int i;			/* Var for sorting by vaddr */
@@ -288,7 +288,7 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
 
     /* Adjust text/data boundary. */
     if (!data_start)
-	data_start = (unsigned) start_of_data ();
+	data_start = (unsigned long) start_of_data ();
 
     data_start = data_start & ~pagemask; /* (Down) to page boundary. */
 
@@ -298,14 +298,14 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
     if (bss_start != 0) {
 	bss_start = (bss_start + pagemask) & ~pagemask;/* (Up) to page bdry. */
 	if (bss_start > bss_end) {
-	    ERROR1 ("unexec: Specified bss_start (%x) is past end of program",
+	    ERROR1 ("unexec: Specified bss_start (%lx) is past end of program",
 		    bss_start);
 	}
     } else
 	bss_start = bss_end;
 
     if (data_start > bss_start)	{ /* Can't have negative data size. */
-	ERROR2 ("unexec: data_start (%x) can't be greater than bss_start (%x)",
+	ERROR2 ("unexec: data_start (%lx) can't be greater than bss_start (%lx)",
 		data_start, bss_start);
     }
 

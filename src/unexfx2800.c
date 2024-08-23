@@ -4,7 +4,7 @@
 
 unexec (new_name, a_name, data_start, bss_start, entry_address)
      char *new_name, *a_name;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
 {
   int stat;
     

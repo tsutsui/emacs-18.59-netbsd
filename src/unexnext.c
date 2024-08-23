@@ -389,7 +389,10 @@ unexec_doit(
 void
 unexec(
        char *outfile,
-       char *infile
+       char *infile,
+       unsigned long data_start,
+       unsigned long bss_start,
+       unsigned long entry_address
        )
 {
 	int infd;

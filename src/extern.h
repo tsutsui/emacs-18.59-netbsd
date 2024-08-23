@@ -187,7 +187,7 @@ extern void record_change (int, int);
 extern void record_delete (int, int);
 
 /* unexe*.c */
-extern void unexec (char *, char *, unsigned int, unsigned int, unsigned int);
+extern void unexec (char *, char *, unsigned long, unsigned long, unsigned long);
 
 /* xdisp.c */
 extern void message ();

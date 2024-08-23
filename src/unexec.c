@@ -31,7 +31,7 @@ what you give them.   Help stamp out software-hoarding!  */
  * Synopsis:
  *	unexec (new_name, a_name, data_start, bss_start, entry_address)
  *	char *new_name, *a_name;
- *	unsigned data_start, bss_start, entry_address;
+ *	unsigned long data_start, bss_start, entry_address;
  *
  * Takes a snapshot of the program and makes an a.out format file in the
  * file named by the string argument new_name.
@@ -256,8 +256,8 @@ static EXEC_HDR_TYPE hdr, ohdr;
 #endif /* IRIS or IBMRTAIX not USG */
 #endif /* not HPUX */
 
-static int unexec_text_start;
-static int unexec_data_start;
+static unsigned long unexec_text_start;
+static unsigned long unexec_data_start;
 
 #endif /* not COFF */
 
@@ -310,7 +310,7 @@ report_error_1 (fd, msg, a1, a2)
  */
 unexec (new_name, a_name, data_start, bss_start, entry_address)
      char *new_name, *a_name;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
 {
   int new, a_out = -1;
 
@@ -351,7 +351,7 @@ unexec (new_name, a_name, data_start, bss_start, entry_address)
 static int
 make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
      int new, a_out;
-     unsigned data_start, bss_start, entry_address;
+     unsigned long data_start, bss_start, entry_address;
      char *a_name;
      char *new_name;
 {
@@ -366,17 +366,17 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
 #ifdef USG_SHARED_LIBRARIES
   extern unsigned int bss_end;
 #else
-  unsigned int bss_end;
+  unsigned long bss_end;
 #endif
 
   pagemask = getpagesize () - 1;
 
   /* Adjust text/data boundary. */
 #ifdef NO_REMAP
-  data_start = (int) start_of_data ();
+  data_start = (unsigned long) start_of_data ();
 #else /* not NO_REMAP */
   if (!data_start)
-    data_start = (int) start_of_data ();
+    data_start = (unsigned long) start_of_data ();
 #endif /* not NO_REMAP */
   data_start = ADDR_CORRECT (data_start);
 
@@ -397,7 +397,7 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
       bss_start &= ~ pagemask;
       if (bss_start > bss_end)
 	{
-	  ERROR1 ("unexec: Specified bss_start (%u) is past end of program",
+	  ERROR1 ("unexec: Specified bss_start (%lu) is past end of program",
 		  bss_start);
 	}
     }
@@ -406,7 +406,7 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
 
   if (data_start > bss_start)	/* Can't have negative data size. */
     {
-      ERROR2 ("unexec: data_start (%u) can't be greater than bss_start (%u)",
+      ERROR2 ("unexec: data_start (%lu) can't be greater than bss_start (%lu)",
 	      data_start, bss_start);
     }
 
@@ -635,7 +635,7 @@ make_hdr (new, a_out, data_start, bss_start, entry_address, a_name, new_name)
       bzero (hdr, sizeof hdr);
     }
 
-  unexec_text_start = (long) start_of_text ();
+  unexec_text_start = (unsigned long) start_of_text ();
   unexec_data_start = data_start;
 
   /* Machine-dependent fixup for header, or maybe for unexec_text_start */

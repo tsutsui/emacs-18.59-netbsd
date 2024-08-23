@@ -53,8 +53,8 @@
 unexec(new_name, old_name, new_end_of_text, dummy1, dummy2)
      char new_name[];		/* name of the new a.out file to be created */
      char old_name[];		/* name of the old a.out file */
-     char *new_end_of_text;	/* ptr to new edata/etext; NOT USED YET */
-     int dummy1, dummy2;	/* not used by emacs */
+     unsigned long new_end_of_text;	/* ptr to new edata/etext; NOT USED YET */
+     unsigned long dummy1, dummy2;	/* not used by emacs */
 {
   int old, new;
   int old_size, new_size;
