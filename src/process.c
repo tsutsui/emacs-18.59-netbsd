@@ -952,7 +952,7 @@ Remaining arguments are strings to give program as arguments.")
   (int nargs, register Lisp_Object *args)
 {
   Lisp_Object buffer, name, program, proc, tem;
-  register unsigned char **new_argv;
+  register char **new_argv;
   register int i;
 
   buffer = args[1];
@@ -966,7 +966,7 @@ Remaining arguments are strings to give program as arguments.")
 
   CHECK_STRING (program, 2);
 
-  new_argv = (unsigned char **) alloca ((nargs - 1) * sizeof (char *));
+  new_argv = (char **) alloca ((nargs - 1) * sizeof (char *));
 
   for (i = 3; i < nargs; i++)
     {

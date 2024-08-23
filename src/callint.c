@@ -137,7 +137,7 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
   (Lisp_Object function, Lisp_Object record)
 {
   Lisp_Object *args, *visargs;
-  unsigned char **argstrings;
+  char **argstrings;
   Lisp_Object fun;
   Lisp_Object funcar;
   Lisp_Object specs;
@@ -239,7 +239,7 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
 
   args = (Lisp_Object *) alloca ((count + 1) * sizeof (Lisp_Object));
   visargs = (Lisp_Object *) alloca ((count + 1) * sizeof (Lisp_Object));
-  argstrings = (unsigned char **) alloca ((count + 1) * sizeof (char *));
+  argstrings = (char **) alloca ((count + 1) * sizeof (char *));
   varies = (int *) alloca ((count + 1) * sizeof (int));
 
   for (i = 0; i < (count + 1); i++)
@@ -265,8 +265,8 @@ Otherwise, this is done only if an arg is read using the minibuffer.")
       for (j = 1; j < i; j++)
 	argstrings[j]
 	  = EQ (visargs[j], Qnil)
-	    ? (unsigned char *) ""
-	    : XSTRING (visargs[j])->data;
+	    ? ""
+	    : (char *)XSTRING (visargs[j])->data;
 
       doprnt (prompt, sizeof prompt, prompt1, j - 1, argstrings + 1);
 

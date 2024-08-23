@@ -886,7 +886,7 @@ the argument used by %d, %b, %o, %x or %c must be a number.")
   register int total = 5;
   char *buf;
   register unsigned char *format;
-  register unsigned char **strings;
+  register char **strings;
   /* It should not be necessary to GCPRO ARGS, because
      the caller in the interpreter should take care of that.  */
 
@@ -930,15 +930,15 @@ the argument used by %d, %b, %o, %x or %c must be a number.")
 	}
     }
 
-  strings = (unsigned char **) alloca ((n + 1) * sizeof (unsigned char *));
+  strings = (char **) alloca ((n + 1) * sizeof (unsigned char *));
   for (; n >= 0; n--)
     {
       if (n >= nargs)
-	strings[n] = (unsigned char *) "";
+	strings[n] = "";
       else if (XTYPE (args[n]) == Lisp_Int)
 	/* We checked above that the correspondiong format effector
 	   isn't %s, which would cause MPV */
-	strings[n] = (unsigned char *) XINT (args[n]);
+	strings[n] = (char *)XINT (args[n]);
       else
 	strings[n] = XSTRING (args[n])->data;
     }

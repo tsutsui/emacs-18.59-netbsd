@@ -121,8 +121,8 @@ If you quit, the process is killed with SIGKILL.")
   register int pid;
   char buf[1024];
   int count = specpdl_ptr - specpdl;
-  register unsigned char **new_argv
-    = (unsigned char **) alloca ((max (2, nargs - 2)) * sizeof (char *));
+  register char **new_argv
+    = (char **) alloca ((max (2, nargs - 2)) * sizeof (char *));
   struct buffer *old = current_buffer;
 
   CHECK_STRING (args[0], 0);
