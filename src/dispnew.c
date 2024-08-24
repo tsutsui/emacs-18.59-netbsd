@@ -1231,14 +1231,14 @@ but that the idea of the actual width of the screen should not be changed.")
 
 DEFUN ("screen-height", Fscreen_height, Sscreen_height, 0, 0, 0,
   "Return number of lines on screen available for display.")
-  ()
+  (void)
 {
   return make_number (screen_height);
 }
 
 DEFUN ("screen-width", Fscreen_width, Sscreen_width, 0, 0, 0,
   "Return number of columns on screen available for display.")
-  ()
+  (void)
 {
   return make_number (screen_width);
 }
@@ -1345,7 +1345,7 @@ change_screen_size_1 (register int newlength, register int newwidth, register in
 
 DEFUN ("baud-rate", Fbaud_rate, Sbaud_rate, 0, 0, 0,
   "Return the output baud rate of the terminal.")
-  ()
+  (void)
 {
   Lisp_Object temp;
   XSET (temp, Lisp_Int, baud_rate);
@@ -1373,8 +1373,7 @@ DEFUN ("ding", Fding, Sding, 0, 1, 0,
   "Beep, or flash the screen.\n\
 Terminates any keyboard macro currently executing unless an argument\n\
 is given.")
-  (arg)
-  Lisp_Object arg;
+  (Lisp_Object arg)
 {
   if (!NILP (arg))
     {
