@@ -899,7 +899,7 @@ DEFUN ("x-set-border-width", Fx_set_border_width, Sx_set_border_width,
   else
     {
       UNBLOCK_INPUT_RESIGNAL ();
-      message ("Could not recreate window.");
+      message ("Could not recreate window.", 0, 0, 0);
       return Qnil;
     }
 }
@@ -976,7 +976,7 @@ DEFUN ("x-set-internal-border-width", Fx_set_internal_border_width,
   else
     {
       UNBLOCK_INPUT_RESIGNAL ();
-      message ("Could not recreate window.");
+      message ("Could not recreate window.", 0, 0, 0);
       return Qnil;
     }
 }
@@ -1200,7 +1200,7 @@ window_fetch (Font font, int *x, int *y, int *width, int *height, char *geo, cha
   else
     {
       RESIGNAL_INPUT ();
-      message ("Could not recreate window.");
+      message ("Could not recreate window.", 0, 0, 0);
       return Qnil;
     }
 }

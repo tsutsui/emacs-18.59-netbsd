@@ -54,11 +54,11 @@ Non-nil arg (prefix arg) means append to last macro defined;\n\
     {
       kbd_macro_ptr = kbd_macro_buffer;
       kbd_macro_end = kbd_macro_buffer;
-      message("Defining kbd macro...");
+      message("Defining kbd macro...", 0, 0, 0);
     }
   else
     {
-      message("Appending to kbd macro...");
+      message("Appending to kbd macro...", 0, 0, 0);
       kbd_macro_ptr = kbd_macro_end;
       Fexecute_kbd_macro (Vlast_kbd_macro, make_number (1));
     }
@@ -91,7 +91,7 @@ counting the definition just completed as the first repetition.")
       update_mode_lines++;
       Vlast_kbd_macro = make_string (kbd_macro_buffer,
 				     kbd_macro_end - kbd_macro_buffer);
-      message("Keyboard macro defined");
+      message("Keyboard macro defined", 0, 0, 0);
     }
 
   if (XFASTINT (arg) == 0)

@@ -205,7 +205,7 @@ Return t if file exists.")
     }
 
   if (NILP (nomessage))
-    message ("Loading %s...", XSTRING (str)->data);
+    message ("Loading %s...", (Lisp_Object_Int)XSTRING (str)->data, 0, 0);
 
   GCPRO1 (str);
   ptr = (FILE **) xmalloc (sizeof (FILE *));
@@ -218,7 +218,7 @@ Return t if file exists.")
   UNGCPRO;
 
   if (!noninteractive && NILP (nomessage))
-    message ("Loading %s...done", XSTRING (str)->data);
+    message ("Loading %s...done", (Lisp_Object_Int)XSTRING (str)->data, 0, 0);
   return Qt;
 }
 

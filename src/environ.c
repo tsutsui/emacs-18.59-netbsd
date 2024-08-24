@@ -270,9 +270,9 @@ VAR is a string, the name of the variable,\n\
   if (!NILP (interactivep))
     {
       if (NILP (val))
-	message ("%s not defined in environment", XSTRING (str)->data);
+	message ("%s not defined in environment", (Lisp_Object_Int)XSTRING (str)->data, 0, 0);
       else
-	message ("\"%s\"", XSTRING (val)->data);
+	message ("\"%s\"", (Lisp_Object_Int)XSTRING (val)->data, 0, 0);
     }
   return val;
 }

@@ -1002,7 +1002,7 @@ DEFUN ("minibuffer-completion-help", Fminibuffer_completion_help, Sminibuffer_co
   (void)
 {
   Lisp_Object completions;
-  message ("Making completion list...");
+  message ("Making completion list...", 0, 0, 0);
   completions = Fall_completions (Fbuffer_string (), Vminibuffer_completion_table,
 				  Vminibuffer_completion_predicate);
   echo_area_contents = 0;

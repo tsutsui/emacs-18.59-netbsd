@@ -987,11 +987,11 @@ Also accepts Space to mean yes, or Delete to mean no.")
 
   while (1)
     {
-      message ("%s(y or n) ", XSTRING (xprompt)->data);
+      message ("%s(y or n) ", (Lisp_Object_Int)XSTRING (xprompt)->data, 0, 0);
       cursor_in_echo_area = 1;
       ans = read_command_char (0);
       cursor_in_echo_area = -1;
-      message ("%s(y or n) %c", XSTRING (xprompt)->data, ans);
+      message ("%s(y or n) %c", (Lisp_Object_Int)XSTRING (xprompt)->data, ans, 0);
       cursor_in_echo_area = ocech;
       QUIT;
       if (ans >= 0)
@@ -1052,7 +1052,7 @@ and can edit it until it as been confirmed.")
 
       Fding (Qnil);
       Fdiscard_input ();
-      message ("Please answer yes or no.");
+      message ("Please answer yes or no.", 0, 0, 0);
       Fsleep_for (make_number (2));
     }
 }

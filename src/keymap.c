@@ -818,9 +818,9 @@ Argument is a command definition, usually a symbol with a function definition.")
 		    Fwhere_is_internal (definition, current_buffer->keymap, Qnil),
 		    build_string (", "));
   if (XSTRING (tem)->size)
-    message ("%s is on %s", XSYMBOL (definition)->name->data, XSTRING (tem)->data);
+    message ("%s is on %s", (Lisp_Object_Int)XSYMBOL (definition)->name->data, (Lisp_Object_Int)XSTRING (tem)->data, 0);
   else
-    message ("%s is not on any keys", XSYMBOL (definition)->name->data);
+    message ("%s is not on any keys", (Lisp_Object_Int)XSYMBOL (definition)->name->data, 0, 0);
   return Qnil;
 }
 

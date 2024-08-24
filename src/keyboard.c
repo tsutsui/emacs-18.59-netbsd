@@ -488,7 +488,7 @@ cmd_error (Lisp_Object data)
      and then die.  */
   if (noninteractive)
     {
-      message ("");
+      message ("", 0, 0, 0);
       Fkill_emacs (make_number (-1));
     }
 
@@ -550,9 +550,9 @@ top_level_1 (Lisp_Object dummy)
   if (!NILP (Vtop_level))
     internal_condition_case (top_level_2, Qerror, cmd_error);
   else if (!NILP (Vpurify_flag))
-    message ("Bare impure Emacs (standard Lisp code not loaded)");
+    message ("Bare impure Emacs (standard Lisp code not loaded)", 0, 0, 0);
   else
-    message ("Bare Emacs (standard Lisp code not loaded)");
+    message ("Bare Emacs (standard Lisp code not loaded)", 0, 0, 0);
   return Qnil;
 }
 

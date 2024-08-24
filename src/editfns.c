@@ -867,7 +867,7 @@ the argument used by %d or %c must be a number.")
   register Lisp_Object val;
 
   val = Fformat (nargs, args);
-  message ("%s", XSTRING (val)->data);
+  message ("%s", (Lisp_Object_Int)XSTRING (val)->data, 0, 0);
   return val;
 }
 

@@ -190,8 +190,6 @@ extern void record_delete (int, int);
 extern void unexec (char *, char *, unsigned long, unsigned long, unsigned long);
 
 /* xdisp.c */
-extern void message ();
-extern void message1 (char *);
 extern void redisplay_preserve_echo_area (void);
 
 /* init functions */
