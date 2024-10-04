@@ -240,10 +240,10 @@ malloc_init (void *start, void (*warnfun) (char *))
    without actually requiring copying.  */
 
 int
-malloc_usable_size (char *mem)
+malloc_usable_size (void *mem)
 {
   struct mhead *p
-    = (struct mhead *) (mem - ((sizeof (struct mhead) + 7) & ~7));
+    = (struct mhead *) ((char *)mem - ((sizeof (struct mhead) + 7) & ~7));
   int blocksize = 8 << p->mh_index;
 
   return blocksize - sizeof (struct mhead) - EXTRA;
@@ -557,7 +557,7 @@ realloc (void *mem, register size_t n)
 
   if (mem == 0)
     return malloc (n);
-  p = (struct mhead *) (mem - ((sizeof *p + 7) & ~7));
+  p = (struct mhead *) ((char *)mem - ((sizeof *p + 7) & ~7));
   nunits = p -> mh_index;
   ASSERT (p -> mh_alloc == ISALLOC);
 #ifdef rcheck
@@ -624,7 +624,7 @@ calloc (size_t num, size_t size)
 void
 cfree (void *mem)
 {
-  return free (mem);
+  free (mem);
 }
 
 #ifndef VMS
