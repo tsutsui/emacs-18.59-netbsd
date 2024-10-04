@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base" ]
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9" ]
 
     runs-on: ubuntu-latest
 
@@ -29,6 +29,10 @@ jobs:
             ;;
           archlinux*)
             pacman -Syyu --noconfirm make gcc libx11 ncurses
+            ;;
+          almalinux*)
+            yum update -y
+            yum install -y make gcc libX11-devel ncurses-devel
             ;;
           esac
 
