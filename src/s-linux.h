@@ -48,11 +48,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define FIRST_PTY_LETTER 'p'
 
 /*
- *	Define HAVE_TERMIO if the system provides sysV-style ioctls
+ *	Define HAVE_TERMIOS if the system provides POSIX ioctls
  *	for terminal control.
  */
 
-#define HAVE_TERMIO
+#define NEED_TERMIOS
+#define HAVE_TERMIOS
 
 /*
  *	Define HAVE_TIMEVAL if the system supports the BSD style clock values.
