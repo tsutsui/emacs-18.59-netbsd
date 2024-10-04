@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9", "opensuse/leap", "fedora:39", "fedora:40" ]
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9", "opensuse/leap", "fedora:39", "fedora:40", "alpine:latest" ]
 
     runs-on: ubuntu-latest
 
@@ -42,6 +42,11 @@ jobs:
           fedora*)
             dnf update -y
             dnf install -y make gcc libX11-devel ncurses-devel
+            ;;
+          alpine*)
+            apk update
+            apk upgrade
+            apk --update add musl-dev make gcc libx11-dev ncurses-dev
             ;;
           esac
 
