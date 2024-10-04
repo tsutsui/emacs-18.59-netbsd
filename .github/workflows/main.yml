@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9" ]
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9", "opensuse/leap" ]
 
     runs-on: ubuntu-latest
 
@@ -33,6 +33,11 @@ jobs:
           almalinux*)
             dnf update -y
             dnf install -y make gcc libX11-devel ncurses-devel
+            ;;
+          opensuse*)
+            zypper update -y
+            zypper install -y gzip tar # for actions/checkout@v4
+            zypper install -y make gcc libX11-devel ncurses-devel
             ;;
           esac
 
