@@ -31,8 +31,8 @@ jobs:
             pacman -Syyu --noconfirm make gcc libx11 ncurses
             ;;
           almalinux*)
-            yum update -y
-            yum install -y make gcc libX11-devel ncurses-devel
+            dnf update -y
+            dnf install -y make gcc libX11-devel ncurses-devel
             ;;
           esac
 
