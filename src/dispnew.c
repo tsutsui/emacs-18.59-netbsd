@@ -34,18 +34,39 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 #endif
 
+/* Get the number of characters queued for output.  */
+
+/* EMACS_OUTQSIZE(FD, int *SIZE) stores the number of characters
+   queued for output to the terminal FD in *SIZE, if FD is a tty.
+   Returns -1 if there was an error (i.e. FD is not a tty), 0
+   otherwise.  */
+
+#ifdef HAVE_TERMIOS
+#include <termios.h>
+#include <sys/ioctl.h>
+#else
 #ifdef HAVE_TERMIO
+#ifndef NO_TERMIO
 #include <termio.h>
-#ifdef TCOUTQ
-#undef TIOCOUTQ
-#define TIOCOUTQ TCOUTQ
+#endif
 #include <fcntl.h>
-#endif /* TCOUTQ defined */
 #else
 #ifndef VMS
 #include <sys/ioctl.h>
 #endif /* not VMS */
 #endif /* not HAVE_TERMIO */
+#endif /* not HAVE_TERMIOS */
+
+#ifdef TIOCOUTQ
+#define EMACS_OUTQSIZE(fd, size) (ioctl ((fd), TIOCOUTQ, (size)))
+#endif
+
+#ifdef HAVE_TERMIO
+#ifdef TCOUTQ
+#undef EMACS_OUTQSIZE
+#define EMACS_OUTQSIZE(fd, size) (ioctl ((fd), TCOUTQ, (size)))
+#endif
+#endif
 
 /* Allow m- file to inhibit use of FIONREAD.  */
 #ifdef BROKEN_FIONREAD
@@ -722,8 +743,8 @@ update_screen (int force, int inhibit_hairy_id)
 	      fflush (stdout);
 	      if (preempt_count == 1)
 		{
-#ifdef TIOCOUTQ
-		  if (ioctl (0, TIOCOUTQ, &outq) < 0)
+#ifdef EMACS_OUTQSIZE
+		  if (EMACS_OUTQSIZE (0, &outq) < 0)
 		    /* Probably not a tty.  Ignore the error and reset
 		     * the outq count. */
 		    outq = PENDING_OUTPUT_COUNT (stdout);
