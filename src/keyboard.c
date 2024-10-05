@@ -2150,11 +2150,11 @@ init_keyboard (void)
   if (!noninteractive)
     {
       signal (SIGINT, interrupt_signal);
-#ifdef HAVE_TERMIO
+#if defined(HAVE_TERMIO) || defined(HAVE_TERMIOS)
       /* On  systems with TERMIO, C-g is set up for both SIGINT and SIGQUIT
 	 and we can't tell which one it will give us.  */
       signal (SIGQUIT, interrupt_signal);
-#endif /* HAVE_TERMIO */
+#endif /* HAVE_TERMIO || HAVE_TERMIOS */
 /* Note SIGIO has been undef'd if FIONREAD is missing.  */
 #ifdef SIGIO
       signal (SIGIO, input_available_signal);
