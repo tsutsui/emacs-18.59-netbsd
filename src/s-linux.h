@@ -157,7 +157,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* let's see, what have we got here */
 
-#define HAVE_TCATTR		/* fixes ^z problems */
 #define HAVE_SETSID		/* fixes shell problems */
 #define HAVE_DUP2		/* is builtin */
 #define HAVE_GETTIMEOFDAY	/* is builtin */

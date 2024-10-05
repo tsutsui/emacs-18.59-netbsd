@@ -141,11 +141,15 @@ extern char *sys_errlist[];
 #define LLITOUT 0
 #endif /* 4.1 */
 
-#ifdef HAVE_TERMIO
+#ifdef HAVE_TERMIOS
+#define HAVE_TCATTR
+#endif
+
+#if defined(HAVE_TERMIO) || defined(HAVE_TERMIOS)
 #if defined(AIX) && defined(i386)
 #include <termios.h>		/* needs to be before termio.h for aix ps/2  */
 #endif
-#ifndef NO_TERMIO
+#if defined(HAVE_TERMIO)
 #include <termio.h>
 #endif
 #ifdef HAVE_TCATTR
@@ -191,12 +195,6 @@ extern char *sys_errlist[];
 #endif /* not CDEL */
 #endif /* not _POSIX_VDISABLE */
 
-#ifndef OSPEED
-#define OSPEED(str) (str.c_cflag & CBAUD)
-#endif
-#ifndef SETOSPEED
-#define SETOSPEED(str,new) (str.c_cflag = (str.c_cflag & ~CBAUD) | (new))
-#endif
 #define TABS_OK(str) ((str.c_oflag & TABDLY) != TAB3)
 #endif /* HAVE_TERMIO */
 
@@ -216,7 +214,7 @@ extern char *sys_errlist[];
 #undef TIOCGWINSZ
 #endif
 
-#ifndef HAVE_TERMIO
+#if !defined(HAVE_TERMIO) && !defined(HAVE_TERMIOS)
 #ifndef VMS
 #if defined(DGUX) && defined(_BSD_TTY_FLAVOR)
 #undef _BSD_TTY_FLAVOR
@@ -225,17 +223,11 @@ extern char *sys_errlist[];
 #endif
 #include <sgtty.h>
 #define TERMINAL struct sgttyb
-#ifndef OSPEED
-#define OSPEED(str) str.sg_ospeed
-#endif
-#ifndef SETOSPEED
-#define SETOSPEED(str,new) (str.sg_ospeed = (new))
-#endif
 #define TABS_OK(str) ((str.sg_flags & XTABS) != XTABS)
 #undef TCSETAW
 #define TCSETAW TIOCSETN
 #endif /* not VMS */
-#endif /* not HAVE_TERMIO */
+#endif /* !HAVE_TERMIO && !HAVE_TERMIOS */
 
 #ifdef USG
 #include <sys/utsname.h>
@@ -379,7 +371,6 @@ static struct sensemode {
   unsigned long tt2_char;
 } sensemode_iosb;
 #define TERMINAL struct sensemode
-#define OSPEED(str) (str.xmit_baud)
 #define TABS_OK(str) ((str.tt_char & TT$M_MECHTAB) != 0)
 #endif /* VMS */
 
@@ -445,11 +436,39 @@ init_baud_rate (void)
 #ifdef VMS
       SYS$QIOW (0, input_chan, IO$_SENSEMODE, &sg, 0, 0,
 		&sg.class, 12, 0, 0, 0, 0 );
-#else
-      SETOSPEED (sg, B9600);
+#else /* not VMS */
+#ifdef HAVE_TERMIOS
+      struct termios sg;
+
+      sg.c_cflag = B9600;
       tcgetattr (0, &sg);
+      ospeed = cfgetospeed (&sg);
+#if defined (USE_GETOBAUD) && defined (getobaud)
+      /* m88k-motorola-sysv3 needs this (ghazi@noc.rutgers.edu) 9/1/94. */
+      if (ospeed == 0)
+        ospeed = getobaud (sg.c_cflag);
+#endif
+#else /* neither VMS nor TERMIOS */
+#ifdef HAVE_TERMIO
+      struct termio sg;
+
+      sg.c_cflag = B9600;
+#ifdef HAVE_TCATTR
+      tcgetattr (0, &sg);
+#else
+      ioctl (0, TCGETA, &sg);
+#endif
+      ospeed = sg.c_cflag & CBAUD;
+#else /* neither VMS nor TERMIOS nor TERMIO */
+      struct sgttyb sg;
+      
+      sg.sg_ospeed = B9600;
+      if (ioctl (0, TIOCGETP, &sg) < 0)
+        abort ();
+      ospeed = sg.sg_ospeed;
+#endif /* not HAVE_TERMIO */
+#endif /* not HAVE_TERMIOS */
 #endif /* not VMS */
-      ospeed = OSPEED (sg);
     }
   
   baud_rate = (ospeed < sizeof baud_convert / sizeof baud_convert[0]
@@ -600,14 +619,20 @@ child_setup_tty (int out)
   TERMINAL s;
 
   tcgetattr (out, &s);
-#ifdef HAVE_TERMIO
+#if defined(HAVE_TERMIO) || defined(HAVE_TERMIOS)
   s.c_oflag |= OPOST;		/* Enable output postprocessing */
   s.c_oflag &= ~ONLCR;		/* Disable map of NL to CR-NL on output */
+#ifdef NLDLY
   s.c_oflag &= ~(NLDLY|CRDLY|TABDLY|BSDLY|VTDLY|FFDLY);	/* No output delays */
+#endif
   s.c_lflag &= ~ECHO;		/* Disable echo */
   s.c_lflag |= ISIG;		/* Enable signals */
+#ifdef IUCLC
   s.c_iflag &= ~IUCLC;		/* Disable map of upper case to lower on input */
+#endif
+#ifdef OLCUC
   s.c_oflag &= ~OLCUC;		/* Disable map of lower case to upper on output */
+#endif
 #if 0 /* said to be unnecesary */
   s.c_cc[VMIN] = 1;		/* minimum number of characters to accept */
   s.c_cc[VTIME] = 0;		/* wait forever for at least 1 character */
@@ -652,11 +677,11 @@ child_setup_tty (int out)
   s.c_cflag = (s.c_cflag & ~CBAUD) | B9600; /* baud rate sanity */
 #endif /* AIX */
 
-#else /* not HAVE_TERMIO */
+#else /* not HAVE_TERMIO or HAVE_TERMIOS */
   s.sg_flags &= ~(ECHO | CRMOD | ANYP | ALLDELAY | RAW | LCASE | CBREAK | TANDEM);
   s.sg_erase = 0377;
   s.sg_kill = 0377;
-#endif /* not HAVE_TERMIO */
+#endif /* !HAVE_TERMIO && !HAVE_TERMIOS */
 
 #ifndef HAVE_TCATTR
   ioctl (out, TIOCSETN, &s);
@@ -985,7 +1010,7 @@ init_sys_modes (void)
     {
       tty = old_gtty;
 
-#ifdef HAVE_TERMIO
+#if defined(HAVE_TERMIO) || defined(HAVE_TERMIOS)
       tty.c_iflag |= (IGNBRK);	/* Ignore break condition */
       tty.c_iflag &= ~ICRNL;	/* Disable map of CR to NL on input */
 #ifdef ISTRIP
@@ -1053,7 +1078,7 @@ init_sys_modes (void)
       tty.c_iflag &= ~BRKINT;
 #endif /* AIX */
 
-#else /* if not HAVE_TERMIO */
+#else /* if not HAVE_TERMIO or HAVE_TERMIOS */
 #ifdef VMS
       tty.tt_char |= TT$M_NOECHO | TT$M_EIGHTBIT;
       if (flow_control)
@@ -1066,7 +1091,7 @@ init_sys_modes (void)
       tty.sg_flags |= ANYP;
       tty.sg_flags |= interrupt_input ? RAW : CBREAK;
 #endif /* not VMS (BSD, that is) */
-#endif /* not HAVE_TERMIO */
+#endif /* !HAVE_TERMIO && !HAVE_TERMIOS */
 
 #ifdef VMS
       SYS$QIOW (0, input_chan, IO$_SETMODE, &input_iosb, 0, 0,
