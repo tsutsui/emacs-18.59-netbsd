@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9", "opensuse/leap", "fedora:39", "fedora:40" ]
+        container: [ "ubuntu:22.04", "ubuntu:latest", "debian:12", "debian:11", "archlinux:base", "almalinux:8", "almalinux:9", "opensuse/leap", "fedora:40", "fedora:41" ]
 
     runs-on: ubuntu-latest
 
