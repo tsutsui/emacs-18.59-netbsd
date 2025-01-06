@@ -100,7 +100,7 @@ jobs:
             make install
 
   build-netbsd:
-    name: "build-netbsd (NetBSD/amd64 10.0 with pkgsrc)"
+    name: "build-netbsd (NetBSD/amd64 10.1 with pkgsrc)"
     runs-on: ubuntu-latest
 
     steps:
@@ -108,7 +108,7 @@ jobs:
       - name: Install packages and run configure and make (on the NetBSD VM)
         uses: vmactions/netbsd-vm@v1
         with:
-          release: "10.0"
+          release: "10.1"
           copyback: false
           prepare: |
             uname -a
