@@ -119,3 +119,164 @@ jobs:
             cp src/config.h-netbsd src/config.h
             make
             make install
+
+  build-netbsd-vax:
+    name: "build-netbsd (NetBSD/vax 10.1 with pkgsrc and simh)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: install packages to build opensimh etc.
+        run: |
+          sudo apt-get update -q
+          sudo apt-get upgrade -qy
+          sudo apt-get install -qy build-essential wget libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
+
+      - name: fetch NetBSD sources and build crossbuild toolchains
+        run: |
+          cd $HOME
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/gnusrc.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/sharesrc.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/src.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/syssrc.tgz
+          tar -zxf gnusrc.tgz
+          tar -zxf sharesrc.tgz
+          tar -zxf src.tgz
+          tar -zxf syssrc.tgz
+          (cd usr/src && sh build.sh -m vax -U -j 4 -T tooldir.vax -V OBJMACHINE=1 tools)
+
+      - name: fetch NetBSD/vax binary sets
+        run: |
+          cd $HOME
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/kern-GENERIC.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/base.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/etc.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/comp.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/misc.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/text.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xbase.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xcomp.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xetc.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
+          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xserver.tgz
+
+      - name: create NetBSD/vax images
+        run: |
+          cd $HOME
+          mkdir targetroot
+          tar -C targetroot -zxf kern-GENERIC.tgz
+          tar -C targetroot -zxf base.tgz
+          tar -C targetroot -zxf etc.tgz
+          tar -C targetroot -zxf comp.tgz
+          tar -C targetroot -zxf misc.tgz
+          tar -C targetroot -zxf text.tgz
+          tar -C targetroot -zxf xbase.tgz
+          tar -C targetroot -zxf xcomp.tgz
+          tar -C targetroot -zxf xetc.tgz
+          tar -C targetroot -zxf xfont.tgz
+          tar -C targetroot -zxf xserver.tgz
+          chmod u+r targetroot/var/spool/ftp/hidden
+          cat > targetroot/etc/fstab <<EOF
+          ROOT.a / ffs rw,log 1 1
+          #ROOT.b none none sw
+          kernfs /kern kernfs rw
+          ptyfs /dev/pts ptyfs rw
+          procfs /proc procfs rw
+          EOF
+          sed -e 's/rc_configured=NO/rc_configured=YES/' targetroot/etc/rc.conf > rc.conf
+          echo "hostname=microvax" >> rc.conf
+          echo "dhcpcd=YES" >> rc.conf
+          echo "fccache=NO" >> rc.conf
+          echo "sshd=YES ssh_keygen_flags=\"-b 1024\"" >> rc.conf
+          cp rc.conf targetroot/etc
+          touch image.spec
+          cat targetroot/etc/mtree/* | sed -e 's/ size=[0-9]*//' >> image.spec
+          sh targetroot/dev/MAKEDEV -s all | sed -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> image.spec
+          echo "./kern type=dir  mode=0755" >> image.spec
+          echo "./proc type=dir  mode=0755" >> image.spec
+          echo "./tmp  type=dir  mode=1777" >> image.spec
+          echo "./netbsd type=file  mode=0755" >> image.spec
+          cat > sshd_config <<EOF
+          AllowUsers root@10.0.2.2
+          PermitRootLogin yes
+          PermitEmptyPasswords yes
+          AuthenticationMethods none
+          UsePam no
+          IgnoreUserKnownHosts yes
+          EOF
+          cat targetroot/etc/ssh/sshd_config >> sshd_config
+          cp sshd_config targetroot/etc/ssh
+          usr/src/tooldir.vax/bin/nbmakefs -t ffs -M 4294967296 -m 4294967296 -F image.spec -N targetroot/etc netbsd-vax.img targetroot
+          cat > disklabel.proto <<EOF
+          type: SCSI
+          disk: ci-vax
+          label: 
+          flags:
+          bytes/sector: 512
+          sectors/track: 32
+          tracks/cylinder: 64
+          sectors/cylinder: 2048
+          cylinders: 4096
+          total sectors: 8388608
+          rpm: 3600
+          interleave: 1
+          trackskew: 0
+          cylinderskew: 0
+          headswitch: 0
+          track-to-track seek: 0
+          drivedata: 0 
+          
+          8 partitions:
+          # size offset fstype [fsize bsize cpg/sgs]
+          a: 8388608 0 4.2BSD 2048 16384 128
+          c: 8388608 0 0 0
+          EOF
+          usr/src/tooldir.vax/bin/nbdisklabel -R -F -M vax netbsd-vax.img disklabel.proto
+          usr/src/tooldir.vax/bin/nbinstallboot -v -m vax netbsd-vax.img targetroot/usr/mdec/sdboot
+
+      - name: build opensimh
+        run: |
+          cd $HOME
+          git clone https://github.com/open-simh/simh
+          (cd simh && make TESTS=0 microvax3900)
+          touch simh-boot-netbsd-vax
+          cat > simh-boot-netbsd-vax <<EOF
+          set cpu 256m
+          set rq0 ra92
+          attach rq0 netbsd-vax.img
+          attach xq nat:tcp=10022:10.0.2.15:22
+          expect ">>>" send "boot dua0\r"; continue
+          boot cpu
+          EOF
+          cat simh-boot-netbsd-vax
+
+      - name: start simh
+        run: |
+          cd $HOME
+          echo "start simh and wait for NetBSD to reach multi-user mode"
+          echo "boot dua0" | simh/BIN/microvax3900 simh-boot-netbsd-vax > simh.log 2>&1 &
+          TIMEOUT=600
+          INTERVAL=10
+          while true; do
+            if grep -q "^login:" simh.log; then
+              echo "NetBSD/vax on simh is ready"
+              break
+            fi
+            if [ "$SECONDS" -ge "$TIMEOUT" ]; then
+              echo "Timeout: simh doesn't start properly"
+              cat simh.log
+              exit 1
+            fi
+            sleep $INTERVAL
+            echo "waiting simh to reach multi-user ($SECONDS s)"
+          done
+
+      - uses: actions/checkout@v4
+
+      - name: copy source tree to vm
+        run: |
+          cd $HOME
+          tar --exclude _actions --exclude _PipelineMapping -cf - work | ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost tar -xvf -
+
+      - name: build on simh
+        run: |
+          ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost "cd work/emacs-18.59-netbsd/emacs-18.59-netbsd && cp src/config.h-netbsd src/config.h && make && make install"
