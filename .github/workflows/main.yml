@@ -134,10 +134,10 @@ jobs:
       - name: fetch NetBSD sources and build crossbuild toolchains
         run: |
           cd $HOME
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/gnusrc.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/sharesrc.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/src.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/syssrc.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/gnusrc.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/sharesrc.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/src.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/syssrc.tgz
           tar -zxf gnusrc.tgz
           tar -zxf sharesrc.tgz
           tar -zxf src.tgz
@@ -147,17 +147,17 @@ jobs:
       - name: fetch NetBSD/vax binary sets
         run: |
           cd $HOME
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/kern-GENERIC.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/base.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/etc.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/comp.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/misc.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/text.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xbase.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xcomp.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xetc.tgz
-          #wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xserver.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/kern-GENERIC.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/base.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/etc.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/comp.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/misc.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/text.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xbase.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xcomp.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xetc.tgz
+          #wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
+          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xserver.tgz
 
       - name: create NetBSD/vax images
         run: |
@@ -185,9 +185,26 @@ jobs:
           sed -e 's/rc_configured=NO/rc_configured=YES/' targetroot/etc/rc.conf > rc.conf
           cat >> rc.conf <<EOF
           hostname=microvax
-          dhcpcd=YES
+          no_swap=YES
+          ccd=NO
+          raidframe=NO
+          cgd=NO
+          savecore=NO
+          update_motd=NO
+          dmesg=NO
+          quota=NO
+          ldconfig=NO 
+          modules=NO
+          ppp=NO
+          syslogd=NO
+          cron=NO
+          postfix=NO
+          bthcid=NO
+          sdpd=NO
           fccache=NO
+          virecover=NO
           makemandb=NO
+          dhcpcd=YES
           sshd=YES ssh_keygen_flags="-b 1024"
           EOF
           cp rc.conf targetroot/etc
@@ -264,6 +281,7 @@ jobs:
           while true; do
             if grep -q "^login:" simh.log; then
               cat simh.log
+              echo
               echo "NetBSD/vax on simh is ready"
               break
             fi
@@ -281,9 +299,13 @@ jobs:
       - name: copy source tree to vm
         run: |
           cd $HOME
-          tar --exclude _actions --exclude _PipelineMapping -cf - work | ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost tar -xvf -
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" > ~/.ssh/config
+          tar --exclude _actions --exclude _PipelineMapping --exclude _temp -cf - work | ssh -p 10022 root@localhost tar -xvf -
 
       - name: build on simh
         run: |
           WORKDIR="${GITHUB_WORKSPACE##$HOME/}"
-          ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost "cd $WORKDIR && cp src/config.h-netbsd src/config.h && make && make install"
+          CONFIGURE_CMD="cp src/config.h-netbsd src/config.h"
+          BUILD_CMD="make && make install"
+          ssh -p 10022 root@localhost "cd $WORKDIR && $CONFIGURE_CMD && $BUILD_CMD"
