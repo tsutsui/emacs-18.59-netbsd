@@ -142,7 +142,7 @@ jobs:
           tar -zxf sharesrc.tgz
           tar -zxf src.tgz
           tar -zxf syssrc.tgz
-          (cd usr/src && sh build.sh -m vax -U -j 4 -T tooldir.vax -V OBJMACHINE=1 tools)
+          (cd usr/src && sh build.sh -m vax -U -u -j 4 -T tooldir.vax -V MKGCC=no -V MKBINUTILS=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
       - name: fetch NetBSD/vax binary sets
         run: |
