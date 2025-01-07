@@ -263,6 +263,7 @@ jobs:
           touch simh-boot-netbsd-vax
           cat > simh-boot-netbsd-vax <<EOF
           set cpu 256m
+          set nothrottle
           set rq0 ra92
           attach rq0 ${IMAGE}
           attach xq nat:tcp=10022:10.0.2.15:22
