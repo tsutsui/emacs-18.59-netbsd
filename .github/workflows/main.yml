@@ -129,52 +129,52 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get upgrade -qy
-          sudo apt-get install -qy build-essential wget libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
+          sudo apt-get install -qy build-essential libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
 
       - name: fetch NetBSD sources and build crossbuild toolchains
         run: |
+          MACHINE=vax
+          echo "MACHINE=$MACHINE" >> $GITHUB_ENV
+          RELEASE=10.1
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          NETBSDHOST=cdn.NetBSD.org
+          echo "NETBSDHOST=$NETBSDHOST" >> $GITHUB_ENV
+          RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
+          echo "RELEASEDIR=$RELEASEDIR" >> $GITHUB_ENV
+          IMAGE=netbsd-${MACHINE}.img
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
           cd $HOME
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/gnusrc.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/sharesrc.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/src.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/source/sets/syssrc.tgz
-          tar -zxf gnusrc.tgz
-          tar -zxf sharesrc.tgz
-          tar -zxf src.tgz
-          tar -zxf syssrc.tgz
-          (cd usr/src && sh build.sh -m vax -U -u -j 4 -T tooldir.vax -V MKGCC=no -V MKBINUTILS=no -V MKSHARE=no -V OBJMACHINE=1 tools)
+          URL_SRCSETS=https://${NETBSDHOST}/${RELEASEDIR}/source/sets
+          SRCSETS="gnusrc sharesrc src syssrc"
+          for f in ${SRCSETS}; do
+            echo fetch and extract $f.tgz
+            curl -sSL ${URL_SRCSETS}/$f.tgz | tar -zxf -
+          done
+          (cd usr/src && sh build.sh -m ${MACHINE} -U -u -j 4 -T tooldir.${MACHINE} -V MKGCC=no -V MKBINUTILS=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
       - name: fetch NetBSD/vax binary sets
         run: |
           cd $HOME
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/kern-GENERIC.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/base.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/etc.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/comp.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/misc.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/text.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xbase.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xcomp.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xetc.tgz
-          #wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
-          wget -nv https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xserver.tgz
+          SETS="kern-GENERIC base etc comp misc text xbase xcomp xetc xserver"
+          URL_BINSETS=https://${NETBSDHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
+          mkdir targetroot
+          for f in ${SETS}; do
+            echo fetch and extract $f.tgz
+            curl -sSL ${URL_BINSETS}/$f.tgz | tar -C targetroot -zxf -
+          done
+          chmod u+r targetroot/var/spool/ftp/hidden
 
       - name: create NetBSD/vax images
         run: |
           cd $HOME
-          mkdir targetroot
-          tar -C targetroot -zxf kern-GENERIC.tgz
-          tar -C targetroot -zxf base.tgz
-          tar -C targetroot -zxf etc.tgz
-          tar -C targetroot -zxf comp.tgz
-          tar -C targetroot -zxf misc.tgz
-          tar -C targetroot -zxf text.tgz
-          tar -C targetroot -zxf xbase.tgz
-          tar -C targetroot -zxf xcomp.tgz
-          tar -C targetroot -zxf xetc.tgz
-          #tar -C targetroot -zxf xfont.tgz
-          tar -C targetroot -zxf xserver.tgz
-          chmod u+r targetroot/var/spool/ftp/hidden
+          TOOLDIR=$HOME/usr/src/tooldir.${MACHINE}
+          PRIMARY_BOOT=usr/mdec/sdboot
+          IMAGEMB=4096
+          IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
+          IMAGESIZE=$((${IMAGESECTORS} * 512))
+          HEADS=64
+          SECTORS=32
+          CYLINDERS=$((${IMAGESECTORS} / ( ${HEADS} * ${SECTORS} ) ))
           cat > targetroot/etc/fstab <<EOF
           ROOT.a / ffs rw,log 1 1
           #ROOT.b none none sw
@@ -227,18 +227,18 @@ jobs:
           EOF
           cat targetroot/etc/ssh/sshd_config >> sshd_config
           cp sshd_config targetroot/etc/ssh
-          usr/src/tooldir.vax/bin/nbmakefs -t ffs -M 4294967296 -m 4294967296 -F image.spec -N targetroot/etc netbsd-vax.img targetroot
+          ${TOOLDIR}/bin/nbmakefs -t ffs -M ${IMAGESIZE} -m ${IMAGESIZE} -F image.spec -N targetroot/etc ${IMAGE} targetroot
           cat > disklabel.proto <<EOF
           type: SCSI
           disk: ci-vax
           label: 
           flags:
           bytes/sector: 512
-          sectors/track: 32
-          tracks/cylinder: 64
-          sectors/cylinder: 2048
-          cylinders: 4096
-          total sectors: 8388608
+          sectors/track: ${SECTORS}
+          tracks/cylinder: ${HEADS}
+          sectors/cylinder: $((${HEADS} * ${SECTORS}))
+          cylinders: ${CYLINDERS}
+          total sectors: ${IMAGESECTORS}
           rpm: 3600
           interleave: 1
           trackskew: 0
@@ -249,11 +249,11 @@ jobs:
           
           8 partitions:
           # size offset fstype [fsize bsize cpg/sgs]
-          a: 8388608 0 4.2BSD 2048 16384 128
-          c: 8388608 0 0 0
+          a: ${IMAGESECTORS} 0 4.2BSD 2048 16384 128
+          c: ${IMAGESECTORS} 0 0 0
           EOF
-          usr/src/tooldir.vax/bin/nbdisklabel -R -F -M vax netbsd-vax.img disklabel.proto
-          usr/src/tooldir.vax/bin/nbinstallboot -v -m vax netbsd-vax.img targetroot/usr/mdec/sdboot
+          ${TOOLDIR}/bin/nbdisklabel -R -F -M vax ${IMAGE} disklabel.proto
+          ${TOOLDIR}/bin/nbinstallboot -v -m vax ${IMAGE} targetroot/${PRIMARY_BOOT}
 
       - name: build opensimh
         run: |
@@ -264,7 +264,7 @@ jobs:
           cat > simh-boot-netbsd-vax <<EOF
           set cpu 256m
           set rq0 ra92
-          attach rq0 netbsd-vax.img
+          attach rq0 ${IMAGE}
           attach xq nat:tcp=10022:10.0.2.15:22
           expect ">>>" send "boot dua0\r"; continue
           boot cpu
