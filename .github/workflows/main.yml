@@ -156,7 +156,7 @@ jobs:
           wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xbase.tgz
           wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xcomp.tgz
           wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xetc.tgz
-          wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
+          #wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xfont.tgz
           wget -q https://cdn.NetBSD.org/pub/NetBSD/NetBSD-10.1/vax/binary/sets/xserver.tgz
 
       - name: create NetBSD/vax images
@@ -172,7 +172,7 @@ jobs:
           tar -C targetroot -zxf xbase.tgz
           tar -C targetroot -zxf xcomp.tgz
           tar -C targetroot -zxf xetc.tgz
-          tar -C targetroot -zxf xfont.tgz
+          #tar -C targetroot -zxf xfont.tgz
           tar -C targetroot -zxf xserver.tgz
           chmod u+r targetroot/var/spool/ftp/hidden
           cat > targetroot/etc/fstab <<EOF
@@ -183,18 +183,23 @@ jobs:
           procfs /proc procfs rw
           EOF
           sed -e 's/rc_configured=NO/rc_configured=YES/' targetroot/etc/rc.conf > rc.conf
-          echo "hostname=microvax" >> rc.conf
-          echo "dhcpcd=YES" >> rc.conf
-          echo "fccache=NO" >> rc.conf
-          echo "sshd=YES ssh_keygen_flags=\"-b 1024\"" >> rc.conf
+          cat >> rc.conf <<EOF
+          hostname=microvax
+          dhcpcd=YES
+          fccache=NO
+          makemandb=NO
+          sshd=YES ssh_keygen_flags="-b 1024"
+          EOF
           cp rc.conf targetroot/etc
           touch image.spec
           cat targetroot/etc/mtree/* | sed -e 's/ size=[0-9]*//' >> image.spec
           sh targetroot/dev/MAKEDEV -s all | sed -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> image.spec
-          echo "./kern type=dir  mode=0755" >> image.spec
-          echo "./proc type=dir  mode=0755" >> image.spec
-          echo "./tmp  type=dir  mode=1777" >> image.spec
-          echo "./netbsd type=file  mode=0755" >> image.spec
+          cat >> image.spec <<EOF
+          ./kern type=dir  mode=0755
+          ./proc type=dir  mode=0755
+          ./tmp  type=dir  mode=1777
+          ./netbsd type=file  mode=0755"
+          EOF
           cat > sshd_config <<EOF
           AllowUsers root@10.0.2.2
           PermitRootLogin yes
@@ -258,6 +263,7 @@ jobs:
           INTERVAL=10
           while true; do
             if grep -q "^login:" simh.log; then
+              cat simh.log
               echo "NetBSD/vax on simh is ready"
               break
             fi
@@ -279,4 +285,5 @@ jobs:
 
       - name: build on simh
         run: |
-          ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost "cd work/emacs-18.59-netbsd/emacs-18.59-netbsd && cp src/config.h-netbsd src/config.h && make && make install"
+          WORKDIR="${GITHUB_WORKSPACE##$HOME/}"
+          ssh -o "StrictHostKeyChecking no" -p 10022 root@localhost "cd $WORKDIR && cp src/config.h-netbsd src/config.h && make && make install"
