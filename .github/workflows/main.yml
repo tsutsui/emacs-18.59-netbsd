@@ -173,6 +173,7 @@ jobs:
         run: |
           cd $HOME
           VMHOSTNAME=microvax
+          HOST_IP=10.0.2.2
           TOOLDIR=$HOME/usr/src/tooldir.${MACHINE}
           PRIMARY_BOOT=usr/mdec/sdboot
           IMAGEMB=4096
@@ -225,7 +226,7 @@ jobs:
           ./netbsd type=file  mode=0755"
           EOF
           cat > sshd_config <<EOF
-          AllowUsers root@10.0.2.2
+          AllowUsers root@${HOST_IP}
           PermitRootLogin yes
           PermitEmptyPasswords yes
           AuthenticationMethods none
@@ -272,6 +273,7 @@ jobs:
           echo "SIMH_BOOT=$SIMH_BOOT" >> $GITHUB_ENV
           SSH_PORT=10020
           echo "SSH_PORT=$SSH_PORT" >> $GITHUB_ENV
+          GUEST_IP=10.0.2.15
           git clone https://github.com/open-simh/simh
           (cd simh && make TESTS=0 microvax3900)
           touch ${SIMH_BOOT}
@@ -280,7 +282,7 @@ jobs:
           set nothrottle
           set rq0 ra92
           attach rq0 ${IMAGE}
-          attach xq nat:tcp=${SSH_PORT}:10.0.2.15:22
+          attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
           expect ">>>" send "boot dua0\r"; continue
           boot cpu
           EOF
