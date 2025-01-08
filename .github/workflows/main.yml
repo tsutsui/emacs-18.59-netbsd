@@ -206,6 +206,7 @@ jobs:
           sdpd=NO
           fccache=NO
           virecover=NO
+          entropy=""
           makemandb=NO
           dhcpcd=YES
           sshd=YES ssh_keygen_flags="-b 1024"
@@ -230,6 +231,9 @@ jobs:
           EOF
           cat targetroot/etc/ssh/sshd_config >> sshd_config
           cp sshd_config targetroot/etc/ssh
+          ssh-keygen -t ecdsa -f targetroot/etc/ssh/ssh_host_ecdsa_key -N '' -q
+          ssh-keygen -t ed25519 -f targetroot/etc/ssh/ssh_host_ed25519_key -N '' -q
+          ssh-keygen -t rsa -f targetroot/etc/ssh/ssh_host_rsa_key -N '' -q
           ${TOOLDIR}/bin/nbmakefs -t ffs -M ${IMAGESIZE} -m ${IMAGESIZE} -B ${TARGET_ENDIAN} -F image.spec -N targetroot/etc ${IMAGE} targetroot
           cat > disklabel.proto <<EOF
           type: SCSI
