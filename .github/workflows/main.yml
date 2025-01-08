@@ -127,6 +127,9 @@ jobs:
     steps:
       - name: install packages to build opensimh etc.
         run: |
+          sudo snap remove firefox # to avoid extra upgrade
+          sudo apt-get purge firefox
+          sudo apt-get autoremove
           sudo apt-get update -q
           sudo apt-get upgrade -qy
           sudo apt-get install -qy build-essential libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
