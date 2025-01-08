@@ -223,14 +223,16 @@ jobs:
           ./kern type=dir  mode=0755
           ./proc type=dir  mode=0755
           ./tmp  type=dir  mode=1777
-          ./netbsd type=file  mode=0755"
+          ./netbsd type=file  mode=0755
+          ./root/.ssh type=dir uname=root gname=wheel mode=0755
+          ./root/.ssh/authorized_keys type=file uname=root gname=wheel  mode=0600
           EOF
           cat > sshd_config <<EOF
           AllowUsers root@${HOST_IP}
           PermitRootLogin yes
-          PermitEmptyPasswords yes
-          AuthenticationMethods none
-          UsePam no
+          #PermitEmptyPasswords yes
+          #AuthenticationMethods none
+          #UsePam no
           IgnoreUserKnownHosts yes
           EOF
           cat targetroot/etc/ssh/sshd_config >> sshd_config
@@ -238,6 +240,17 @@ jobs:
           ssh-keygen -t ecdsa -f targetroot/etc/ssh/ssh_host_ecdsa_key -N '' -q
           ssh-keygen -t ed25519 -f targetroot/etc/ssh/ssh_host_ed25519_key -N '' -q
           ssh-keygen -t rsa -f targetroot/etc/ssh/ssh_host_rsa_key -N '' -q
+          mkdir -p $HOME/.ssh
+          ssh-keygen -t ed25519 -f $HOME/.ssh/id_ed25519 -N '' -q
+          cat > $HOME/.ssh/config <<EOF
+          StrictHostKeyChecking no
+          Host *
+           IdentityFile ~/.ssh/id_ed25519
+          EOF
+          mkdir -p targetroot/root/.ssh
+          touch targetroot/root/.ssh/authorized_keys
+          cat $HOME/.ssh/id_ed25519.pub >> targetroot/root/.ssh/authorized_keys
+          chmod 600 targetroot/root/.ssh/authorized_keys
           ${TOOLDIR}/bin/nbmakefs -t ffs -M ${IMAGESIZE} -m ${IMAGESIZE} -B ${TARGET_ENDIAN} -F image.spec -N targetroot/etc ${IMAGE} targetroot
           cat > disklabel.proto <<EOF
           type: SCSI
@@ -316,8 +329,6 @@ jobs:
       - name: copy source tree to vm
         run: |
           cd $HOME
-          mkdir -p ~/.ssh
-          echo "StrictHostKeyChecking no" > ~/.ssh/config
           tar --exclude _actions --exclude _PipelineMapping --exclude _temp -cf - work | ssh -p ${SSH_PORT} root@localhost tar -xvf -
 
       - name: build on simh
