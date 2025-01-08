@@ -155,7 +155,7 @@ jobs:
             echo fetch and extract $f.tgz
             curl -sSL ${URL_SRCSETS}/$f.tgz | tar -zxf -
           done
-          (cd usr/src && sh build.sh -m ${MACHINE} -U -u -j 4 -T tooldir.${MACHINE} -V MKGCC=no -V MKBINUTILS=no -V MKSHARE=no -V OBJMACHINE=1 tools)
+          (cd usr/src && sh build.sh -m ${MACHINE} -U -u -j 4 -T tooldir.${MACHINE} -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
       - name: fetch NetBSD/vax binary sets
         run: |
