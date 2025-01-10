@@ -119,3 +119,21 @@ jobs:
             cp src/config.h-netbsd src/config.h
             make
             make install
+
+  build-netbsd-vax:
+    name: "build-netbsd (NetBSD/vax 10.1 with pkgsrc)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build project in NetBSD/vax environment
+        uses: tsutsui/netbsd-cross-live-ci@v0.0.1
+        with:
+          machine: "vax"
+          release: "10.1"
+
+          configure: |
+            cp src/config.h-netbsd src/config.h
+
+          build: |
+            make
+            make install
