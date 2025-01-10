@@ -126,7 +126,7 @@ jobs:
 
     steps:
       - name: Build project in NetBSD/vax environment
-        uses: tsutsui/netbsd-cross-live-ci@v0.0.1
+        uses: tsutsui/netbsd-cross-live-ci@master
         with:
           machine: "vax"
           release: "10.1"
