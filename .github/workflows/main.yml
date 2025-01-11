@@ -100,7 +100,7 @@ jobs:
             make install
 
   build-netbsd:
-    name: "build-netbsd (NetBSD/amd64 10.1 with pkgsrc)"
+    name: "Build on NetBSD 10.1 with netbsd-vm"
     runs-on: ubuntu-latest
 
     steps:
@@ -120,15 +120,20 @@ jobs:
             make
             make install
 
-  build-netbsd-vax:
-    name: "build-netbsd (NetBSD/vax 10.1 with pkgsrc)"
+  build-netbsd-cross-live-ci:
+    name: "Build on NetBSD 10.1 with netbsd-cross-live-ci"
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [i386, vax]
+
     steps:
-      - name: Build project in NetBSD/vax environment
+      - name: Build project in NetBSD/${{ matrix.machine }} environment
         uses: tsutsui/netbsd-cross-live-ci@master
         with:
-          machine: "vax"
+          machine: "${{ matrix.machine }}"
           release: "10.1"
 
           configure: |
