@@ -100,7 +100,7 @@ jobs:
             make install
 
   build-netbsd:
-    name: "Build on NetBSD 10.1 with netbsd-vm"
+    name: "build netbsd-vm"
     runs-on: ubuntu-latest
 
     steps:
@@ -121,7 +121,7 @@ jobs:
             make install
 
   build-netbsd-cross-live-ci:
-    name: "Build on NetBSD 10.1 with netbsd-cross-live-ci"
+    name: "build netbsd-cross-live-ci"
     runs-on: ubuntu-latest
 
     strategy:
