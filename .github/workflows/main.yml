@@ -102,6 +102,15 @@ jobs:
   build-netbsd:
     name: "build netbsd-vm"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [aarch64, amd64]
+        include:
+          - arch: aarch64
+            releasemachinedir: evbarm-aarch64
+          - arch: amd64
+            releasemachinedir: amd64
 
     steps:
       - uses: actions/checkout@v4
@@ -109,11 +118,12 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           release: "10.1"
+          arch: ${{ matrix.arch }}
           copyback: false
           prepare: |
             uname -a
-            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xbase.tar.xz | tar -C / -zxpf - ./usr/X11R7/bin ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
-            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-`uname -r`/amd64/binary/sets/xcomp.tar.xz | tar -C / -zxpf - ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
+            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-$(uname -r)/${{ matrix.releasemachinedir }}/binary/sets/xbase.tar.xz | tar -C / -zxpf - ./usr/X11R7/bin ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
+            ftp -o - https://cdn.NetBSD.org/pub/NetBSD/NetBSD-$(uname -r)/${{ matrix.releasemachinedir }}/binary/sets/xcomp.tar.xz | tar -C / -zxpf - ./usr/X11R7/include ./usr/X11R7/lib ./usr/X11R7/share
 
           run: |
             cp src/config.h-netbsd src/config.h
