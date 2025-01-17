@@ -127,7 +127,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [alpha, evbarm-aarch64, evbarm-earmv7hf, i386, sparc, sparc64, vax]
+        machine: [alpha, evbarm-aarch64, evbarm-earmv7hf, hppa, i386, sparc, sparc64, vax]
 
     steps:
       - name: Build project in NetBSD/${{ matrix.machine }} environment
