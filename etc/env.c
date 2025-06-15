@@ -91,12 +91,11 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-extern int execvp ();
-extern char *index ();
-
-char *xmalloc (), *xrealloc ();
-char *concat ();
+char *xmalloc (int);
+char *xrealloc (char *, int);
+char * concat (char *, char *, char *s3);
 
 extern char **environ;
 
@@ -104,14 +103,12 @@ char **nenv;
 int nenv_size;
 
 char *progname;
-void xsetenv ();
-void fatal ();
+void xsetenv (register char *, register char *val);
+void fatal (char *, char *);
+void memory_fatal (void);
 
 int
-main (argc, argv, envp)
-     register int argc;
-     register char **argv;
-     char **envp;
+main (register int argc, register char **argv, char **envp)
 {
   register char *tem;
 
@@ -133,7 +130,7 @@ main (argc, argv, envp)
     /* Else pass on existing env vars. */
     for (; *envp; envp++)
       {
-	tem = index (*envp, '=');
+	tem = strchr (*envp, '=');
 	if (tem)
 	  {
 	    *tem = '\000';
@@ -143,7 +140,7 @@ main (argc, argv, envp)
 
   while (argc > 0)
     {
-      tem = index (*argv, '=');
+      tem = strchr (*argv, '=');
       if (tem)
 	/* If arg contains a "=" it specifies to set a variable */
 	{
@@ -222,19 +219,18 @@ main (argc, argv, envp)
 }
 
 void
-xsetenv (var, val)
-  register char *var, *val;
+xsetenv (register char *var, register char *val)
 {
   register char **e;
   int len = strlen (var);
 
   {
-    register char *tem = index (var, '=');
+    register char *tem = strchr (var, '=');
     if (tem)
       fatal ("Environment variable names may not contain \"=\": %s",
 	     var);
     else if (*var == '\000')
-      fatal ("Zero-length environment variable name specified.");
+      fatal ("Zero-length environment variable name specified.", NULL);
   }
 
   for (e = nenv; *e; e++)
@@ -255,7 +251,7 @@ xsetenv (var, val)
   if (len + 1 >= nenv_size)
     {
       nenv_size += 100;
-      nenv = (char **) xrealloc (nenv, nenv_size * sizeof (char *));
+      nenv = (char **) xrealloc ((void *)nenv, nenv_size * sizeof (char *));
       e = nenv + len;
     }
 
@@ -270,25 +266,26 @@ xsetenv (var, val)
 }
 
 void
-fatal (msg, arg1, arg2)
-     char *msg, *arg1, *arg2;
+fatal (char *msg, char *arg1)
 {
   fprintf (stderr, "%s: ", progname);
-  fprintf (stderr, msg, arg1, arg2);
+  if (arg1 != NULL)
+    fprintf (stderr, msg, arg1);
+  else
+    fprintf (stderr, msg);
   putc ('\n', stderr);
   exit (1);
 }
 
 
 void
-memory_fatal ()
+memory_fatal (void)
 {
-  fatal ("Out of memory");
+  fatal ("Out of memory", NULL);
 }
 
 char *
-xmalloc (size)
-     int size;
+xmalloc (int size)
 {
   register char *value;
   value = (char *) malloc (size);
@@ -297,9 +294,7 @@ xmalloc (size)
 }
 
 char *
-xrealloc (ptr, size)
-     char *ptr;
-     int size;
+xrealloc (char *ptr, int size)
 {
   register char *value;
   value = (char *) realloc (ptr, size);
@@ -310,8 +305,7 @@ xrealloc (ptr, size)
 /* Return a newly-allocated string whose contents concatenate those of s1, s2, s3.  */
 
 char *
-concat (s1, s2, s3)
-     char *s1, *s2, *s3;
+concat (char *s1, char *s2, char *s3)
 {
   int len1 = strlen (s1), len2 = strlen (s2), len3 = strlen (s3);
   char *result = (char *) xmalloc (len1 + len2 + len3 + 1);
