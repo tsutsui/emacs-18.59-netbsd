@@ -17,14 +17,13 @@
 #define SEP      '\0'
 #define YOW_FILE "yow.lines"
 
+void yow (FILE *);
+
 int
-main (argc, argv)
-     int argc;
-     char *argv[];
+main (int argc, char *argv[])
 {
   FILE *fp;
   char file[BUFSIZ];
-  void yow();
 
   if (argc > 2 && !strcmp (argv[1], "-f"))
     strcpy (file, argv[2]);
@@ -49,8 +48,7 @@ main (argc, argv)
 }
 
 void
-yow (fp)
-     FILE *fp;
+yow (FILE *fp)
 {
   static long len = -1;
   long offset;
