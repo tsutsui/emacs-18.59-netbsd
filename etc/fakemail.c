@@ -77,7 +77,7 @@ typedef struct header_record *header;
 struct stream_record
 {
   FILE *handle;
-  int (*action)();
+  int (*action)(FILE *);
   struct stream_record *rest_streams;
 };
 typedef struct stream_record *stream_list;
@@ -124,9 +124,6 @@ static line_list file_preface;
 static stream_list the_streams;
 static boolean no_problems = true;
 
-extern FILE *popen ();
-extern int fclose (), pclose ();
-
 #define cuserid(s) (getpwuid (geteuid ())->pw_name)
 
 /* Utilities */
@@ -134,8 +131,7 @@ extern int fclose (), pclose ();
 /* Print error message.  `s1' is printf control string, `s2' is arg for it. */
 
 static void
-error (s1, s2)
-     char *s1, *s2;
+error (char *s1, char *s2)
 {
   printf ("%s: ", my_name);
   printf (s1, s2);
@@ -146,8 +142,7 @@ error (s1, s2)
 /* Print error message and exit.  */
 
 static void
-fatal (s1, s2)
-     char *s1, *s2;
+fatal (char *s1, char *s2)
 {
   error (s1, s2);
   exit (1);
@@ -156,8 +151,7 @@ fatal (s1, s2)
 /* Like malloc but get fatal error if memory is exhausted.  */
 
 static char *
-xmalloc (size)
-     int size;
+xmalloc (int size)
 {
   char *result = malloc (((unsigned) size));
   if (result == ((char *) NULL))
@@ -166,9 +160,7 @@ xmalloc (size)
 }
 
 static char *
-xrealloc (ptr, size)
-     char *ptr;
-     int size;
+xrealloc (char *ptr, int size)
 {
   char *result = realloc (ptr, ((unsigned) size));
   if (result == ((char *) NULL))
@@ -179,8 +171,7 @@ xrealloc (ptr, size)
 /* Initialize a linebuffer for use */
 
 void
-init_linebuffer (linebuffer)
-     struct linebuffer *linebuffer;
+init_linebuffer (struct linebuffer *linebuffer)
 {
   linebuffer->size = INITIAL_LINE_SIZE;
   linebuffer->buffer = ((char *) xmalloc (INITIAL_LINE_SIZE));
@@ -191,9 +182,7 @@ init_linebuffer (linebuffer)
  */
 
 long
-readline (linebuffer, stream)
-     struct linebuffer *linebuffer;
-     FILE *stream;
+readline (struct linebuffer *linebuffer, FILE *stream)
 {
   char *buffer = linebuffer->buffer;
   char *p = linebuffer->buffer;
@@ -222,9 +211,7 @@ readline (linebuffer, stream)
 }
 
 char *
-get_keyword (field, rest)
-     register char *field;
-     char **rest;
+get_keyword (register char *field, char **rest)
 {
   static char keyword[KEYWORD_SIZE];
   register char *ptr;
@@ -245,17 +232,14 @@ get_keyword (field, rest)
 }
 
 boolean
-has_keyword (field)
-     char *field;
+has_keyword (char *field)
 {
   char *ignored;
   return (get_keyword (field, &ignored) != ((char *) NULL));
 }
 
 char *
-add_field (the_list, field, where)
-     line_list the_list;
-     register char *field, *where;
+add_field (line_list the_list, register char *field, register char *where)
 {
   register char c;
   while (true)
@@ -271,7 +255,7 @@ add_field (the_list, field, where)
 }
 
 line_list
-make_file_preface ()
+make_file_preface (void)
 {
   char *the_string, *temp;
   time_t idiotic_interface;
@@ -308,9 +292,7 @@ make_file_preface ()
 }
 
 void
-write_line_list (the_list, the_stream)
-     register line_list the_list;
-     FILE *the_stream;
+write_line_list (register line_list the_list, FILE *the_stream)
 {
   for ( ;
       the_list != ((line_list) NULL) ;
@@ -323,7 +305,7 @@ write_line_list (the_list, the_stream)
 }
 
 int
-close_the_streams ()
+close_the_streams (void)
 {
   register stream_list rem;
   for (rem = the_streams;
@@ -336,9 +318,7 @@ close_the_streams ()
 }
 
 void
-add_a_stream (the_stream, closing_action)
-     FILE *the_stream;
-     int (*closing_action)();
+add_a_stream (FILE *the_stream, int (*closing_action)(file *))
 {
   stream_list old = the_streams;
   the_streams = new_stream ();
@@ -349,8 +329,7 @@ add_a_stream (the_stream, closing_action)
 }
 
 int
-my_fclose (the_file)
-     FILE *the_file;
+my_fclose (FILE *the_file)
 {
   putc ('\n', the_file);
   fflush (the_file);
@@ -358,8 +337,7 @@ my_fclose (the_file)
 }
 
 boolean
-open_a_file (name)
-     char *name;
+open_a_file (char *name)
 {
   FILE *the_stream = fopen (name, "a");
   if (the_stream != ((FILE *) NULL))
@@ -374,8 +352,7 @@ open_a_file (name)
 }
 
 void
-put_string (s)
-     char *s;
+put_string (char *s)
 {
   register stream_list rem;
   for (rem = the_streams;
@@ -386,8 +363,7 @@ put_string (s)
 }
 
 void
-put_line (s)
-     char *s;
+put_line (char *s)
 {
   register stream_list rem;
   for (rem = the_streams;
@@ -403,9 +379,7 @@ put_line (s)
 #define mail_error error
 
 void
-setup_files (the_list, field)
-     register line_list the_list;
-     register char *field;
+setup_files (register line_list the_list, register char *field)
 {
   register char *start;
   register char c;
@@ -437,8 +411,7 @@ setup_files (the_list, field)
 }
 
 int
-args_size (the_header)
-     header the_header;
+args_size (header the_header)
 {
   register header old = the_header;
   register line_list rem;
@@ -463,9 +436,7 @@ args_size (the_header)
 }
 
 void
-parse_header (the_header, where)
-     header the_header;
-     register char *where;
+parse_header (header the_header, register char *where)
 {
   register header old = the_header;
   do
@@ -491,7 +462,7 @@ parse_header (the_header, where)
 }
     
 header
-read_header ()
+read_header (void)
 {
   register header the_header = ((header) NULL);
   register line_list *next_line = ((line_list *) NULL);
@@ -543,8 +514,7 @@ read_header ()
 }
 
 void
-write_header (the_header)
-     header the_header;
+write_header (header the_header)
 {
   register header old = the_header;
   do
@@ -561,9 +531,7 @@ write_header (the_header)
 }
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   char *command_line;
   header the_header;
