@@ -34,9 +34,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   fprintf (stderr, "%s: Sorry, the Emacs server is supported only\n",
 	   argv[0]);
@@ -58,9 +56,7 @@ main (argc, argv)
 #include <sys/stat.h>
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   char system_name[32];
   int s, i;
@@ -178,9 +174,7 @@ main (argc, argv)
 #include <stdio.h>
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   int s;
   key_t key;
