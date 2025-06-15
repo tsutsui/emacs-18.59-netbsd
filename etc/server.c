@@ -76,8 +76,6 @@ main (int argc, char *argv[])
   FILE **openfiles;
   int openfiles_size;
 
-  char *getenv ();
-
   openfiles_size = 20;
   openfiles = (FILE **) malloc (openfiles_size * sizeof (FILE *));
   if (openfiles == 0)
@@ -239,7 +237,7 @@ jmp_buf msgenv;
 
 void /* void here fixes bug on sgi.
 	Let's hope this doesn't break other systems.  */
-msgcatch ()
+msgcatch(void)
 {
   longjmp (msgenv, 1);
 }
@@ -259,7 +257,7 @@ main (int argc, char *argv[])
     (struct msgbuf *) malloc (sizeof *msgp + BUFSIZ);
   struct msqid_ds msg_st;
   int p;
-  char *homedir, *getenv ();
+  char *homedir;
   char string[BUFSIZ];
   FILE *infile;
 
