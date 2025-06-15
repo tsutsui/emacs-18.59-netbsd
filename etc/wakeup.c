@@ -6,9 +6,7 @@
 #include <unistd.h>
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   int period = 60;
   time_t when;
