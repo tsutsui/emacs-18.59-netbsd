@@ -164,7 +164,7 @@ xrealloc (char *ptr, int size)
 {
   char *result = realloc (ptr, ((unsigned) size));
   if (result == ((char *) NULL))
-    fatal ("virtual memory exhausted");
+    fatal ("virtual memory exhausted", 0);
   return result;
 }
 
@@ -318,7 +318,7 @@ close_the_streams (void)
 }
 
 void
-add_a_stream (FILE *the_stream, int (*closing_action)(file *))
+add_a_stream (FILE *the_stream, int (*closing_action)(FILE *))
 {
   stream_list old = the_streams;
   the_streams = new_stream ();
@@ -552,7 +552,7 @@ main (int argc, char **argv)
   
   the_pipe = popen (command_line, "w");
   if (the_pipe == ((FILE *) NULL))
-    fatal ("cannot open pipe to real mailer");
+    fatal ("cannot open pipe to real mailer", 0);
 
   add_a_stream (the_pipe, pclose);
 
