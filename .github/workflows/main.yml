@@ -36,7 +36,7 @@ jobs:
             ;;
           opensuse*)
             zypper update -y
-            zypper install -y gzip tar # for actions/checkout@v4
+            zypper install -y gzip tar # for actions/checkout@v5
             zypper install -y make gcc libX11-devel ncurses-devel
             ;;
           fedora*)
@@ -45,7 +45,7 @@ jobs:
             ;;
           esac
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: configure and make
         run: |
@@ -73,7 +73,7 @@ jobs:
             platform: linux/arm64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -113,7 +113,7 @@ jobs:
             releasemachinedir: amd64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install packages and run configure and make (on the NetBSD VM)
         uses: vmactions/netbsd-vm@v1
         with:
