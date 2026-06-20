@@ -986,7 +986,7 @@ Case is ignored if the current buffer specifies to do so.")
 }
 
 #ifndef MAINTAIN_ENVIRONMENT /* it is done in environ.c in that case */
-DEFUN ("getenv", Fgetenv, Sgetenv, 1, 2, 0,
+DEFUN ("getenv", Fgetenv, Sgetenv, 1, 1, 0,
   "Return the value of environment variable VAR, as a string.\n\
 VAR should be a string.  If the environment variable VAR is not defined,\n\
 the value is nil.")
