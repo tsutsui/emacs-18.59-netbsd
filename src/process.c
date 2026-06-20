@@ -45,25 +45,35 @@ static dummy () {}
 #include <arpa/inet.h>
 #endif /* HAVE_SOCKETS */
 
-#if defined(BSD) || defined(STRIDE)
+#if defined(BSD) || defined(STRIDE) || defined(HAVE_TERMIOS)
+#ifndef VMS
 #include <sys/ioctl.h>
+#endif
 #if !defined (O_NDELAY) && defined (HAVE_PTYS)
 #include <fcntl.h>
 #endif /* HAVE_PTYS and no O_NDELAY */
-#endif /* BSD or STRIDE */
-#ifdef USG
+#endif /* BSD or STRIDE or HAVE_TERMIOS */
+
+#ifdef HAVE_TERMIO
 #ifndef NO_TERMIO
 #include <termio.h>
 #endif
-#include <fcntl.h>
-#endif /* USG */
-
-#ifdef NEED_BSDTTY
-#include <sys/bsdtty.h>
 #endif
 
 #ifdef NEED_TERMIOS
 #include <sys/termios.h>
+#else
+#ifdef HAVE_TERMIOS
+#include <termios.h>
+#endif
+#endif
+
+#if defined(USG) || defined(HAVE_TERMIOS)
+#include <fcntl.h>
+#endif
+
+#ifdef NEED_BSDTTY
+#include <sys/bsdtty.h>
 #endif
 
 #ifdef TRITON88			/* To make emacs send C-c correctly in shell */

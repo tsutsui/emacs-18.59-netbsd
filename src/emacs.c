@@ -30,14 +30,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* Get FIONREAD, if it is available,
    just to help decide whether SIGIO should be defined.  */
-#ifdef USG
-#include <termio.h>
-#include <fcntl.h>
-#else /* not USG */
 #ifndef VMS
 #include <sys/ioctl.h>
-#endif /* not VMS */
-#endif /* not USG */
+#endif
+
+#if defined(USG) || defined(HAVE_TERMIOS)
+#include <fcntl.h>
+#endif
 
 /* Allow m- file to inhibit use of FIONREAD.  */
 #ifdef BROKEN_FIONREAD
