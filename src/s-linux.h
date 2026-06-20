@@ -250,16 +250,11 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* we have non-standard standard I/O (iostream) ... */
 #ifdef emacs
-#include <stdio.h>  /* Get the definition of _IO_STDIO_H or _BITS_STDIO_H.  */
-#if defined(_IO_STDIO_H) || defined(_BITS_STDIO_H) || defined(_STDIO_USES_IOSTREAM)
-/* new C libio names */
-#define PENDING_OUTPUT_COUNT(FILE) \
-  ((FILE)->_IO_write_ptr - (FILE)->_IO_write_base)
-#else /* !_IO_STDIO_H */
-/* old C++ iostream names */
-#define PENDING_OUTPUT_COUNT(FILE) \
-  ((FILE)->_pptr - (FILE)->_pbase)
-#endif /* !_IO_STDIO_H */
+#include <stdio_ext.h>
+
+/* Return the number of bytes pending in the stdio output buffer.
+   Do not inspect FILE internals; their layout is libc-dependent. */
+#define PENDING_OUTPUT_COUNT(stream) ((int) __fpending (stream))
 #endif /* emacs */
 
 /* This is for debugging; otherwise, gdb cannot access numerous structure
