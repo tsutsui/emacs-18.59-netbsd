@@ -41,6 +41,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
    Returns -1 if there was an error (i.e. FD is not a tty), 0
    otherwise.  */
 
+#ifdef NEED_TERMIOS
+#include <sys/termios.h>
+#endif
+
 #ifdef HAVE_TERMIOS
 #include <termios.h>
 #include <sys/ioctl.h>
