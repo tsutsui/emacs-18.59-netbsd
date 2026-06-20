@@ -197,8 +197,28 @@ extern char *sys_errlist[];
 #endif /* not CDEL */
 #endif /* not _POSIX_VDISABLE */
 
-#define TABS_OK(str) ((str.c_oflag & TABDLY) != TAB3)
-#endif /* HAVE_TERMIO */
+#ifdef TABDLY
+#define TABS_OK(str) (((str).c_oflag & TABDLY) != TAB3)
+#else
+#ifdef OXTABS
+#define TABS_OK(str) (((str).c_oflag & OXTABS) == 0)
+#else
+#define TABS_OK(str) 1
+#endif
+#endif
+
+#ifndef DISABLE_TAB_EXPANSION
+#ifdef TAB3
+#define DISABLE_TAB_EXPANSION(t) ((t).c_oflag &= ~TAB3)
+#else
+#ifdef OXTABS
+#define DISABLE_TAB_EXPANSION(t) ((t).c_oflag &= ~OXTABS)
+#else
+#define DISABLE_TAB_EXPANSION(t) ((void) 0)
+#endif /* OXTABS */
+#endif /* TAB3 */
+#endif /* DISABLE_TAB_EXPANSION */
+#endif /* HAVE_TERMIO || HAVE_TERMIOS */
 
 #ifndef HAVE_TCATTR /* If HAVE_TCATTR, this is a primitive.  */
 #define tcgetattr(fd, addr) ioctl (fd, TIOCGETP, addr)
@@ -1034,7 +1054,7 @@ init_sys_modes (void)
       else
 	tty.c_iflag &= ~IXON;	/* Disable start/stop output control */
       tty.c_oflag &= ~ONLCR;	/* Disable map of NL to CR-NL on output */
-      tty.c_oflag &= ~TAB3;	/* Disable tab expansion */
+      DISABLE_TAB_EXPANSION (tty);	/* Disable tab expansion */
 #ifdef CS8
       tty.c_cflag |= CS8;	/* allow 8th bit on input */
       tty.c_cflag &= ~PARENB;	/* Don't check parity */
