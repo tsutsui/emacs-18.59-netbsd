@@ -105,6 +105,7 @@ DEFUN ("documentation", Fdocumentation, Sdocumentation, 1, 1, 0,
   Lisp_Object fun;
   Lisp_Object funcar;
   Lisp_Object tem;
+  long doc;
 
   fun = fun1;
   while (XTYPE (fun) == Lisp_Symbol)
@@ -112,9 +113,10 @@ DEFUN ("documentation", Fdocumentation, Sdocumentation, 1, 1, 0,
   if (XTYPE (fun) == Lisp_Subr)
     {
       if (XSUBR (fun)->doc == 0) return Qnil;
-      if ((int) XSUBR (fun)->doc >= 0)
+      doc = (long) XSUBR (fun)->doc;
+      if (doc >= 0)
 	return Fsubstitute_command_keys (build_string (XSUBR (fun)->doc));
-      return Fsubstitute_command_keys (get_doc_string (- (int) XSUBR (fun)->doc));
+      return Fsubstitute_command_keys (get_doc_string (- doc));
     }
   if (XTYPE (fun) == Lisp_Vector)
     return build_string ("Prefix command (definition is a Lisp vector of subcommands).");
