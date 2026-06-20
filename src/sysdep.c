@@ -1172,7 +1172,7 @@ init_sys_modes (void)
 #ifdef TIOCGLTC
       ioctl (0, TIOCGLTC, &old_ltchars);
 #endif /* TIOCGLTC */
-#ifndef HAVE_TERMIO
+#if !defined (HAVE_TERMIO) && !defined (HAVE_TERMIOS)
 #ifdef TIOCGETC
       ioctl (0, TIOCGETC, &old_tchars);
       ioctl (0, TIOCLGET, &old_lmode);
@@ -1199,7 +1199,7 @@ init_sys_modes (void)
       ioctl (0, TIOCSETC, &tchars);
       ioctl (0, TIOCLSET, &lmode);
 #endif /* TIOCGETC */
-#endif /* not HAVE_TERMIO */
+#endif /* not HAVE_TERMIO or HAVE_TERMIOS */
 #ifdef TIOCGLTC
       ioctl (0, TIOCSLTC, &new_ltchars);
 #endif /* TIOCGLTC */
@@ -1337,12 +1337,12 @@ reset_sys_modes (void)
 #ifdef TIOCGLTC
   ioctl (0, TIOCSLTC, &old_ltchars);
 #endif /* TIOCGLTC */
-#ifndef HAVE_TERMIO
+#if !defined (HAVE_TERMIO) && !defined(HAVE_TERMIOS)
 #ifdef TIOCGETC
   ioctl (0, TIOCSETC, &old_tchars);
   ioctl (0, TIOCLSET, &old_lmode);
 #endif /* TIOCGETC */
-#endif /* not HAVE_TERMIO */
+#endif /* not HAVE_TERMIO or HAVE_TERMIOS */
 #ifdef F_SETFL
 #ifdef F_SETOWN		/* F_SETFL does not imply existance of F_SETOWN */
   if (interrupt_input)
