@@ -415,7 +415,9 @@ main (int argc, char **argv, char **envp)
       signal (SIGFPE, fatal_error_signal);
       signal (SIGBUS, fatal_error_signal);
       signal (SIGSEGV, fatal_error_signal);
+#ifdef SIGSYS
       signal (SIGSYS, fatal_error_signal);
+#endif
       signal (SIGTERM, fatal_error_signal);
 #ifdef SIGXCPU
       signal (SIGXCPU, fatal_error_signal);
