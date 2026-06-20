@@ -50,10 +50,13 @@ static char *rcsid_xterm_c = "$Header: x11term.c,v 1.12 88/02/29 14:11:07 rfrenc
 /* Get FIONREAD, if it is available.
    It would be logical to include <sys/ioctl.h> here,
    but it was moved up above to avoid problems.  */
-#ifdef USG
-#include <termio.h>
-#endif /* USG */
+#ifndef VMS
+#include <sys/ioctl.h>
+#endif
+
+#if defined(USG) || defined(HAVE_TERMIOS)
 #include <fcntl.h>
+#endif
 
 #include "lisp.h"
 

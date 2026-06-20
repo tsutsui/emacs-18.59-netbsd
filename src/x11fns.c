@@ -26,14 +26,13 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include "config.h"
 
 /* Get FIONREAD, if it is available.  */
-#ifdef USG
-#include <termio.h>
-#endif /* USG */
-#include <fcntl.h>
-
 #ifndef VMS
 #include <sys/ioctl.h>
-#endif /* not VMS */
+#endif
+
+#if defined(USG) || defined(HAVE_TERMIOS)
+#include <fcntl.h>
+#endif
 
 /* Allow m- file to inhibit use of interrupt-driven input.  */
 #ifdef BROKEN_FIONREAD
