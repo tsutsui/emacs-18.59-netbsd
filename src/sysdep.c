@@ -1041,7 +1041,7 @@ init_sys_modes (void)
       tty.c_lflag &= ~ECHO;	/* Disable echo */
       tty.c_lflag &= ~ICANON;	/* Disable erase/kill processing */
 #ifdef IEXTEN
-      tty.c_iflag &= ~IEXTEN;	/* Disable other editing characters.  */
+      tty.c_lflag &= ~IEXTEN;	/* Disable other editing characters.  */
 #endif
       tty.c_lflag |= ISIG;	/* Enable signals */
       if (flow_control)
