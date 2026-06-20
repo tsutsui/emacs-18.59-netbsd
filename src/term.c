@@ -21,10 +21,10 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 #include <ctype.h>
 #include "config.h"
-#ifdef HAVE_TERMCAP_H && 0
+#if defined(HAVE_TERMCAP_H) && 0
 #include <termcap.h>
 #else
-extern void tputs (const char *, int, int (*)(int));
+extern int tputs (const char *, int, int (*)(int));
 extern int tgetent (char *, const char *);
 extern int tgetflag (char *id);
 extern int tgetnum (char *id);
