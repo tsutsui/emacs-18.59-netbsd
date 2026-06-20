@@ -135,6 +135,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <limits.h>
 #include <sys/socket.h>
 #include "extern.h"
 #endif
@@ -237,9 +238,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define SYSTEM_MALLOC		/* produces smaller binary */
 #endif
 
-/* misc. kludges for linux */
-#if !(defined (__GLIBC__) && (__GLIBC__ >= 2))
-#define MAXNAMLEN NAME_MAX	/* missing SYSV-ism */
+#ifndef MAXNAMLEN
+# ifdef NAME_MAX
+#  define MAXNAMLEN NAME_MAX
+# else
+#  define MAXNAMLEN 255
+# endif
 #endif
 
 #define VSWTCH VSWTC		/* mis-spelling in termios.h? */
