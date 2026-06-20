@@ -150,7 +150,9 @@ extern char *sys_errlist[];
 #include <termios.h>		/* needs to be before termio.h for aix ps/2  */
 #endif
 #if defined(HAVE_TERMIO)
+#ifndef NO_TERMIO
 #include <termio.h>
+#endif
 #endif
 #ifdef HAVE_TCATTR
 #define TERMINAL struct termios
