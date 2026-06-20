@@ -629,8 +629,8 @@ cfree (void *mem)
 
 #ifndef VMS
 
-char *
-memalign (unsigned int alignment, unsigned int size)
+void *
+memalign (size_t alignment, size_t size)
 {
   register char *ptr = malloc (size + alignment);
   register char *aligned;
