@@ -655,6 +655,8 @@ child_setup_tty (int out)
 #ifdef OLCUC
   s.c_oflag &= ~OLCUC;		/* Disable map of lower case to upper on output */
 #endif
+  DISABLE_TAB_EXPANSION (s);	/* Disable tab expansion */
+  s.c_cflag = (s.c_cflag & ~CSIZE) | CS8; /* Don't strip 8th bit */
 #if 0 /* said to be unnecesary */
   s.c_cc[VMIN] = 1;		/* minimum number of characters to accept */
   s.c_cc[VTIME] = 0;		/* wait forever for at least 1 character */
