@@ -462,7 +462,7 @@ print (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag)
       break;
 
     case Lisp_Int:
-      sprintf (buf, "%d", XINT (obj));
+      sprintf (buf, "%ld", (long) XINT (obj));
       strout (buf, -1, printcharfun);
       break;
 
@@ -601,7 +601,7 @@ print (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag)
 
     case Lisp_Window:
       strout ("#<window ", -1, printcharfun);
-      sprintf (buf, "%d", XFASTINT (XWINDOW (obj)->sequence_number));
+      sprintf (buf, "%ld", (long) XFASTINT (XWINDOW (obj)->sequence_number));
       strout (buf, -1, printcharfun);
       if (!NILP (XWINDOW (obj)->buffer))
 	{

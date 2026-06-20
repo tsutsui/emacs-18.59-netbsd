@@ -1725,9 +1725,9 @@ DEFUN ("execute-extended-command", Fexecute_extended_command, Sexecute_extended_
   else if (CONSP (prefixarg) && XINT (XCONS (prefixarg)->car) == 4)
     strcpy (buf, "C-u ");
   else if (CONSP (prefixarg) && XTYPE (XCONS (prefixarg)->car) == Lisp_Int)
-    sprintf (buf, "%d ", XINT (XCONS (prefixarg)->car));
+    sprintf (buf, "%ld ", (long) XINT (XCONS (prefixarg)->car));
   else if (XTYPE (prefixarg) == Lisp_Int)
-    sprintf (buf, "%d ", XINT (prefixarg));
+    sprintf (buf, "%ld ", (long) XINT (prefixarg));
 
   /* This isn't strictly correct if execute-extended-command
      is bound to anything else */
