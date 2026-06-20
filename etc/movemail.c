@@ -60,6 +60,12 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define NO_SHORTNAMES   /* Tell config not to load remap.h */
 #include "../src/config.h"
 
+/* Cancel substitutions made by config.h for Emacs.  */
+#undef open
+#undef read
+#undef write
+#undef close
+
 #if defined(USG) || defined(BSD)
 #include <fcntl.h>
 #ifndef F_OK
@@ -77,12 +83,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifdef MAIL_USE_MMDF
 extern int lk_open (), lk_close ();
 #endif
-
-/* Cancel substitutions made by config.h for Emacs.  */
-#undef open
-#undef read
-#undef write
-#undef close
 
 void fatal (char *, char *);
 void error (char *, char *);
