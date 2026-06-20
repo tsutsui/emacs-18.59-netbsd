@@ -273,7 +273,7 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #define C_COMPILER gcc
 #define C_DEBUG_SWITCH -g
-#define C_OPTIMIZE_SWITCH -O2 -fno-strict-aliasing -fno-builtin-malloc
+#define C_OPTIMIZE_SWITCH -std=gnu89 -O2 -fno-strict-aliasing -fno-builtin-malloc
 #define OLDXMENU_OPTIONS CFLAGS=-O2 EXTRA=insque.o
 #define LIBS_DEBUG		/* override in config.h to include -lg */
 #define LIBS_TERMCAP -lncurses
