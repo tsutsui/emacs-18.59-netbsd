@@ -21,14 +21,14 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 #include <ctype.h>
 #include "config.h"
-#ifdef HAVE_TERMCAP_H
+#ifdef HAVE_TERMCAP_H && 0
 #include <termcap.h>
-#endif
-#ifdef TERMINFO
-#include <term.h>
-#ifdef clear_screen
-#undef clear_screen /* XXX */
-#endif
+#else
+extern void tputs (const char *, int, int (*)(int));
+extern int tgetent (char *, const char *);
+extern int tgetflag (char *id);
+extern int tgetnum (char *id);
+extern char *tgetstr (char *, char **);
 #endif
 #ifdef __STDC__
 #include <stdarg.h>
@@ -1012,10 +1012,6 @@ term_init (char *terminal_type)
   char buffer[4092];
   register char *p;
   int status;
-
-#ifndef LIBS_TERMCAP
-  extern char *tgetstr (char *, char **);
-#endif
 
   Wcm_clear ();
   dont_calculate_costs = 0;
